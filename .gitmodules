@@ -1,0 +1,3 @@
+[submodule "huitr"]
+	path = huitr
+	url = git@github.com:jd-develop/huitr.git

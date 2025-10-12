@@ -1,0 +1,31 @@
+{
+    "configurations": [
+        {
+            "name": "frontend",
+            "request": "launch",
+            "type": "jaspr",
+            "cwd": "frontend",
+            "args": [
+                "--port=8081",
+                "--dart-define=API_HOST=http://localhost:8080"
+            ],
+        },
+        {
+            "name": "backend",
+            "type": "dart",
+            "request": "launch",
+            "cwd": "backend",
+            "program": "bin/server_dev.dart",
+            "args": ["--port=8080"]
+        }
+    ],
+    "compounds": [
+        {
+            "name": "frontend + backend",
+            "configurations": [
+                "frontend",
+                "backend"
+            ]
+        }
+    ]
+}

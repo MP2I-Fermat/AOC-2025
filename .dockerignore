@@ -1,0 +1,4 @@
+.vscode/
+.dart_tool/
+frontend/build
+huitr/_build
