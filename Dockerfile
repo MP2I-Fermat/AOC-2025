@@ -11,18 +11,7 @@ COPY huitr/ .
 RUN eval $(opam env) && dune build
 
 
-FROM debian:stable AS build_frontend
-
-ENV CI=true
-ENV DEBIAN_FRONTEND=noninteractive
-
-# Needed for the Flutter Web SDK.
-RUN apt-get update && apt-get install -y bash curl file git unzip which zip
-RUN git clone https://github.com/flutter/flutter.git /opt/flutter
-ENV PATH="$PATH:/opt/flutter/bin"
-RUN flutter --disable-analytics
-RUN flutter channel stable --no-cache-artifacts
-RUN flutter precache --web
+FROM dart:latest AS build_frontend
 
 RUN dart pub global activate jaspr_cli
 
