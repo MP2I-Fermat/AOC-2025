@@ -101,8 +101,11 @@ class AppState extends State<App> {
                 div(styles: Styles(flex: upperBlockFlex), []),
                 div(
                   styles: Styles(
+                    position: verticalPosition == null
+                        ? null
+                        : .relative(top: .pixels(-2)),
                     width: .percent(100),
-                    height: .pixels(3),
+                    height: .pixels(5),
                     cursor: .rowResize,
                     pointerEvents: .all,
                   ),
@@ -120,7 +123,10 @@ class AppState extends State<App> {
               ]),
               div(
                 styles: Styles(
-                  width: .pixels(3),
+                  position: horizontalPosition == null
+                      ? null
+                      : .relative(left: .pixels(-2)),
+                  width: .pixels(5),
                   height: .percent(100),
                   cursor: .colResize,
                   pointerEvents: .all,
