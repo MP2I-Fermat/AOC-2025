@@ -1,32 +1,227 @@
-import 'package:jaspr/jaspr.dart';
-import 'package:jaspr_router/jaspr_router.dart';
+import 'dart:js_interop';
+import 'dart:js_interop_unsafe';
 
-import 'components/header.dart';
-import 'pages/about.dart';
-import 'pages/home.dart';
+import 'package:frontend/components/code_editor.dart';
+import 'package:frontend/components/information_pane.dart';
+import 'package:frontend/components/output.dart';
+import 'package:jaspr/jaspr.dart';
 
 // The main component of your application.
-class App extends StatelessComponent {
+class App extends StatefulComponent {
   const App({super.key});
 
   @override
+  State createState() => AppState();
+}
+
+class AppState extends State<App> {
+  double? verticalPosition;
+  double? horizontalPosition;
+  bool resizingWidth = false;
+  bool resizingHeight = false;
+
+  @override
   Component build(BuildContext context) {
-    // This method is rerun every time the component is rebuilt.
-    
-    // Renders a <div class="main"> html element with children.
+    final leftBlockFlex = Flex(
+      grow: horizontalPosition == null ? 1 : null,
+      basis: horizontalPosition == null
+          ? .zero
+          : .expression('clamp(20%, ${horizontalPosition}px, 80%)'),
+    );
+
+    final upperBlockFlex = Flex(
+      grow: verticalPosition == null ? 3 : null,
+      basis: verticalPosition == null
+          ? .zero
+          : .expression('clamp(20%, ${verticalPosition}px, 80%)'),
+    );
+
+    final zeroPosition = Position.absolute(
+      top: .zero,
+      bottom: .zero,
+      left: .zero,
+      right: .zero,
+    );
+
     return div(classes: 'main', [
-      Router(routes: [
-        ShellRoute(
-          builder: (context, state, child) => fragment([
-            const Header(),
-            child,
+      div(styles: Styles(height: .vh(100), flexDirection: .column), [
+        // relative position provides an anchor for the absolutely positioned
+        // elements within.
+        div(styles: Styles(position: .relative(), flex: Flex(grow: 1)), [
+          if (resizingHeight || resizingWidth)
+            div(
+              styles: Styles(
+                position: zeroPosition,
+                zIndex: ZIndex(2),
+                cursor: resizingHeight ? .rowResize : .colResize,
+                flexDirection: .row,
+              ),
+              events: {
+                'pointerup': (e) {
+                  setState(() {
+                    resizingHeight = false;
+                    resizingWidth = false;
+                  });
+                },
+                'mouseleave': (e) {
+                  setState(() {
+                    resizingHeight = false;
+                    resizingWidth = false;
+                  });
+                },
+                'pointermove': (e) {
+                  // TODO: Report PointerEvent coordinates being doubles, not
+                  // ints to Dart web team.
+                  if (resizingHeight) {
+                    setState(() {
+                      verticalPosition =
+                          (e.getProperty('clientY'.toJS) as JSNumber)
+                              .toDartDouble;
+                    });
+                  } else if (resizingWidth) {
+                    setState(() {
+                      horizontalPosition =
+                          (e.getProperty('clientX'.toJS) as JSNumber)
+                              .toDartDouble;
+                    });
+                  }
+                },
+              },
+              [],
+            ),
+          div(
+            styles: Styles(
+              position: zeroPosition,
+              zIndex: ZIndex(1),
+              pointerEvents: .none,
+              flexDirection: .row,
+            ),
+            [
+              div(styles: Styles(flexDirection: .column, flex: leftBlockFlex), [
+                div(styles: Styles(flex: upperBlockFlex), []),
+                div(
+                  styles: Styles(
+                    width: .percent(100),
+                    height: .pixels(3),
+                    cursor: .rowResize,
+                    pointerEvents: .all,
+                  ),
+                  events: {
+                    'pointerdown': (e) {
+                      setState(() => resizingHeight = true);
+                    },
+                  },
+                  [],
+                ),
+                div(
+                  styles: Styles(flex: Flex(grow: 1, basis: .zero)),
+                  [],
+                ),
+              ]),
+              div(
+                styles: Styles(
+                  width: .pixels(3),
+                  height: .percent(100),
+                  cursor: .colResize,
+                  pointerEvents: .all,
+                ),
+                events: {
+                  'pointerdown': (e) {
+                    setState(() => resizingWidth = true);
+                  },
+                },
+                [],
+              ),
+              div(
+                styles: Styles(flex: Flex(grow: 1, basis: .zero)),
+                [],
+              ),
+            ],
+          ),
+          div(styles: Styles(position: zeroPosition, flexDirection: .row), [
+            div(styles: Styles(flexDirection: .column, flex: leftBlockFlex), [
+              div(styles: Styles(flex: upperBlockFlex), [CodeEditor()]),
+              HorizontalBar(),
+              div(styles: Styles(flex: Flex(grow: 1, basis: .zero)), [
+                OutputView(),
+              ]),
+            ]),
+            VerticalBar(),
+            div(styles: Styles(flex: Flex(grow: 1, basis: .zero)), [
+              InfoPane(),
+            ]),
           ]),
-          routes: [
-            Route(path: '/', title: 'Home', builder: (context, state) => const Home()),
-            Route(path: '/about', title: 'About', builder: (context, state) => const About()),
-          ],
-        ),
+        ]),
+        HorizontalBar(),
+        div(styles: Styles(display: .block, height: .pixels(20)), [Footer()]),
       ]),
     ]);
+  }
+}
+
+class VerticalBar extends StatelessComponent {
+  const VerticalBar({super.key});
+
+  @override
+  Component build(BuildContext context) {
+    return div(classes: 'vertical-bar', []);
+  }
+}
+
+class HorizontalBar extends StatelessComponent {
+  const HorizontalBar({super.key});
+
+  @override
+  Component build(BuildContext context) {
+    return div(classes: 'horizontal-bar', []);
+  }
+}
+
+class Footer extends StatelessComponent {
+  const Footer({super.key});
+
+  @override
+  Component build(BuildContext context) {
+    return div(
+      id: 'footer',
+      styles: Styles(
+        height: .percent(100),
+        margin: .symmetric(horizontal: .pixels(8)),
+        flexDirection: .row,
+        justifyContent: .spaceAround,
+        alignItems: .center,
+      ),
+      [
+        a(href: 'https://github.com/MP2I-Fermat/AOC-2025', target: .blank, [
+          text('MP2I-Fermat/AOC-2025'),
+        ]),
+        div(styles: Styles(padding: .symmetric(horizontal: .pixels(8))), [
+          RawText('&bull;'),
+        ]),
+        a(href: 'https://github.com/jd-develop/huitr', target: .blank, [
+          text('jd-develop/huitr'),
+        ]),
+        div(styles: Styles(flex: Flex(grow: 1)), []),
+        a(href: 'https://github.com/abitofevrything', target: .blank, [
+          text('abitofevrything'),
+        ]),
+        div(styles: Styles(padding: .symmetric(horizontal: .pixels(8))), [
+          RawText('&bull;'),
+        ]),
+        a(href: 'https://github.com/jd-develop', target: .blank, [
+          text('jd-develop'),
+        ]),
+        div(styles: Styles(padding: .symmetric(horizontal: .pixels(8))), [
+          RawText('&bull;'),
+        ]),
+        a(href: 'https://github.com/Hugo-Vangilluwen', target: .blank, [
+          text('Hugo-Vangilluwen'),
+        ]),
+        div(styles: Styles(padding: .symmetric(horizontal: .pixels(8))), [
+          RawText('&bull;'),
+        ]),
+        a(href: 'https://github.com/3fxcf9', target: .blank, [text('3fxcf9')]),
+      ],
+    );
   }
 }
