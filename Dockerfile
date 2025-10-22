@@ -11,7 +11,7 @@ COPY huitr/ .
 RUN eval $(opam env) && dune build
 
 
-FROM dart:latest AS build_frontend
+FROM dart:beta AS build_frontend
 
 RUN dart pub global activate jaspr_cli
 
