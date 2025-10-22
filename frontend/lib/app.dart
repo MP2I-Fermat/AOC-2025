@@ -202,7 +202,7 @@ class Footer extends StatelessComponent {
           text('MP2I-Fermat/AOC-2025'),
         ]),
         div(styles: Styles(padding: .symmetric(horizontal: .pixels(8))), [
-          RawText('&bull;'),
+          raw('&bull;'),
         ]),
         a(href: 'https://github.com/jd-develop/huitr', target: .blank, [
           text('jd-develop/huitr'),
@@ -212,19 +212,19 @@ class Footer extends StatelessComponent {
           text('abitofevrything'),
         ]),
         div(styles: Styles(padding: .symmetric(horizontal: .pixels(8))), [
-          RawText('&bull;'),
+          raw('&bull;'),
         ]),
         a(href: 'https://github.com/jd-develop', target: .blank, [
           text('jd-develop'),
         ]),
         div(styles: Styles(padding: .symmetric(horizontal: .pixels(8))), [
-          RawText('&bull;'),
+          raw('&bull;'),
         ]),
         a(href: 'https://github.com/Hugo-Vangilluwen', target: .blank, [
           text('Hugo-Vangilluwen'),
         ]),
         div(styles: Styles(padding: .symmetric(horizontal: .pixels(8))), [
-          RawText('&bull;'),
+          raw('&bull;'),
         ]),
         a(href: 'https://github.com/3fxcf9', target: .blank, [text('3fxcf9')]),
       ],
