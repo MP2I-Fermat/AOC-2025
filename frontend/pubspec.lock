@@ -85,10 +85,10 @@ packages:
     dependency: transitive
     description:
       name: build_daemon
-      sha256: "8e928697a82be082206edb0b9c99c5a4ad6bc31c9e9b8b2f291ae65cd4a25daa"
+      sha256: "409002f1adeea601018715d613115cfaf0e31f512cb80ae4534c79867ae2363d"
       url: "https://pub.dev"
     source: hosted
-    version: "4.0.4"
+    version: "4.1.0"
   build_modules:
     dependency: transitive
     description:
@@ -101,10 +101,10 @@ packages:
     dependency: "direct dev"
     description:
       name: build_runner
-      sha256: "4e54dbeefdc70691ba80b3bce3976af63b5425c8c07dface348dfee664a0edc1"
+      sha256: a9461b8e586bf018dd4afd2e13b49b08c6a844a4b226c8d1d10f3a723cdd78c3
       url: "https://pub.dev"
     source: hosted
-    version: "2.9.0"
+    version: "2.10.1"
   build_web_compilers:
     dependency: "direct dev"
     description:
@@ -333,18 +333,18 @@ packages:
     dependency: "direct main"
     description:
       name: jaspr
-      sha256: "85b38a3ca6e5b63224a8d6e0826a8e441e994ed0aab29f1580e24ffe8f8eaeb8"
+      sha256: "11f1ff59b18dae5fd430ce8a7f558b7541c2a89e599d329dfd7d0df2bffacb3e"
       url: "https://pub.dev"
     source: hosted
-    version: "0.21.3"
+    version: "0.21.6"
   jaspr_builder:
     dependency: "direct dev"
     description:
       name: jaspr_builder
-      sha256: bcb7979402b12c2bf113be93e0c683c5bb559cb3495b981228ffdb6eaeb71659
+      sha256: "8ce64afd647433591b11905361101a00c41572de980f2ea67c7c90d552bc2173"
       url: "https://pub.dev"
     source: hosted
-    version: "0.21.3"
+    version: "0.21.6"
   jaspr_lints:
     dependency: "direct dev"
     description:
@@ -613,10 +613,10 @@ packages:
     dependency: transitive
     description:
       name: universal_web
-      sha256: "045d5d5277f7dd3b6838b08098f5ec4cfb15b790c5d3deb8e79f642ae1af3ad2"
+      sha256: "618a9d8659e9429875f69d4da0fb9c0c143d3d4cdab28b4545502088aa50ed62"
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.1"
+    version: "1.1.1+1"
   uuid:
     dependency: transitive
     description:
