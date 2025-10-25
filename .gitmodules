@@ -1,3 +1,6 @@
 [submodule "huitr"]
 	path = huitr
 	url = git@github.com:jd-develop/huitr.git
+[submodule "nsjail"]
+	path = nsjail
+	url = git@github.com:google/nsjail.git
