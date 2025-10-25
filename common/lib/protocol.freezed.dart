@@ -14,9 +14,25 @@ T _$identity<T>(T value) => value;
 Message _$MessageFromJson(
   Map<String, dynamic> json
 ) {
-    return CodeUpdate.fromJson(
-      json
-    );
+        switch (json['runtimeType']) {
+                  case 'codeUpdate':
+          return CodeUpdate.fromJson(
+            json
+          );
+                case 'startEvaluation':
+          return StartEvaluation.fromJson(
+            json
+          );
+        
+          default:
+            throw CheckedFromJsonException(
+  json,
+  'runtimeType',
+  'Message',
+  'Invalid union type "${json['runtimeType']}"!'
+);
+        }
+      
 }
 
 /// @nodoc
@@ -96,11 +112,12 @@ extension MessagePatterns on Message {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( CodeUpdate value)?  codeUpdate,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( CodeUpdate value)?  codeUpdate,TResult Function( StartEvaluation value)?  startEvaluation,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case CodeUpdate() when codeUpdate != null:
-return codeUpdate(_that);case _:
+return codeUpdate(_that);case StartEvaluation() when startEvaluation != null:
+return startEvaluation(_that);case _:
   return orElse();
 
 }
@@ -118,11 +135,12 @@ return codeUpdate(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( CodeUpdate value)  codeUpdate,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( CodeUpdate value)  codeUpdate,required TResult Function( StartEvaluation value)  startEvaluation,}){
 final _that = this;
 switch (_that) {
 case CodeUpdate():
-return codeUpdate(_that);}
+return codeUpdate(_that);case StartEvaluation():
+return startEvaluation(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -136,11 +154,12 @@ return codeUpdate(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( CodeUpdate value)?  codeUpdate,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( CodeUpdate value)?  codeUpdate,TResult? Function( StartEvaluation value)?  startEvaluation,}){
 final _that = this;
 switch (_that) {
 case CodeUpdate() when codeUpdate != null:
-return codeUpdate(_that);case _:
+return codeUpdate(_that);case StartEvaluation() when startEvaluation != null:
+return startEvaluation(_that);case _:
   return null;
 
 }
@@ -157,10 +176,11 @@ return codeUpdate(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String code)?  codeUpdate,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String code)?  codeUpdate,TResult Function( String code)?  startEvaluation,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case CodeUpdate() when codeUpdate != null:
-return codeUpdate(_that.code);case _:
+return codeUpdate(_that.code);case StartEvaluation() when startEvaluation != null:
+return startEvaluation(_that.code);case _:
   return orElse();
 
 }
@@ -178,10 +198,11 @@ return codeUpdate(_that.code);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String code)  codeUpdate,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String code)  codeUpdate,required TResult Function( String code)  startEvaluation,}) {final _that = this;
 switch (_that) {
 case CodeUpdate():
-return codeUpdate(_that.code);}
+return codeUpdate(_that.code);case StartEvaluation():
+return startEvaluation(_that.code);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -195,10 +216,11 @@ return codeUpdate(_that.code);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String code)?  codeUpdate,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String code)?  codeUpdate,TResult? Function( String code)?  startEvaluation,}) {final _that = this;
 switch (_that) {
 case CodeUpdate() when codeUpdate != null:
-return codeUpdate(_that.code);case _:
+return codeUpdate(_that.code);case StartEvaluation() when startEvaluation != null:
+return startEvaluation(_that.code);case _:
   return null;
 
 }
@@ -210,10 +232,14 @@ return codeUpdate(_that.code);case _:
 @JsonSerializable()
 
 class CodeUpdate implements Message {
-  const CodeUpdate({required this.code});
+  const CodeUpdate({required this.code, final  String? $type}): $type = $type ?? 'codeUpdate';
   factory CodeUpdate.fromJson(Map<String, dynamic> json) => _$CodeUpdateFromJson(json);
 
 @override final  String code;
+
+@JsonKey(name: 'runtimeType')
+final String $type;
+
 
 /// Create a copy of Message
 /// with the given fields replaced by the non-null parameter values.
@@ -267,6 +293,79 @@ class _$CodeUpdateCopyWithImpl<$Res>
 /// with the given fields replaced by the non-null parameter values.
 @override @pragma('vm:prefer-inline') $Res call({Object? code = null,}) {
   return _then(CodeUpdate(
+code: null == code ? _self.code : code // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class StartEvaluation implements Message {
+  const StartEvaluation({required this.code, final  String? $type}): $type = $type ?? 'startEvaluation';
+  factory StartEvaluation.fromJson(Map<String, dynamic> json) => _$StartEvaluationFromJson(json);
+
+@override final  String code;
+
+@JsonKey(name: 'runtimeType')
+final String $type;
+
+
+/// Create a copy of Message
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$StartEvaluationCopyWith<StartEvaluation> get copyWith => _$StartEvaluationCopyWithImpl<StartEvaluation>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$StartEvaluationToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is StartEvaluation&&(identical(other.code, code) || other.code == code));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,code);
+
+@override
+String toString() {
+  return 'Message.startEvaluation(code: $code)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $StartEvaluationCopyWith<$Res> implements $MessageCopyWith<$Res> {
+  factory $StartEvaluationCopyWith(StartEvaluation value, $Res Function(StartEvaluation) _then) = _$StartEvaluationCopyWithImpl;
+@override @useResult
+$Res call({
+ String code
+});
+
+
+
+
+}
+/// @nodoc
+class _$StartEvaluationCopyWithImpl<$Res>
+    implements $StartEvaluationCopyWith<$Res> {
+  _$StartEvaluationCopyWithImpl(this._self, this._then);
+
+  final StartEvaluation _self;
+  final $Res Function(StartEvaluation) _then;
+
+/// Create a copy of Message
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? code = null,}) {
+  return _then(StartEvaluation(
 code: null == code ? _self.code : code // ignore: cast_nullable_to_non_nullable
 as String,
   ));

@@ -6,6 +6,8 @@ part 'protocol.freezed.dart';
 @freezed
 sealed class Message with _$Message {
   const factory Message.codeUpdate({required String code}) = CodeUpdate;
+  const factory Message.startEvaluation({required String code}) =
+      StartEvaluation;
 
   factory Message.fromJson(Map<String, Object?> json) =>
       _$MessageFromJson(json);

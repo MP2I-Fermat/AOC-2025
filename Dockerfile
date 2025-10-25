@@ -88,4 +88,6 @@ COPY --from=build_frontend /frontend/build/jaspr /opt/frontend
 COPY --from=build_backend /backend/bin/server_prod /opt/backend/backend
 COPY --from=build_nsjail /nsjail/nsjail /opt/nsjail/nsjail
 
+ENV PATH=$PATH:/opt/nsjail
+
 CMD ["/opt/backend/backend", "--frontend-root=/opt/frontend"]
