@@ -6,8 +6,9 @@
 import 'package:jaspr/browser.dart';
 // Imports the [App] component.
 import 'package:frontend/app.dart';
+import 'package:jaspr_riverpod/jaspr_riverpod.dart';
 
 void main() {
   // Attaches the [App] component to the <body> of the page.
-  runApp(App());
+  runApp(ProviderScope(child: App()));
 }

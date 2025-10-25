@@ -1,4 +1,6 @@
+import 'package:frontend/providers/current_code.dart';
 import 'package:jaspr/jaspr.dart';
+import 'package:jaspr_riverpod/jaspr_riverpod.dart';
 import 'package:web/web.dart';
 
 class CodeEditor extends StatefulComponent {
@@ -9,18 +11,13 @@ class CodeEditor extends StatefulComponent {
 }
 
 class CodeEditorState extends State<CodeEditor> {
-  static const initialContent = r'''# Some test code
-if [ -d some_directory ]; then
-  echo "Test!"
-  exit 1
-fi
-
-''';
-  var content = initialContent;
   var verticalScrollOffset = 0.0;
+  late final initialContent = context.read(codeProvider);
 
   @override
   Component build(BuildContext context) {
+    final content = context.watch(codeProvider);
+
     var lineCount = '\n'.allMatches(content).length + 1;
     // contenteditable adds newlines.
     if (content.endsWith('\n')) lineCount--;
@@ -117,7 +114,9 @@ fi
                               document.querySelector('#code-input')
                                   as HTMLElement;
 
-                          setState(() => content = input.innerText);
+                          context
+                              .read(codeProvider.notifier)
+                              .setCode(input.innerText);
                         },
                       },
                       [text(initialContent)],
@@ -128,7 +127,7 @@ fi
                         zIndex: ZIndex(0),
                         whiteSpace: .pre,
                       ),
-                      [HighlightedCode(content)],
+                      [HighlightedCode()],
                     ),
                   ],
                 ),
@@ -141,26 +140,14 @@ fi
   }
 }
 
-class HighlightedCode extends StatefulComponent {
-  final String code;
-
-  const HighlightedCode(this.code, {super.key});
-
-  @override
-  State<HighlightedCode> createState() => _HighlightedCodeState();
-}
-
-class _HighlightedCodeState extends State<HighlightedCode> {
-  @override
-  bool shouldRebuild(covariant HighlightedCode newComponent) =>
-      newComponent.code != component.code;
-
+class HighlightedCode extends StatelessComponent {
   @override
   Component build(BuildContext context) {
+    final code = context.watch(codeProvider);
     var isFirstInLine = true;
 
     return fragment(
-      tokenize(shRules, component.code).map((r) {
+      tokenize(shRules, code).map((r) {
         final (type, value) = r;
 
         var wordColor = Color('white');

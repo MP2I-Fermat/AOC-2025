@@ -1,0 +1,13 @@
+name: common
+publish_to: none
+
+environment:
+  sdk: ^3.9.0
+
+dependencies:
+  freezed_annotation: ^3.1.0
+
+dev_dependencies:
+  freezed: ^3.2.3
+  build_runner: ^2.10.1
+  json_serializable: ^6.11.1

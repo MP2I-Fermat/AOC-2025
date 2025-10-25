@@ -17,6 +17,7 @@ RUN dart pub global activate jaspr_cli
 
 WORKDIR /frontend
 
+COPY common/ /common/
 COPY frontend/pubspec.yaml frontend/pubspec.lock .
 
 RUN dart pub get --enforce-lockfile
@@ -32,6 +33,7 @@ FROM dart:latest AS build_backend
 
 WORKDIR /backend
 
+COPY common/ /common/
 COPY backend/pubspec.yaml backend/pubspec.lock .
 
 RUN dart pub get --enforce-lockfile

@@ -4,7 +4,9 @@ import 'dart:js_interop_unsafe';
 import 'package:frontend/components/code_editor.dart';
 import 'package:frontend/components/information_pane.dart';
 import 'package:frontend/components/output.dart';
+import 'package:frontend/providers/connection.dart';
 import 'package:jaspr/jaspr.dart';
+import 'package:jaspr_riverpod/jaspr_riverpod.dart';
 
 // The main component of your application.
 class App extends StatefulComponent {
@@ -188,6 +190,30 @@ class Footer extends StatelessComponent {
 
   @override
   Component build(BuildContext context) {
+    final connection = context.watch(connectionProvider);
+
+    final repoLinks = div([
+      a(href: 'https://github.com/MP2I-Fermat/AOC-2025', target: .blank, [
+        text('MP2I-Fermat/AOC-2025'),
+      ]),
+      div(styles: Styles(padding: .symmetric(horizontal: .pixels(8))), [
+        raw('&bull;'),
+      ]),
+      a(href: 'https://github.com/jd-develop/huitr', target: .blank, [
+        text('jd-develop/huitr'),
+      ]),
+    ]);
+
+    final connectionError = switch (connection) {
+      AsyncError() => div(styles: Styles(color: Color('red')), [
+        text('No connection'),
+      ]),
+      AsyncLoading() => div(styles: Styles(color: Color('darkorange')), [
+        text('Connecting...'),
+      ]),
+      AsyncData() => null,
+    };
+
     return div(
       id: 'footer',
       styles: Styles(
@@ -198,15 +224,7 @@ class Footer extends StatelessComponent {
         alignItems: .center,
       ),
       [
-        a(href: 'https://github.com/MP2I-Fermat/AOC-2025', target: .blank, [
-          text('MP2I-Fermat/AOC-2025'),
-        ]),
-        div(styles: Styles(padding: .symmetric(horizontal: .pixels(8))), [
-          raw('&bull;'),
-        ]),
-        a(href: 'https://github.com/jd-develop/huitr', target: .blank, [
-          text('jd-develop/huitr'),
-        ]),
+        connectionError ?? repoLinks,
         div(styles: Styles(flex: Flex(grow: 1)), []),
         a(href: 'https://github.com/abitofevrything', target: .blank, [
           text('abitofevrything'),
