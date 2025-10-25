@@ -23,8 +23,8 @@ class ConnectionNotifier extends AsyncNotifier<WebSocket> {
 
     while (ref.mounted) {
       try {
-        final connectedCompleter = Completer();
-        final closedCompleter = Completer();
+        final connectedCompleter = Completer<void>();
+        final closedCompleter = Completer<int>();
 
         final connection = WebSocket('$apiHostOverride/api/ws');
 
@@ -34,8 +34,8 @@ class ConnectionNotifier extends AsyncNotifier<WebSocket> {
           connectedCompleter.complete();
         });
 
-        connection.onClose.listen((_) {
-          closedCompleter.complete();
+        connection.onClose.listen((e) {
+          closedCompleter.complete(e.code);
         });
 
         connection.onError.listen((e) {
@@ -65,14 +65,19 @@ class ConnectionNotifier extends AsyncNotifier<WebSocket> {
           });
         });
 
+        final previousBackoff = backoff;
         backoff = Duration(milliseconds: 500);
 
         state = AsyncData(connection);
 
-        await closedCompleter.future.whenComplete(() {
+        final closeCode = await closedCompleter.future.whenComplete(() {
           debounceTimer?.cancel();
           subscription.close();
         });
+
+        if (closeCode != 1000) {
+          backoff = previousBackoff;
+        }
       } catch (e, s) {
         state = AsyncError(e, s);
 
