@@ -24,8 +24,6 @@ class Evaluation {
   Stream<OutputLine> get lines => _linesController.stream;
 
   static Future<Evaluation> start(String code) async {
-    print('Running $code');
-
     final tmpDir = await Directory.systemTemp.createTemp('huitr-eval-');
 
     try {
