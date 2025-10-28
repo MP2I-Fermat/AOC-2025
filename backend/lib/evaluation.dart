@@ -33,7 +33,7 @@ class Evaluation {
 
       final process = useNsJail
           ? await Process.start('nsjail', [
-              '--quiet',
+              '--really_quiet',
               '--chroot=${tmpDir.absolute.path}',
               '--user=1000',
               '--group=1000',
