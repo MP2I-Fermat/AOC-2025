@@ -50,7 +50,7 @@ class Evaluation {
               '--',
               // TODO: Revert once Huitr is complete.
               //'/opt/huitr/huitr',
-              'bash',
+              '/usr/bin/bash',
               '/code.8r',
             ])
           : await Process.start(
