@@ -81,6 +81,8 @@ RUN apt-get -y update && apt-get install -y \
     libstdc++6 \
     libprotobuf32 \
     libnl-route-3-200 \
+# TODO: Remove once Huitr is stable.
+    bash \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=build_huitr /huitr/_build/default/cli/main.exe /opt/huitr/huitr
