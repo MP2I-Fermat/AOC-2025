@@ -23,6 +23,18 @@ Message _$MessageFromJson(
           return StartEvaluation.fromJson(
             json
           );
+                case 'stopEvaluation':
+          return StopEvaluation.fromJson(
+            json
+          );
+                case 'inputLine':
+          return InputLine.fromJson(
+            json
+          );
+                case 'outputUpdate':
+          return OutputUpdate.fromJson(
+            json
+          );
         
           default:
             throw CheckedFromJsonException(
@@ -38,12 +50,7 @@ Message _$MessageFromJson(
 /// @nodoc
 mixin _$Message {
 
- String get code;
-/// Create a copy of Message
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$MessageCopyWith<Message> get copyWith => _$MessageCopyWithImpl<Message>(this as Message, _$identity);
+
 
   /// Serializes this Message to a JSON map.
   Map<String, dynamic> toJson();
@@ -51,50 +58,24 @@ $MessageCopyWith<Message> get copyWith => _$MessageCopyWithImpl<Message>(this as
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Message&&(identical(other.code, code) || other.code == code));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Message);
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,code);
+int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'Message(code: $code)';
+  return 'Message()';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $MessageCopyWith<$Res>  {
-  factory $MessageCopyWith(Message value, $Res Function(Message) _then) = _$MessageCopyWithImpl;
-@useResult
-$Res call({
- String code
-});
-
-
-
-
-}
-/// @nodoc
-class _$MessageCopyWithImpl<$Res>
-    implements $MessageCopyWith<$Res> {
-  _$MessageCopyWithImpl(this._self, this._then);
-
-  final Message _self;
-  final $Res Function(Message) _then;
-
-/// Create a copy of Message
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? code = null,}) {
-  return _then(_self.copyWith(
-code: null == code ? _self.code : code // ignore: cast_nullable_to_non_nullable
-as String,
-  ));
-}
-
+class $MessageCopyWith<$Res>  {
+$MessageCopyWith(Message _, $Res Function(Message) __);
 }
 
 
@@ -112,12 +93,15 @@ extension MessagePatterns on Message {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( CodeUpdate value)?  codeUpdate,TResult Function( StartEvaluation value)?  startEvaluation,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( CodeUpdate value)?  codeUpdate,TResult Function( StartEvaluation value)?  startEvaluation,TResult Function( StopEvaluation value)?  stopEvaluation,TResult Function( InputLine value)?  inputLine,TResult Function( OutputUpdate value)?  outputUpdate,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case CodeUpdate() when codeUpdate != null:
 return codeUpdate(_that);case StartEvaluation() when startEvaluation != null:
-return startEvaluation(_that);case _:
+return startEvaluation(_that);case StopEvaluation() when stopEvaluation != null:
+return stopEvaluation(_that);case InputLine() when inputLine != null:
+return inputLine(_that);case OutputUpdate() when outputUpdate != null:
+return outputUpdate(_that);case _:
   return orElse();
 
 }
@@ -135,12 +119,15 @@ return startEvaluation(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( CodeUpdate value)  codeUpdate,required TResult Function( StartEvaluation value)  startEvaluation,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( CodeUpdate value)  codeUpdate,required TResult Function( StartEvaluation value)  startEvaluation,required TResult Function( StopEvaluation value)  stopEvaluation,required TResult Function( InputLine value)  inputLine,required TResult Function( OutputUpdate value)  outputUpdate,}){
 final _that = this;
 switch (_that) {
 case CodeUpdate():
 return codeUpdate(_that);case StartEvaluation():
-return startEvaluation(_that);}
+return startEvaluation(_that);case StopEvaluation():
+return stopEvaluation(_that);case InputLine():
+return inputLine(_that);case OutputUpdate():
+return outputUpdate(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -154,12 +141,15 @@ return startEvaluation(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( CodeUpdate value)?  codeUpdate,TResult? Function( StartEvaluation value)?  startEvaluation,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( CodeUpdate value)?  codeUpdate,TResult? Function( StartEvaluation value)?  startEvaluation,TResult? Function( StopEvaluation value)?  stopEvaluation,TResult? Function( InputLine value)?  inputLine,TResult? Function( OutputUpdate value)?  outputUpdate,}){
 final _that = this;
 switch (_that) {
 case CodeUpdate() when codeUpdate != null:
 return codeUpdate(_that);case StartEvaluation() when startEvaluation != null:
-return startEvaluation(_that);case _:
+return startEvaluation(_that);case StopEvaluation() when stopEvaluation != null:
+return stopEvaluation(_that);case InputLine() when inputLine != null:
+return inputLine(_that);case OutputUpdate() when outputUpdate != null:
+return outputUpdate(_that);case _:
   return null;
 
 }
@@ -176,11 +166,14 @@ return startEvaluation(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String code)?  codeUpdate,TResult Function( String code)?  startEvaluation,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String code)?  codeUpdate,TResult Function( String code)?  startEvaluation,TResult Function()?  stopEvaluation,TResult Function( String line)?  inputLine,TResult Function( List<OutputLine>? output)?  outputUpdate,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case CodeUpdate() when codeUpdate != null:
 return codeUpdate(_that.code);case StartEvaluation() when startEvaluation != null:
-return startEvaluation(_that.code);case _:
+return startEvaluation(_that.code);case StopEvaluation() when stopEvaluation != null:
+return stopEvaluation();case InputLine() when inputLine != null:
+return inputLine(_that.line);case OutputUpdate() when outputUpdate != null:
+return outputUpdate(_that.output);case _:
   return orElse();
 
 }
@@ -198,11 +191,14 @@ return startEvaluation(_that.code);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String code)  codeUpdate,required TResult Function( String code)  startEvaluation,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String code)  codeUpdate,required TResult Function( String code)  startEvaluation,required TResult Function()  stopEvaluation,required TResult Function( String line)  inputLine,required TResult Function( List<OutputLine>? output)  outputUpdate,}) {final _that = this;
 switch (_that) {
 case CodeUpdate():
 return codeUpdate(_that.code);case StartEvaluation():
-return startEvaluation(_that.code);}
+return startEvaluation(_that.code);case StopEvaluation():
+return stopEvaluation();case InputLine():
+return inputLine(_that.line);case OutputUpdate():
+return outputUpdate(_that.output);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -216,11 +212,14 @@ return startEvaluation(_that.code);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String code)?  codeUpdate,TResult? Function( String code)?  startEvaluation,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String code)?  codeUpdate,TResult? Function( String code)?  startEvaluation,TResult? Function()?  stopEvaluation,TResult? Function( String line)?  inputLine,TResult? Function( List<OutputLine>? output)?  outputUpdate,}) {final _that = this;
 switch (_that) {
 case CodeUpdate() when codeUpdate != null:
 return codeUpdate(_that.code);case StartEvaluation() when startEvaluation != null:
-return startEvaluation(_that.code);case _:
+return startEvaluation(_that.code);case StopEvaluation() when stopEvaluation != null:
+return stopEvaluation();case InputLine() when inputLine != null:
+return inputLine(_that.line);case OutputUpdate() when outputUpdate != null:
+return outputUpdate(_that.output);case _:
   return null;
 
 }
@@ -235,7 +234,7 @@ class CodeUpdate implements Message {
   const CodeUpdate({required this.code, final  String? $type}): $type = $type ?? 'codeUpdate';
   factory CodeUpdate.fromJson(Map<String, dynamic> json) => _$CodeUpdateFromJson(json);
 
-@override final  String code;
+ final  String code;
 
 @JsonKey(name: 'runtimeType')
 final String $type;
@@ -243,7 +242,7 @@ final String $type;
 
 /// Create a copy of Message
 /// with the given fields replaced by the non-null parameter values.
-@override @JsonKey(includeFromJson: false, includeToJson: false)
+@JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
 $CodeUpdateCopyWith<CodeUpdate> get copyWith => _$CodeUpdateCopyWithImpl<CodeUpdate>(this, _$identity);
 
@@ -272,7 +271,7 @@ String toString() {
 /// @nodoc
 abstract mixin class $CodeUpdateCopyWith<$Res> implements $MessageCopyWith<$Res> {
   factory $CodeUpdateCopyWith(CodeUpdate value, $Res Function(CodeUpdate) _then) = _$CodeUpdateCopyWithImpl;
-@override @useResult
+@useResult
 $Res call({
  String code
 });
@@ -291,7 +290,7 @@ class _$CodeUpdateCopyWithImpl<$Res>
 
 /// Create a copy of Message
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? code = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? code = null,}) {
   return _then(CodeUpdate(
 code: null == code ? _self.code : code // ignore: cast_nullable_to_non_nullable
 as String,
@@ -308,7 +307,7 @@ class StartEvaluation implements Message {
   const StartEvaluation({required this.code, final  String? $type}): $type = $type ?? 'startEvaluation';
   factory StartEvaluation.fromJson(Map<String, dynamic> json) => _$StartEvaluationFromJson(json);
 
-@override final  String code;
+ final  String code;
 
 @JsonKey(name: 'runtimeType')
 final String $type;
@@ -316,7 +315,7 @@ final String $type;
 
 /// Create a copy of Message
 /// with the given fields replaced by the non-null parameter values.
-@override @JsonKey(includeFromJson: false, includeToJson: false)
+@JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
 $StartEvaluationCopyWith<StartEvaluation> get copyWith => _$StartEvaluationCopyWithImpl<StartEvaluation>(this, _$identity);
 
@@ -345,7 +344,7 @@ String toString() {
 /// @nodoc
 abstract mixin class $StartEvaluationCopyWith<$Res> implements $MessageCopyWith<$Res> {
   factory $StartEvaluationCopyWith(StartEvaluation value, $Res Function(StartEvaluation) _then) = _$StartEvaluationCopyWithImpl;
-@override @useResult
+@useResult
 $Res call({
  String code
 });
@@ -364,9 +363,462 @@ class _$StartEvaluationCopyWithImpl<$Res>
 
 /// Create a copy of Message
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? code = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? code = null,}) {
   return _then(StartEvaluation(
 code: null == code ? _self.code : code // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class StopEvaluation implements Message {
+  const StopEvaluation({final  String? $type}): $type = $type ?? 'stopEvaluation';
+  factory StopEvaluation.fromJson(Map<String, dynamic> json) => _$StopEvaluationFromJson(json);
+
+
+
+@JsonKey(name: 'runtimeType')
+final String $type;
+
+
+
+@override
+Map<String, dynamic> toJson() {
+  return _$StopEvaluationToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is StopEvaluation);
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'Message.stopEvaluation()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+@JsonSerializable()
+
+class InputLine implements Message {
+  const InputLine({required this.line, final  String? $type}): $type = $type ?? 'inputLine';
+  factory InputLine.fromJson(Map<String, dynamic> json) => _$InputLineFromJson(json);
+
+ final  String line;
+
+@JsonKey(name: 'runtimeType')
+final String $type;
+
+
+/// Create a copy of Message
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$InputLineCopyWith<InputLine> get copyWith => _$InputLineCopyWithImpl<InputLine>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$InputLineToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is InputLine&&(identical(other.line, line) || other.line == line));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,line);
+
+@override
+String toString() {
+  return 'Message.inputLine(line: $line)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $InputLineCopyWith<$Res> implements $MessageCopyWith<$Res> {
+  factory $InputLineCopyWith(InputLine value, $Res Function(InputLine) _then) = _$InputLineCopyWithImpl;
+@useResult
+$Res call({
+ String line
+});
+
+
+
+
+}
+/// @nodoc
+class _$InputLineCopyWithImpl<$Res>
+    implements $InputLineCopyWith<$Res> {
+  _$InputLineCopyWithImpl(this._self, this._then);
+
+  final InputLine _self;
+  final $Res Function(InputLine) _then;
+
+/// Create a copy of Message
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? line = null,}) {
+  return _then(InputLine(
+line: null == line ? _self.line : line // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class OutputUpdate implements Message {
+  const OutputUpdate({required final  List<OutputLine>? output, final  String? $type}): _output = output,$type = $type ?? 'outputUpdate';
+  factory OutputUpdate.fromJson(Map<String, dynamic> json) => _$OutputUpdateFromJson(json);
+
+ final  List<OutputLine>? _output;
+ List<OutputLine>? get output {
+  final value = _output;
+  if (value == null) return null;
+  if (_output is EqualUnmodifiableListView) return _output;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(value);
+}
+
+
+@JsonKey(name: 'runtimeType')
+final String $type;
+
+
+/// Create a copy of Message
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$OutputUpdateCopyWith<OutputUpdate> get copyWith => _$OutputUpdateCopyWithImpl<OutputUpdate>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$OutputUpdateToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is OutputUpdate&&const DeepCollectionEquality().equals(other._output, _output));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_output));
+
+@override
+String toString() {
+  return 'Message.outputUpdate(output: $output)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $OutputUpdateCopyWith<$Res> implements $MessageCopyWith<$Res> {
+  factory $OutputUpdateCopyWith(OutputUpdate value, $Res Function(OutputUpdate) _then) = _$OutputUpdateCopyWithImpl;
+@useResult
+$Res call({
+ List<OutputLine>? output
+});
+
+
+
+
+}
+/// @nodoc
+class _$OutputUpdateCopyWithImpl<$Res>
+    implements $OutputUpdateCopyWith<$Res> {
+  _$OutputUpdateCopyWithImpl(this._self, this._then);
+
+  final OutputUpdate _self;
+  final $Res Function(OutputUpdate) _then;
+
+/// Create a copy of Message
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? output = freezed,}) {
+  return _then(OutputUpdate(
+output: freezed == output ? _self._output : output // ignore: cast_nullable_to_non_nullable
+as List<OutputLine>?,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
+mixin _$OutputLine {
+
+ OutputStream get stream; String get line;
+/// Create a copy of OutputLine
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$OutputLineCopyWith<OutputLine> get copyWith => _$OutputLineCopyWithImpl<OutputLine>(this as OutputLine, _$identity);
+
+  /// Serializes this OutputLine to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is OutputLine&&(identical(other.stream, stream) || other.stream == stream)&&(identical(other.line, line) || other.line == line));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,stream,line);
+
+@override
+String toString() {
+  return 'OutputLine(stream: $stream, line: $line)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $OutputLineCopyWith<$Res>  {
+  factory $OutputLineCopyWith(OutputLine value, $Res Function(OutputLine) _then) = _$OutputLineCopyWithImpl;
+@useResult
+$Res call({
+ OutputStream stream, String line
+});
+
+
+
+
+}
+/// @nodoc
+class _$OutputLineCopyWithImpl<$Res>
+    implements $OutputLineCopyWith<$Res> {
+  _$OutputLineCopyWithImpl(this._self, this._then);
+
+  final OutputLine _self;
+  final $Res Function(OutputLine) _then;
+
+/// Create a copy of OutputLine
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? stream = null,Object? line = null,}) {
+  return _then(_self.copyWith(
+stream: null == stream ? _self.stream : stream // ignore: cast_nullable_to_non_nullable
+as OutputStream,line: null == line ? _self.line : line // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [OutputLine].
+extension OutputLinePatterns on OutputLine {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _OutputLine value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _OutputLine() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _OutputLine value)  $default,){
+final _that = this;
+switch (_that) {
+case _OutputLine():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _OutputLine value)?  $default,){
+final _that = this;
+switch (_that) {
+case _OutputLine() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( OutputStream stream,  String line)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _OutputLine() when $default != null:
+return $default(_that.stream,_that.line);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( OutputStream stream,  String line)  $default,) {final _that = this;
+switch (_that) {
+case _OutputLine():
+return $default(_that.stream,_that.line);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( OutputStream stream,  String line)?  $default,) {final _that = this;
+switch (_that) {
+case _OutputLine() when $default != null:
+return $default(_that.stream,_that.line);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _OutputLine implements OutputLine {
+  const _OutputLine({required this.stream, required this.line});
+  factory _OutputLine.fromJson(Map<String, dynamic> json) => _$OutputLineFromJson(json);
+
+@override final  OutputStream stream;
+@override final  String line;
+
+/// Create a copy of OutputLine
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$OutputLineCopyWith<_OutputLine> get copyWith => __$OutputLineCopyWithImpl<_OutputLine>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$OutputLineToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OutputLine&&(identical(other.stream, stream) || other.stream == stream)&&(identical(other.line, line) || other.line == line));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,stream,line);
+
+@override
+String toString() {
+  return 'OutputLine(stream: $stream, line: $line)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$OutputLineCopyWith<$Res> implements $OutputLineCopyWith<$Res> {
+  factory _$OutputLineCopyWith(_OutputLine value, $Res Function(_OutputLine) _then) = __$OutputLineCopyWithImpl;
+@override @useResult
+$Res call({
+ OutputStream stream, String line
+});
+
+
+
+
+}
+/// @nodoc
+class __$OutputLineCopyWithImpl<$Res>
+    implements _$OutputLineCopyWith<$Res> {
+  __$OutputLineCopyWithImpl(this._self, this._then);
+
+  final _OutputLine _self;
+  final $Res Function(_OutputLine) _then;
+
+/// Create a copy of OutputLine
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? stream = null,Object? line = null,}) {
+  return _then(_OutputLine(
+stream: null == stream ? _self.stream : stream // ignore: cast_nullable_to_non_nullable
+as OutputStream,line: null == line ? _self.line : line // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }

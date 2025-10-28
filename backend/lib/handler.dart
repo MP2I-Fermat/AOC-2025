@@ -11,7 +11,13 @@ class ConnectionHandler {
     final state = ConnectionState(channel);
     connections.add(state);
 
-    EditingState requireEditing() => state.clientState as EditingState;
+    EditingState requireEditing() {
+      if (state.clientState case EditingState state) {
+        return state;
+      }
+
+      return state.clientState = EditingState(state);
+    }
 
     try {
       await for (final payload in channel.stream) {
@@ -31,6 +37,15 @@ class ConnectionHandler {
             await editingState.activeEvaluation?.cancel();
             editingState.code = code;
             await editingState.startEvaluation();
+          case StopEvaluation():
+            final editingState = requireEditing();
+            await editingState.activeEvaluation?.cancel();
+          case InputLine(:final line):
+            final editingState = requireEditing();
+            // Allow InputLine when no evaluation is active.
+            editingState.activeEvaluation?.input(line);
+          case OutputUpdate():
+            throw Exception('Clients cannot send OutputUpdate');
         }
       }
     } finally {
@@ -42,7 +57,7 @@ class ConnectionHandler {
 class ConnectionState {
   final WebSocketChannel channel;
 
-  ClientState clientState = EditingState();
+  late ClientState clientState = EditingState(this);
 
   ConnectionState(this.channel);
 }
@@ -50,10 +65,41 @@ class ConnectionState {
 sealed class ClientState {}
 
 final class EditingState extends ClientState {
+  final ConnectionState connectionState;
+
+  EditingState(this.connectionState);
+
   String code = '';
 
   Evaluation? activeEvaluation;
 
-  Future<Evaluation> startEvaluation() async =>
-      activeEvaluation = await Evaluation.evaluate(code);
+  Future<Evaluation> startEvaluation() async {
+    final evaluation = await Evaluation.start(code);
+    activeEvaluation = evaluation;
+
+    final lines = <OutputLine>[];
+
+    connectionState.channel.sink.add(
+      jsonEncode(OutputUpdate(output: lines).toJson()),
+    );
+
+    evaluation.lines.listen(
+      (line) {
+        lines.add(line);
+
+        connectionState.channel.sink.add(
+          jsonEncode(OutputUpdate(output: lines).toJson()),
+        );
+      },
+      onDone: () {
+        connectionState.channel.sink.add(
+          jsonEncode(OutputUpdate(output: null).toJson()),
+        );
+
+        activeEvaluation = null;
+      },
+    );
+
+    return evaluation;
+  }
 }

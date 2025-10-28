@@ -97,3 +97,27 @@ class ConnectionNotifier extends AsyncNotifier<WebSocket> {
     return Completer<Never>().future;
   }
 }
+
+final connectionMessagesProvider = StreamProvider<Message>((ref) {
+  final connectionState = ref.watch(connectionProvider);
+
+  if (connectionState case AsyncData(:final value)) {
+    return value.onMessage
+        .map((event) {
+          if (!event.data.isA<JSString>()) {
+            throw Exception('Message was not a string');
+          }
+
+          return Message.fromJson(jsonDecode((event.data as JSString).toDart));
+        })
+        .transform(
+          StreamTransformer.fromHandlers(
+            handleError: (e, s, sink) {
+              value.close(4001);
+            },
+          ),
+        );
+  }
+
+  return Stream.empty();
+});

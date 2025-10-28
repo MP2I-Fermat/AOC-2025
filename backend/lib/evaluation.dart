@@ -1,4 +1,8 @@
+import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
+
+import 'package:common/protocol.dart';
 
 class Evaluation {
   static const huitrLocation = String.fromEnvironment(
@@ -14,8 +18,12 @@ class Evaluation {
   static final absoluteHuitrLocation = Directory(huitrLocation).absolute.path;
 
   final Process process;
+  final Directory tmpDir;
 
-  static Future<Evaluation> evaluate(String code) async {
+  final StreamController<OutputLine> _linesController = StreamController();
+  Stream<OutputLine> get lines => _linesController.stream;
+
+  static Future<Evaluation> start(String code) async {
     print('Running $code');
 
     final tmpDir = await Directory.systemTemp.createTemp('huitr-eval-');
@@ -52,17 +60,60 @@ class Evaluation {
               [tmpDir.uri.resolve('code.8r').toFilePath()],
             );
 
-      process.stdout.listen(stdout.add);
-      process.stderr.listen(stderr.add);
-
-      return Evaluation(process);
+      return Evaluation(process, tmpDir);
     } catch (_) {
       await tmpDir.delete();
       rethrow;
     }
   }
 
-  Evaluation(this.process);
+  Evaluation(this.process, this.tmpDir) {
+    final stderrSubscription = process.stderr
+        .transform(const Utf8Decoder())
+        .transform(const LineSplitter())
+        .listen(
+          (line) => _linesController.add(
+            OutputLine(stream: OutputStream.stderr, line: line),
+          ),
+        );
 
-  Future<void> cancel() async {}
+    final stdoutSubscription = process.stdout
+        .transform(const Utf8Decoder())
+        .transform(const LineSplitter())
+        .listen(
+          (line) => _linesController.add(
+            OutputLine(stream: OutputStream.stdout, line: line),
+          ),
+        );
+
+    final exitCode = process.exitCode.then((exitCode) {
+      if (exitCode != 0 && !_linesController.isClosed) {
+        _linesController.add(
+          OutputLine(
+            stream: OutputStream.stderr,
+            line: 'Process exited with code $exitCode',
+          ),
+        );
+      }
+    });
+
+    Future.wait([
+      stderrSubscription.asFuture(),
+      stdoutSubscription.asFuture(),
+      exitCode,
+    ]).then((_) async {
+      await tmpDir.delete(recursive: true);
+      await _linesController.close();
+    });
+  }
+
+  void input(String line) {
+    process.stdin.writeln(line);
+    _linesController.add(OutputLine(stream: OutputStream.stdin, line: line));
+  }
+
+  Future<void> cancel() async {
+    process.kill();
+    return _linesController.done;
+  }
 }
