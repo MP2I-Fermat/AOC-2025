@@ -85,6 +85,11 @@ final class EditingState extends ClientState {
 
     evaluation.lines.listen(
       (line) {
+        if (lines.length > 1000) {
+          evaluation.cancel();
+          return;
+        }
+
         lines.add(line);
 
         connectionState.channel.sink.add(
