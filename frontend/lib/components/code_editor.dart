@@ -144,50 +144,103 @@ class HighlightedCode extends StatelessComponent {
   @override
   Component build(BuildContext context) {
     final code = context.watch(codeProvider);
-    var isFirstInLine = true;
+
+    var inSingleComment = false;
+    var inMultiComment = false;
+
+    final tokens = tokenize(huitrRules, code);
 
     return fragment(
-      tokenize(shRules, code).map((r) {
-        final (type, value) = r;
+      tokens.indexed.map((r) {
+        final (index, (type, value)) = r;
 
-        var wordColor = Color('white');
-        if (type == ShToken.word) {
-          if (isFirstInLine) {
-            wordColor = Color('yellow');
-            isFirstInLine = false;
-          }
-        } else if (type == ShToken.whitespace && value.contains('\n')) {
-          isFirstInLine = true;
+        if (type == HuitrToken.singleCommentStart) {
+          inSingleComment = true;
         }
 
-        return div(
-          styles: Styles(
-            display: .inline,
-            color: switch (type) {
-              .whitespace || .word => wordColor,
-              .string => Color('maroon'),
-              .number => Color('aqua'),
-              .control => Color('purple'),
-              .comment => Color('green'),
-            },
-          ),
-          [text(value)],
-        );
+        if (value == '\n') {
+          inSingleComment = false;
+        }
+
+        if (type == HuitrToken.multiCommentStart) {
+          inMultiComment = !inMultiComment;
+        }
+
+        var color = Color('white');
+        if (inSingleComment || inMultiComment) {
+          color = Color('green');
+        } else {
+          color = switch (type) {
+            HuitrToken.ident =>
+              index < tokens.length - 1 &&
+                      tokens[index + 1].$1 == HuitrToken.nameSp
+                  ? Color('purple')
+                  : Color('aqua'),
+            HuitrToken.integerLiteral => Color('yellow'),
+            HuitrToken.floatLiteral => Color('yellow'),
+            HuitrToken.stringLiteral => Color('orange'),
+            HuitrToken.whitespace => Color('white'),
+            HuitrToken.newline => Color('white'),
+            HuitrToken.comma => Color('white'),
+            HuitrToken.lParen => Color('fuchsia'),
+            HuitrToken.rParen => Color('fuchsia'),
+            HuitrToken.lSquare => Color('fuchsia'),
+            HuitrToken.rSquare => Color('fuchsia'),
+            HuitrToken.chainOp => Color('white'),
+            HuitrToken.nameSp => Color('purple'),
+            HuitrToken.singleCommentStart => Color('green'),
+            HuitrToken.multiCommentStart => Color('green'),
+            HuitrToken.unrecognizable => Color('red'),
+          };
+        }
+
+        return div(styles: Styles(display: .inline, color: color), [
+          text(value),
+        ]);
       }).toList(),
     );
   }
 }
 
-enum ShToken { whitespace, string, number, control, word, comment }
+enum HuitrToken {
+  ident,
+  integerLiteral,
+  floatLiteral,
+  stringLiteral,
+  whitespace,
+  newline,
+  comma,
+  lParen,
+  rParen,
+  lSquare,
+  rSquare,
+  chainOp,
+  nameSp,
+  singleCommentStart,
+  multiCommentStart,
+  unrecognizable,
+}
 
-final shRules = [
-  (RegExp(r'\s+'), ShToken.whitespace),
-  (RegExp(r'"([^"\\]|\\.)*"'), ShToken.string),
-  (RegExp(r'[+-]?\d+'), ShToken.number),
-  (RegExp(r'if|then|else|elif|fi|while|do|function|\[|\]'), ShToken.control),
-  (RegExp(r'[-\w]+'), ShToken.word),
-  (RegExp(r'#[^\n]*'), ShToken.comment),
-  (RegExp(r'.'), ShToken.word),
+final huitrRules = [
+  (RegExp(r'[A-Za-z][A-Za-z0-9_]*'), HuitrToken.ident),
+  (
+    RegExp(r'-?([0-9]+|(0[xX][0-9A-Fa-f]+)|(0[oO][0-7]+)|(0[bB][0-1]+))'),
+    HuitrToken.integerLiteral,
+  ),
+  (RegExp(r'-?[0-9]+(\.[0-9]*)?([eE][\+-]?[0-9]+)?'), HuitrToken.floatLiteral),
+  (RegExp(r'"([ !$-~]|(\\"))*"'), HuitrToken.stringLiteral),
+  (RegExp(r'( |\t)+'), HuitrToken.whitespace),
+  (RegExp(r';|\n'), HuitrToken.newline),
+  (RegExp(r','), HuitrToken.comma),
+  (RegExp(r'\('), HuitrToken.lParen),
+  (RegExp(r'\)'), HuitrToken.rParen),
+  (RegExp(r'\['), HuitrToken.lSquare),
+  (RegExp(r'\]'), HuitrToken.rSquare),
+  (RegExp(r'>'), HuitrToken.chainOp),
+  (RegExp(r'::'), HuitrToken.nameSp),
+  (RegExp(r'\.'), HuitrToken.singleCommentStart),
+  (RegExp(r'\.\.'), HuitrToken.multiCommentStart),
+  (RegExp(r'.'), HuitrToken.unrecognizable),
 ];
 
 List<(T, String)> tokenize<T>(List<(RegExp, T)> rules, String input) {
