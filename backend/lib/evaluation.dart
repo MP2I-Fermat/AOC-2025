@@ -37,7 +37,7 @@ class Evaluation {
               '--chroot=${tmpDir.absolute.path}',
               '--user=1000',
               '--group=1000',
-              '--time_limit=30',
+              '--time_limit=120',
               '--max_cpus=1',
               '--bindmount_ro=/usr',
               '--bindmount_ro=/lib64',
