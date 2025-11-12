@@ -54,6 +54,7 @@ class Evaluation {
               '/code.8r',
             ])
           : await Process.start(
+              workingDirectory: tmpDir.path,
               // TODO: Revert once Huitr is complete.
               // Directory(
               //   absoluteHuitrLocation,
@@ -89,7 +90,7 @@ class Evaluation {
         );
 
     final exitCode = process.exitCode.then((exitCode) {
-      if (exitCode != 0 && !_linesController.isClosed) {
+      if (exitCode != 0) {
         _linesController.add(
           OutputLine(
             stream: OutputStream.stderr,
@@ -99,19 +100,19 @@ class Evaluation {
       }
     });
 
-    Future.wait([
-      stderrSubscription.asFuture(),
-      stdoutSubscription.asFuture(),
-      exitCode,
-    ]).then((_) async {
+    exitCode.then((_) async {
       await tmpDir.delete(recursive: true);
+      stdoutSubscription.cancel();
+      stderrSubscription.cancel();
       await _linesController.close();
     });
   }
 
   void input(String line) {
-    process.stdin.writeln(line);
-    _linesController.add(OutputLine(stream: OutputStream.stdin, line: line));
+    if (!_linesController.isClosed) {
+      process.stdin.writeln(line);
+      _linesController.add(OutputLine(stream: OutputStream.stdin, line: line));
+    }
   }
 
   Future<void> cancel() async {

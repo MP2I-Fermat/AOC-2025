@@ -27,7 +27,9 @@ class CodeEditorState extends State<CodeEditor> {
         position: .relative(),
         width: .percent(100),
         height: .percent(100),
-        fontFamily: .new('monospace'),
+        // WebKit doesn't work if we set font-family: "monospace", so set it
+        // unquoted.
+        raw: {'font-family': 'monospace'},
       ),
       [
         div(

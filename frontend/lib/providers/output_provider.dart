@@ -13,6 +13,12 @@ class RunningNotifier extends Notifier<bool> {
       }
     });
 
+    ref.listen(connectionProvider, (_, connection) {
+      if (connection.value == null) {
+        state = false;
+      }
+    });
+
     return false;
   }
 }
