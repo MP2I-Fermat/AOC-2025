@@ -94,7 +94,7 @@ class RunButtonState extends State<RunButton> {
           }
         },
       },
-      [text(isRunning ? 'Stop' : 'Start')],
+      [text(isRunning ? 'Exécuter' : 'Arrêter')],
     );
   }
 }
