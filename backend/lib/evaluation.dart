@@ -51,7 +51,7 @@ class Evaluation {
               // TODO: Revert once Huitr is complete.
               //'/opt/huitr/huitr',
               '/usr/bin/bash',
-              '/code.8r',
+              'code.8r',
             ])
           : await Process.start(
               workingDirectory: tmpDir.path,
@@ -60,7 +60,7 @@ class Evaluation {
               //   absoluteHuitrLocation,
               // ).uri.resolve('huitr').toFilePath(),
               'bash',
-              [tmpDir.uri.resolve('code.8r').toFilePath()],
+              ['code.8r'],
             );
 
       return Evaluation(process, tmpDir);
