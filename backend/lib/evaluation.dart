@@ -48,18 +48,14 @@ class Evaluation {
               '--cgroup_cpu_ms_per_sec=100',
               '--use_cgroupv2',
               '--',
-              // TODO: Revert once Huitr is complete.
-              //'/opt/huitr/huitr',
-              '/usr/bin/bash',
+              '/opt/huitr/huitr',
               'code.8r',
             ])
           : await Process.start(
               workingDirectory: tmpDir.path,
-              // TODO: Revert once Huitr is complete.
-              // Directory(
-              //   absoluteHuitrLocation,
-              // ).uri.resolve('huitr').toFilePath(),
-              'bash',
+              Directory(
+                absoluteHuitrLocation,
+              ).uri.resolve('huitr').toFilePath(),
               ['code.8r'],
             );
 
