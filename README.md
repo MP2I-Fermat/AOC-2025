@@ -10,6 +10,10 @@ of AOC at Fermat:
   responsible for evaluating and testing candidate's submissions.
 - [`frontend/`](frontend/README.md) contains the frontend project served to
   users in their browsers.
+- [`common/`](common) contains definitions and serialization utilities for the
+  protocol used to communicate with the backend.
+- [`nsjail](nsjail/README.md) contains Google's [nsjail](https://github.com/google/nsjail)
+  project, used to "securely" execute submitted code.
 
 Please see the README.md documents for each application for more details.
 
