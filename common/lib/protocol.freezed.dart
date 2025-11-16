@@ -15,7 +15,19 @@ Message _$MessageFromJson(
   Map<String, dynamic> json
 ) {
         switch (json['runtimeType']) {
-                  case 'codeUpdate':
+                  case 'startWritingCode':
+          return StartWritingCode.fromJson(
+            json
+          );
+                case 'watch':
+          return Watch.fromJson(
+            json
+          );
+                case 'usersUpdate':
+          return UsersUpdate.fromJson(
+            json
+          );
+                case 'codeUpdate':
           return CodeUpdate.fromJson(
             json
           );
@@ -93,10 +105,13 @@ extension MessagePatterns on Message {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( CodeUpdate value)?  codeUpdate,TResult Function( StartEvaluation value)?  startEvaluation,TResult Function( StopEvaluation value)?  stopEvaluation,TResult Function( InputLine value)?  inputLine,TResult Function( OutputUpdate value)?  outputUpdate,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( StartWritingCode value)?  startWritingCode,TResult Function( Watch value)?  watch,TResult Function( UsersUpdate value)?  usersUpdate,TResult Function( CodeUpdate value)?  codeUpdate,TResult Function( StartEvaluation value)?  startEvaluation,TResult Function( StopEvaluation value)?  stopEvaluation,TResult Function( InputLine value)?  inputLine,TResult Function( OutputUpdate value)?  outputUpdate,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case CodeUpdate() when codeUpdate != null:
+case StartWritingCode() when startWritingCode != null:
+return startWritingCode(_that);case Watch() when watch != null:
+return watch(_that);case UsersUpdate() when usersUpdate != null:
+return usersUpdate(_that);case CodeUpdate() when codeUpdate != null:
 return codeUpdate(_that);case StartEvaluation() when startEvaluation != null:
 return startEvaluation(_that);case StopEvaluation() when stopEvaluation != null:
 return stopEvaluation(_that);case InputLine() when inputLine != null:
@@ -119,10 +134,13 @@ return outputUpdate(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( CodeUpdate value)  codeUpdate,required TResult Function( StartEvaluation value)  startEvaluation,required TResult Function( StopEvaluation value)  stopEvaluation,required TResult Function( InputLine value)  inputLine,required TResult Function( OutputUpdate value)  outputUpdate,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( StartWritingCode value)  startWritingCode,required TResult Function( Watch value)  watch,required TResult Function( UsersUpdate value)  usersUpdate,required TResult Function( CodeUpdate value)  codeUpdate,required TResult Function( StartEvaluation value)  startEvaluation,required TResult Function( StopEvaluation value)  stopEvaluation,required TResult Function( InputLine value)  inputLine,required TResult Function( OutputUpdate value)  outputUpdate,}){
 final _that = this;
 switch (_that) {
-case CodeUpdate():
+case StartWritingCode():
+return startWritingCode(_that);case Watch():
+return watch(_that);case UsersUpdate():
+return usersUpdate(_that);case CodeUpdate():
 return codeUpdate(_that);case StartEvaluation():
 return startEvaluation(_that);case StopEvaluation():
 return stopEvaluation(_that);case InputLine():
@@ -141,10 +159,13 @@ return outputUpdate(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( CodeUpdate value)?  codeUpdate,TResult? Function( StartEvaluation value)?  startEvaluation,TResult? Function( StopEvaluation value)?  stopEvaluation,TResult? Function( InputLine value)?  inputLine,TResult? Function( OutputUpdate value)?  outputUpdate,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( StartWritingCode value)?  startWritingCode,TResult? Function( Watch value)?  watch,TResult? Function( UsersUpdate value)?  usersUpdate,TResult? Function( CodeUpdate value)?  codeUpdate,TResult? Function( StartEvaluation value)?  startEvaluation,TResult? Function( StopEvaluation value)?  stopEvaluation,TResult? Function( InputLine value)?  inputLine,TResult? Function( OutputUpdate value)?  outputUpdate,}){
 final _that = this;
 switch (_that) {
-case CodeUpdate() when codeUpdate != null:
+case StartWritingCode() when startWritingCode != null:
+return startWritingCode(_that);case Watch() when watch != null:
+return watch(_that);case UsersUpdate() when usersUpdate != null:
+return usersUpdate(_that);case CodeUpdate() when codeUpdate != null:
 return codeUpdate(_that);case StartEvaluation() when startEvaluation != null:
 return startEvaluation(_that);case StopEvaluation() when stopEvaluation != null:
 return stopEvaluation(_that);case InputLine() when inputLine != null:
@@ -166,9 +187,12 @@ return outputUpdate(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String code)?  codeUpdate,TResult Function( String code)?  startEvaluation,TResult Function()?  stopEvaluation,TResult Function( String line)?  inputLine,TResult Function( List<OutputLine>? output)?  outputUpdate,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String nick)?  startWritingCode,TResult Function( int id)?  watch,TResult Function( Map<int, String> users,  int yourId)?  usersUpdate,TResult Function( String code)?  codeUpdate,TResult Function( String code)?  startEvaluation,TResult Function()?  stopEvaluation,TResult Function( String line)?  inputLine,TResult Function( List<OutputLine>? output)?  outputUpdate,required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case CodeUpdate() when codeUpdate != null:
+case StartWritingCode() when startWritingCode != null:
+return startWritingCode(_that.nick);case Watch() when watch != null:
+return watch(_that.id);case UsersUpdate() when usersUpdate != null:
+return usersUpdate(_that.users,_that.yourId);case CodeUpdate() when codeUpdate != null:
 return codeUpdate(_that.code);case StartEvaluation() when startEvaluation != null:
 return startEvaluation(_that.code);case StopEvaluation() when stopEvaluation != null:
 return stopEvaluation();case InputLine() when inputLine != null:
@@ -191,9 +215,12 @@ return outputUpdate(_that.output);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String code)  codeUpdate,required TResult Function( String code)  startEvaluation,required TResult Function()  stopEvaluation,required TResult Function( String line)  inputLine,required TResult Function( List<OutputLine>? output)  outputUpdate,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String nick)  startWritingCode,required TResult Function( int id)  watch,required TResult Function( Map<int, String> users,  int yourId)  usersUpdate,required TResult Function( String code)  codeUpdate,required TResult Function( String code)  startEvaluation,required TResult Function()  stopEvaluation,required TResult Function( String line)  inputLine,required TResult Function( List<OutputLine>? output)  outputUpdate,}) {final _that = this;
 switch (_that) {
-case CodeUpdate():
+case StartWritingCode():
+return startWritingCode(_that.nick);case Watch():
+return watch(_that.id);case UsersUpdate():
+return usersUpdate(_that.users,_that.yourId);case CodeUpdate():
 return codeUpdate(_that.code);case StartEvaluation():
 return startEvaluation(_that.code);case StopEvaluation():
 return stopEvaluation();case InputLine():
@@ -212,9 +239,12 @@ return outputUpdate(_that.output);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String code)?  codeUpdate,TResult? Function( String code)?  startEvaluation,TResult? Function()?  stopEvaluation,TResult? Function( String line)?  inputLine,TResult? Function( List<OutputLine>? output)?  outputUpdate,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String nick)?  startWritingCode,TResult? Function( int id)?  watch,TResult? Function( Map<int, String> users,  int yourId)?  usersUpdate,TResult? Function( String code)?  codeUpdate,TResult? Function( String code)?  startEvaluation,TResult? Function()?  stopEvaluation,TResult? Function( String line)?  inputLine,TResult? Function( List<OutputLine>? output)?  outputUpdate,}) {final _that = this;
 switch (_that) {
-case CodeUpdate() when codeUpdate != null:
+case StartWritingCode() when startWritingCode != null:
+return startWritingCode(_that.nick);case Watch() when watch != null:
+return watch(_that.id);case UsersUpdate() when usersUpdate != null:
+return usersUpdate(_that.users,_that.yourId);case CodeUpdate() when codeUpdate != null:
 return codeUpdate(_that.code);case StartEvaluation() when startEvaluation != null:
 return startEvaluation(_that.code);case StopEvaluation() when stopEvaluation != null:
 return stopEvaluation();case InputLine() when inputLine != null:
@@ -224,6 +254,233 @@ return outputUpdate(_that.output);case _:
 
 }
 }
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class StartWritingCode implements Message {
+  const StartWritingCode({required this.nick, final  String? $type}): $type = $type ?? 'startWritingCode';
+  factory StartWritingCode.fromJson(Map<String, dynamic> json) => _$StartWritingCodeFromJson(json);
+
+ final  String nick;
+
+@JsonKey(name: 'runtimeType')
+final String $type;
+
+
+/// Create a copy of Message
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$StartWritingCodeCopyWith<StartWritingCode> get copyWith => _$StartWritingCodeCopyWithImpl<StartWritingCode>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$StartWritingCodeToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is StartWritingCode&&(identical(other.nick, nick) || other.nick == nick));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,nick);
+
+@override
+String toString() {
+  return 'Message.startWritingCode(nick: $nick)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $StartWritingCodeCopyWith<$Res> implements $MessageCopyWith<$Res> {
+  factory $StartWritingCodeCopyWith(StartWritingCode value, $Res Function(StartWritingCode) _then) = _$StartWritingCodeCopyWithImpl;
+@useResult
+$Res call({
+ String nick
+});
+
+
+
+
+}
+/// @nodoc
+class _$StartWritingCodeCopyWithImpl<$Res>
+    implements $StartWritingCodeCopyWith<$Res> {
+  _$StartWritingCodeCopyWithImpl(this._self, this._then);
+
+  final StartWritingCode _self;
+  final $Res Function(StartWritingCode) _then;
+
+/// Create a copy of Message
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? nick = null,}) {
+  return _then(StartWritingCode(
+nick: null == nick ? _self.nick : nick // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class Watch implements Message {
+  const Watch({required this.id, final  String? $type}): $type = $type ?? 'watch';
+  factory Watch.fromJson(Map<String, dynamic> json) => _$WatchFromJson(json);
+
+ final  int id;
+
+@JsonKey(name: 'runtimeType')
+final String $type;
+
+
+/// Create a copy of Message
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$WatchCopyWith<Watch> get copyWith => _$WatchCopyWithImpl<Watch>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$WatchToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Watch&&(identical(other.id, id) || other.id == id));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id);
+
+@override
+String toString() {
+  return 'Message.watch(id: $id)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $WatchCopyWith<$Res> implements $MessageCopyWith<$Res> {
+  factory $WatchCopyWith(Watch value, $Res Function(Watch) _then) = _$WatchCopyWithImpl;
+@useResult
+$Res call({
+ int id
+});
+
+
+
+
+}
+/// @nodoc
+class _$WatchCopyWithImpl<$Res>
+    implements $WatchCopyWith<$Res> {
+  _$WatchCopyWithImpl(this._self, this._then);
+
+  final Watch _self;
+  final $Res Function(Watch) _then;
+
+/// Create a copy of Message
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? id = null,}) {
+  return _then(Watch(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class UsersUpdate implements Message {
+  const UsersUpdate({required final  Map<int, String> users, required this.yourId, final  String? $type}): _users = users,$type = $type ?? 'usersUpdate';
+  factory UsersUpdate.fromJson(Map<String, dynamic> json) => _$UsersUpdateFromJson(json);
+
+ final  Map<int, String> _users;
+ Map<int, String> get users {
+  if (_users is EqualUnmodifiableMapView) return _users;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(_users);
+}
+
+ final  int yourId;
+
+@JsonKey(name: 'runtimeType')
+final String $type;
+
+
+/// Create a copy of Message
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$UsersUpdateCopyWith<UsersUpdate> get copyWith => _$UsersUpdateCopyWithImpl<UsersUpdate>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$UsersUpdateToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UsersUpdate&&const DeepCollectionEquality().equals(other._users, _users)&&(identical(other.yourId, yourId) || other.yourId == yourId));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_users),yourId);
+
+@override
+String toString() {
+  return 'Message.usersUpdate(users: $users, yourId: $yourId)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $UsersUpdateCopyWith<$Res> implements $MessageCopyWith<$Res> {
+  factory $UsersUpdateCopyWith(UsersUpdate value, $Res Function(UsersUpdate) _then) = _$UsersUpdateCopyWithImpl;
+@useResult
+$Res call({
+ Map<int, String> users, int yourId
+});
+
+
+
+
+}
+/// @nodoc
+class _$UsersUpdateCopyWithImpl<$Res>
+    implements $UsersUpdateCopyWith<$Res> {
+  _$UsersUpdateCopyWithImpl(this._self, this._then);
+
+  final UsersUpdate _self;
+  final $Res Function(UsersUpdate) _then;
+
+/// Create a copy of Message
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? users = null,Object? yourId = null,}) {
+  return _then(UsersUpdate(
+users: null == users ? _self._users : users // ignore: cast_nullable_to_non_nullable
+as Map<int, String>,yourId: null == yourId ? _self.yourId : yourId // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
 
 }
 

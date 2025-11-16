@@ -1,11 +1,9 @@
-import 'dart:convert';
-import 'dart:js_interop';
-
 import 'package:common/protocol.dart';
 import 'package:frontend/app.dart';
 import 'package:frontend/providers/connection.dart';
 import 'package:frontend/providers/current_code.dart';
 import 'package:frontend/providers/output_provider.dart';
+import 'package:frontend/providers/state.dart';
 import 'package:jaspr/jaspr.dart';
 import 'package:jaspr_riverpod/jaspr_riverpod.dart';
 import 'package:web/web.dart';
@@ -15,6 +13,17 @@ class OutputView extends StatelessComponent {
 
   @override
   Component build(BuildContext context) {
+    final stateInfo = switch (context.watch(stateProvider)) {
+      Writing(:final nick) => text("Pseudo: $nick"),
+
+      Watching(:final nick) => text('En train de regarder $nick'),
+      Waiting(:final wantsToWatch?) => div(
+        styles: Styles(color: Color('darkorange')),
+        [text("$wantsToWatch n'est pas en train d'écrire du code...")],
+      ),
+      _ => null,
+    };
+
     return div(
       styles: Styles(
         width: .percent(100),
@@ -22,14 +31,23 @@ class OutputView extends StatelessComponent {
         flexDirection: .column,
       ),
       [
-        div(
-          styles: Styles(
-            width: .percent(100),
-            height: .pixels(20),
-            justifyContent: .end,
-          ),
-          [VerticalBar(), RunButton()],
-        ),
+        div(styles: Styles(width: .percent(100), height: .pixels(20)), [
+          div(styles: Styles(position: .relative(), flex: Flex(grow: 1)), [
+            div(
+              styles: Styles(
+                position: .absolute(),
+                width: .percent(100),
+                padding: .symmetric(horizontal: .pixels(8)),
+                boxSizing: .borderBox,
+                overflow: .hidden,
+                whiteSpace: .noWrap,
+              ),
+              [?stateInfo],
+            ),
+          ]),
+          VerticalBar(),
+          RunButton(),
+        ]),
         HorizontalBar(),
         div(styles: Styles(position: .relative(), flex: Flex(grow: 1)), [
           div(
@@ -63,34 +81,35 @@ class RunButton extends StatefulComponent {
 enum RunState { startPending, stopPending }
 
 class RunButtonState extends State<RunButton> {
-  RunState? state;
+  RunState? pendingState;
 
   @override
   Component build(BuildContext context) {
     final connection = context.watch(connectionProvider).unwrapPrevious().value;
     final isRunning = context.watch(isRunningProvider);
+    final state = context.watch(stateProvider);
 
     return div(
       styles: Styles(
         width: .pixels(100),
-        cursor: connection == null || state != null ? .notAllowed : .pointer,
+        cursor: connection == null || pendingState != null || state is! Writing
+            ? .notAllowed
+            : .pointer,
         userSelect: .none,
         justifyContent: .center,
       ),
       events: {
         'click': (e) {
-          if (connection == null || state != null) return;
+          if (connection == null || pendingState != null || state is! Writing) {
+            return;
+          }
 
           if (!isRunning) {
             connection.send(
-              jsonEncode(
-                Message.startEvaluation(
-                  code: context.read(codeProvider),
-                ).toJson(),
-              ).toJS,
+              Message.startEvaluation(code: context.read(codeProvider)),
             );
           } else {
-            connection.send(jsonEncode(Message.stopEvaluation().toJson()).toJS);
+            connection.send(Message.stopEvaluation());
           }
         },
       },
@@ -124,6 +143,7 @@ class _OutputLinesState extends State<OutputLines> {
             padding: .all(.pixels(8)),
             boxSizing: .borderBox,
             flexDirection: .column,
+            raw: {'font-family': 'monospace'},
           ),
           [
             for (final line in lines)
@@ -152,6 +172,8 @@ class Input extends StatelessComponent {
 
   @override
   Component build(BuildContext context) {
+    final state = context.watch(stateProvider);
+
     return input(
       id: 'stdin-input',
       type: .text,
@@ -159,7 +181,7 @@ class Input extends StatelessComponent {
         'placeholder': 'Envoyez du texte au programme...',
         'autocomplete': 'off',
       },
-      disabled: !context.watch(isRunningProvider),
+      disabled: !context.watch(isRunningProvider) || state is! Writing,
       styles: Styles(
         width: .percent(100),
         padding: .symmetric(vertical: .zero, horizontal: .pixels(8)),
@@ -175,13 +197,15 @@ class Input extends StatelessComponent {
       events: {
         'keydown': (e) {
           if ((e as KeyboardEvent).key == "Enter") {
+            if (state is! Writing) return;
+
             final input =
                 document.querySelector('#stdin-input') as HTMLInputElement;
 
             context
                 .read(connectionProvider)
                 .value!
-                .send(jsonEncode(Message.inputLine(line: input.value)).toJS);
+                .send(Message.inputLine(line: input.value));
             input.value = '';
           }
         },

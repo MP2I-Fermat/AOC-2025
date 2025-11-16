@@ -1,10 +1,17 @@
 import 'package:jaspr_riverpod/jaspr_riverpod.dart';
+import 'package:web/web.dart';
 
 final codeProvider = NotifierProvider(CodeProvider.new);
 
 class CodeProvider extends Notifier<String> {
+  static const storageKey = 'aoc_code';
+
   @override
   String build() {
+    if (window.localStorage.getItem(storageKey) case final code?) {
+      return code;
+    }
+
     return '''
 ..
 Huitr - a purely functional programming language.
@@ -32,9 +39,19 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ] > fizzbuzz
 
 0 > fizzbuzz
-
 ''';
   }
 
-  void setCode(String code) => state = code;
+  void setStoredCode(String code) {
+    window.localStorage.setItem(storageKey, code);
+    state = code;
+  }
+
+  void restoreStoredCode() {
+    state = build();
+  }
+
+  void setDisplayedCode(String code) {
+    state = code;
+  }
 }

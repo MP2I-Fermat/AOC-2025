@@ -5,6 +5,13 @@ part 'protocol.freezed.dart';
 
 @freezed
 sealed class Message with _$Message {
+  const factory Message.startWritingCode({required String nick}) =
+      StartWritingCode;
+  const factory Message.watch({required int id}) = Watch;
+  const factory Message.usersUpdate({
+    required Map<int, String> users,
+    required int yourId,
+  }) = UsersUpdate;
   const factory Message.codeUpdate({required String code}) = CodeUpdate;
   const factory Message.startEvaluation({required String code}) =
       StartEvaluation;

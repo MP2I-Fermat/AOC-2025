@@ -6,6 +6,40 @@ part of 'protocol.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+StartWritingCode _$StartWritingCodeFromJson(Map<String, dynamic> json) =>
+    StartWritingCode(
+      nick: json['nick'] as String,
+      $type: json['runtimeType'] as String?,
+    );
+
+Map<String, dynamic> _$StartWritingCodeToJson(StartWritingCode instance) =>
+    <String, dynamic>{'nick': instance.nick, 'runtimeType': instance.$type};
+
+Watch _$WatchFromJson(Map<String, dynamic> json) => Watch(
+  id: (json['id'] as num).toInt(),
+  $type: json['runtimeType'] as String?,
+);
+
+Map<String, dynamic> _$WatchToJson(Watch instance) => <String, dynamic>{
+  'id': instance.id,
+  'runtimeType': instance.$type,
+};
+
+UsersUpdate _$UsersUpdateFromJson(Map<String, dynamic> json) => UsersUpdate(
+  users: (json['users'] as Map<String, dynamic>).map(
+    (k, e) => MapEntry(int.parse(k), e as String),
+  ),
+  yourId: (json['yourId'] as num).toInt(),
+  $type: json['runtimeType'] as String?,
+);
+
+Map<String, dynamic> _$UsersUpdateToJson(UsersUpdate instance) =>
+    <String, dynamic>{
+      'users': instance.users.map((k, e) => MapEntry(k.toString(), e)),
+      'yourId': instance.yourId,
+      'runtimeType': instance.$type,
+    };
+
 CodeUpdate _$CodeUpdateFromJson(Map<String, dynamic> json) => CodeUpdate(
   code: json['code'] as String,
   $type: json['runtimeType'] as String?,

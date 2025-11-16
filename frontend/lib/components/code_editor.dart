@@ -1,4 +1,5 @@
 import 'package:frontend/providers/current_code.dart';
+import 'package:frontend/providers/state.dart';
 import 'package:jaspr/jaspr.dart';
 import 'package:jaspr_riverpod/jaspr_riverpod.dart';
 import 'package:web/web.dart';
@@ -12,17 +13,37 @@ class CodeEditor extends StatefulComponent {
 
 class CodeEditorState extends State<CodeEditor> {
   var verticalScrollOffset = 0.0;
-  late final initialContent = context.read(codeProvider);
+  late String initialContent;
+
+  final Key codeInputKey = UniqueKey();
+  final Key blockInputKey = UniqueKey();
+
+  @override
+  void initState() {
+    super.initState();
+
+    initialContent = context.read(codeProvider);
+  }
 
   @override
   Component build(BuildContext context) {
+    context.listen(stateProvider, (_, state) {
+      if (state is Writing) {
+        setState(() {
+          initialContent = context.read(codeProvider);
+        });
+      }
+    });
+
     final content = context.watch(codeProvider);
+    final state = context.watch(stateProvider);
 
     var lineCount = '\n'.allMatches(content).length + 1;
     // contenteditable adds newlines.
     if (content.endsWith('\n')) lineCount--;
 
     return div(
+      key: codeInputKey,
       styles: Styles(
         position: .relative(),
         width: .percent(100),
@@ -88,41 +109,57 @@ class CodeEditorState extends State<CodeEditor> {
                     minHeight: .percent(100),
                   ),
                   [
-                    div(
-                      id: 'code-input',
-                      styles: Styles(
-                        display: .inline,
-                        position: .absolute(
-                          top: .zero,
-                          bottom: .zero,
-                          left: .zero,
-                          right: .zero,
+                    if (state case Writing())
+                      div(
+                        id: 'code-input',
+                        styles: Styles(
+                          display: .inline,
+                          position: .absolute(
+                            top: .zero,
+                            bottom: .zero,
+                            left: .zero,
+                            right: .zero,
+                          ),
+                          zIndex: ZIndex(1),
+                          outline: Outline(style: .none),
+                          // Opacity 0 hides the cursor, just render the text as
+                          // transparent instead.
+                          color: .rgba(0, 0, 0, 0),
+                          whiteSpace: .pre,
+                          raw: {'caret-color': 'var(--primary-color)'},
                         ),
-                        zIndex: ZIndex(1),
-                        outline: Outline(style: .none),
-                        // Opacity 0 hides the cursor, just render the text as
-                        // transparent instead.
-                        color: .rgba(0, 0, 0, 0),
-                        whiteSpace: .pre,
-                        raw: {'caret-color': 'var(--primary-color)'},
-                      ),
-                      attributes: {
-                        'contenteditable': 'plaintext-only',
-                        'spellcheck': 'false',
-                      },
-                      events: {
-                        'input': (e) {
-                          final input =
-                              document.querySelector('#code-input')
-                                  as HTMLElement;
-
-                          context
-                              .read(codeProvider.notifier)
-                              .setCode(input.innerText);
+                        attributes: {
+                          'contenteditable': 'plaintext-only',
+                          'spellcheck': 'false',
                         },
-                      },
-                      [text(initialContent)],
-                    ),
+                        events: {
+                          'input': (e) {
+                            final input =
+                                document.querySelector('#code-input')
+                                    as HTMLElement;
+
+                            context
+                                .read(codeProvider.notifier)
+                                .setStoredCode(input.innerText);
+                          },
+                        },
+                        [text(initialContent)],
+                      )
+                    else
+                      div(
+                        key: blockInputKey,
+                        styles: Styles(
+                          position: .absolute(
+                            top: .zero,
+                            bottom: .zero,
+                            left: .zero,
+                            right: .zero,
+                          ),
+                          zIndex: ZIndex(1),
+                          cursor: .notAllowed,
+                        ),
+                        [],
+                      ),
                     div(
                       styles: Styles(
                         display: .inline,

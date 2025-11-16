@@ -1,5 +1,6 @@
 import 'package:frontend/components/documentation.dart';
 import 'package:frontend/components/problems.dart';
+import 'package:frontend/components/settings.dart';
 import 'package:jaspr/jaspr.dart';
 
 class InfoPane extends StatefulComponent {
@@ -9,8 +10,10 @@ class InfoPane extends StatefulComponent {
   State createState() => InfoPaneState();
 }
 
+enum ActiveTab { settings, problems, documentation }
+
 class InfoPaneState extends State<InfoPane> {
-  bool isOnProblems = true;
+  ActiveTab tab = .settings;
 
   @override
   Component build(BuildContext context) {
@@ -29,40 +32,65 @@ class InfoPaneState extends State<InfoPane> {
       ),
 
       [
-        div(styles: Styles(height: .pixels(40), flexDirection: .row), [
-          div(
-            styles: Styles(
-              height: .percent(100),
-              cursor: .pointer,
-              justifyContent: .center,
-              alignItems: .center,
-              flex: Flex(grow: 1, basis: .zero),
-            ),
-            classes: isOnProblems ? 'tab-selected' : 'tab-unselected',
-            events: {
-              'click': (_) {
-                setState(() => isOnProblems = true);
-              },
-            },
-            [text('Problèmes')],
+        div(
+          styles: Styles(
+            height: .pixels(40),
+            userSelect: .none,
+            flexDirection: .row,
           ),
-          div(
-            styles: Styles(
-              height: .percent(100),
-              cursor: .pointer,
-              justifyContent: .center,
-              alignItems: .center,
-              flex: Flex(grow: 1, basis: .zero),
-            ),
-            classes: !isOnProblems ? 'tab-selected' : 'tab-unselected',
-            events: {
-              'click': (_) {
-                setState(() => isOnProblems = false);
+          [
+            div(
+              styles: Styles(
+                height: .percent(100),
+                cursor: .pointer,
+                justifyContent: .center,
+                alignItems: .center,
+                flex: Flex(grow: 1, basis: .zero),
+              ),
+              classes: tab == .settings ? 'tab-selected' : 'tab-unselected',
+              events: {
+                'click': (_) {
+                  setState(() => tab = .settings);
+                },
               },
-            },
-            [text('Documentation')],
-          ),
-        ]),
+              [text('Paramètres')],
+            ),
+            div(
+              styles: Styles(
+                height: .percent(100),
+                cursor: .pointer,
+                justifyContent: .center,
+                alignItems: .center,
+                flex: Flex(grow: 1, basis: .zero),
+              ),
+              classes: tab == .problems ? 'tab-selected' : 'tab-unselected',
+              events: {
+                'click': (_) {
+                  setState(() => tab = .problems);
+                },
+              },
+              [text('Problèmes')],
+            ),
+            div(
+              styles: Styles(
+                height: .percent(100),
+                cursor: .pointer,
+                justifyContent: .center,
+                alignItems: .center,
+                flex: Flex(grow: 1, basis: .zero),
+              ),
+              classes: tab == .documentation
+                  ? 'tab-selected'
+                  : 'tab-unselected',
+              events: {
+                'click': (_) {
+                  setState(() => tab = .documentation);
+                },
+              },
+              [text('Documentation')],
+            ),
+          ],
+        ),
         div(
           styles: Styles(
             position: .relative(),
@@ -74,14 +102,21 @@ class InfoPaneState extends State<InfoPane> {
             div(
               styles: Styles(
                 position: zeroPosition,
-                visibility: isOnProblems ? .visible : .hidden,
+                visibility: tab == .settings ? .visible : .hidden,
+              ),
+              [Settings()],
+            ),
+            div(
+              styles: Styles(
+                position: zeroPosition,
+                visibility: tab == .problems ? .visible : .hidden,
               ),
               [Problems()],
             ),
             div(
               styles: Styles(
                 position: zeroPosition,
-                visibility: !isOnProblems ? .visible : .hidden,
+                visibility: tab == .documentation ? .visible : .hidden,
               ),
               [Documentation()],
             ),

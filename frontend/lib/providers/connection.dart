@@ -3,19 +3,28 @@ import 'dart:convert';
 import 'dart:js_interop';
 
 import 'package:common/protocol.dart';
-import 'package:frontend/providers/current_code.dart';
 import 'package:jaspr_riverpod/jaspr_riverpod.dart';
 import 'package:web/web.dart';
 
 final connectionProvider = AsyncNotifierProvider(ConnectionNotifier.new);
 
-class ConnectionNotifier extends AsyncNotifier<WebSocket> {
+class Connection {
+  final WebSocket ws;
+
+  Connection(this.ws);
+
+  void send(Message message) {
+    ws.send(jsonEncode(message.toJson()).toJS);
+  }
+}
+
+class ConnectionNotifier extends AsyncNotifier<Connection> {
   static const apiHostOverride = String.fromEnvironment('API_HOST');
 
   Future<void> connectionLoop() async {
     ref.onDispose(() {
       if (state.unwrapPrevious().value case final socket?) {
-        socket.close(1000);
+        socket.ws.close(1000);
       }
     });
 
@@ -48,32 +57,12 @@ class ConnectionNotifier extends AsyncNotifier<WebSocket> {
         });
 
         await connectedCompleter.future;
-
-        Timer? debounceTimer;
-        final subscription = ref.listen(codeProvider, fireImmediately: true, (
-          _,
-          _,
-        ) {
-          debounceTimer ??= Timer(Duration(milliseconds: 200), () {
-            connection.send(
-              jsonEncode(
-                CodeUpdate(code: ref.read(codeProvider)).toJson(),
-              ).toJS,
-            );
-
-            debounceTimer = null;
-          });
-        });
-
         final previousBackoff = backoff;
         backoff = Duration(milliseconds: 500);
 
-        state = AsyncData(connection);
+        state = AsyncData(Connection(connection));
 
-        final closeCode = await closedCompleter.future.whenComplete(() {
-          debounceTimer?.cancel();
-          subscription.close();
-        });
+        final closeCode = await closedCompleter.future;
 
         if (closeCode != 1000) {
           backoff = previousBackoff;
@@ -102,7 +91,7 @@ final connectionMessagesProvider = StreamProvider<Message>((ref) {
   final connectionState = ref.watch(connectionProvider);
 
   if (connectionState case AsyncData(:final value)) {
-    return value.onMessage
+    return value.ws.onMessage
         .map((event) {
           if (!event.data.isA<JSString>()) {
             throw Exception('Message was not a string');
@@ -113,7 +102,7 @@ final connectionMessagesProvider = StreamProvider<Message>((ref) {
         .transform(
           StreamTransformer.fromHandlers(
             handleError: (e, s, sink) {
-              value.close(4001);
+              value.ws.close(4001);
             },
           ),
         );

@@ -206,10 +206,10 @@ class Footer extends StatelessComponent {
 
     final connectionError = switch (connection) {
       AsyncError() => div(styles: Styles(color: Color('red')), [
-        text('No connection'),
+        text('Pas de connexion'),
       ]),
       AsyncLoading() => div(styles: Styles(color: Color('darkorange')), [
-        text('Connecting...'),
+        text('Connexion en cours...'),
       ]),
       AsyncData() => null,
     };

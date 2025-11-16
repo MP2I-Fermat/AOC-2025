@@ -1,0 +1,175 @@
+import 'package:frontend/providers/state.dart';
+import 'package:frontend/providers/users.dart';
+import 'package:jaspr/jaspr.dart';
+import 'package:jaspr_riverpod/jaspr_riverpod.dart';
+import 'package:web/web.dart';
+
+class Settings extends StatelessComponent {
+  const Settings({super.key});
+
+  @override
+  Component build(BuildContext context) {
+    final state = context.watch(stateProvider);
+
+    return div(
+      styles: Styles(
+        width: .percent(100),
+        height: .percent(100),
+        padding: .all(.pixels(8)),
+        boxSizing: .borderBox,
+        overflow: .only(y: Overflow.auto),
+        flexDirection: .column,
+      ),
+      [
+        switch (state) {
+          Writing(:final nick) => div(styles: Styles(display: .inline), [
+            text("Vous êtes en train d'écrire du code avec le pseudo "),
+            b([text(nick)]),
+            text('.'),
+          ]),
+          Watching(:final nick) => div(styles: Styles(display: .inline), [
+            text("Vous êtes en train de regarder "),
+            b([text(nick)]),
+            text('.'),
+          ]),
+          Waiting(:final wantsToWatch?) => div(
+            styles: Styles(display: .inline),
+            [
+              text("Vous êtes en train de regarder "),
+              b([text(wantsToWatch)]),
+              text(", mais il n'est pas en train d'écrire du code."),
+            ],
+          ),
+          Waiting() => text(
+            'Sélectionnez un utilisateur à regarder ou entrez un pseudo pour écrire du code vous-meme.',
+          ),
+        },
+        PersonalSettings(),
+        WatchingSettings(),
+      ],
+    );
+  }
+}
+
+class PersonalSettings extends StatefulComponent {
+  const PersonalSettings({super.key});
+
+  @override
+  State createState() => PersonalSettingsState();
+}
+
+class PersonalSettingsState extends State<PersonalSettings> {
+  static const nickKey = 'aoc_nick';
+
+  String? nick = window.localStorage.getItem(nickKey);
+
+  bool get hasValidNick {
+    final nick = this.nick?.trim();
+    if (nick == null) return false;
+
+    return nick.isNotEmpty && nick.length < 200;
+  }
+
+  @override
+  Component build(BuildContext context) {
+    final state = context.watch(stateProvider);
+    final currentNick = switch (state) {
+      Writing(:final nick) => nick,
+      _ => null,
+    };
+
+    return div(styles: Styles(flexDirection: .column), [
+      h3([text('Votre pseudo')]),
+      div([
+        input(
+          id: 'nick-input',
+          type: .text,
+          value: nick,
+          styles: Styles(
+            height: .pixels(20),
+            padding: .all(.pixels(0)),
+            margin: .all(.pixels(8)),
+            border: Border.only(
+              left: .none(),
+              right: .none(),
+              top: .none(),
+              bottom: BorderSide.solid(
+                width: .pixels(1),
+                color: Color('white'),
+              ),
+            ),
+            outline: .unset,
+            color: Color('var(--primary-color)'),
+            fontSize: .unset,
+            backgroundColor: .unset,
+          ),
+          attributes: {'spellcheck': 'false'},
+          onInput: (value) {
+            setState(() {
+              nick = value.toString();
+            });
+          },
+        ),
+        div(
+          styles: Styles(
+            padding: .all(.pixels(8)),
+            cursor: hasValidNick && nick != currentNick
+                ? .pointer
+                : .notAllowed,
+            userSelect: .none,
+          ),
+          events: {
+            'click': (e) {
+              if (!hasValidNick || currentNick == nick?.trim()) return;
+              context.read(stateProvider.notifier).write(nick!.trim());
+              window.localStorage.setItem(nickKey, nick!.trim());
+            },
+          },
+          [text('Passer en mode édition')],
+        ),
+      ]),
+    ]);
+  }
+}
+
+class WatchingSettings extends StatelessComponent {
+  const WatchingSettings({super.key});
+
+  @override
+  Component build(BuildContext context) {
+    final users = context.watch(usersProvider).entries.toList()
+      ..sort((a, b) => a.value.compareTo(b.value));
+    final id = context.watch(idProvider);
+    final currentlyWatching = switch (context.watch(stateProvider)) {
+      Watching(:final id) => id,
+      _ => null,
+    };
+
+    return div(styles: Styles(flexDirection: .column), [
+      h3([text('Autres utilisateurs')]),
+      if (users.isEmpty)
+        text("Aucun utilisateur n'est en train d'écrire du code.")
+      else ...[
+        text('Cliquez sur un utilisateur pour les suivre.'),
+        ul(styles: Styles(userSelect: .none), [
+          for (final MapEntry(:key, :value) in users)
+            li(
+              styles: Styles(
+                cursor: key == currentlyWatching || key == id
+                    ? .notAllowed
+                    : .pointer,
+                fontWeight: key == currentlyWatching ? .bold : .normal,
+              ),
+              events: {
+                'click': (e) {
+                  if (key == currentlyWatching || key == id) return;
+                  context.read(stateProvider.notifier).watch(key);
+                },
+              },
+              [text(value), if (key == id) text(' (Vous)')],
+            ),
+        ]),
+      ],
+    ]);
+  }
+}
