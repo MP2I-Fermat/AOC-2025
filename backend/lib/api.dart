@@ -11,7 +11,19 @@ final connectionHandler = ConnectionHandler();
 final router = Pipeline()
     .addMiddleware(
       shelfLimiter(
-        RateLimiterOptions(maxRequests: 20, windowSize: Duration(minutes: 1)),
+        RateLimiterOptions(
+          maxRequests: 180,
+          windowSize: Duration(minutes: 1),
+          clientIdentifierExtractor: (r) {
+            if (r.headers['X-Real-IP'] case final ip?) {
+              return ip;
+            }
+
+            return ((r.context['shelf.io.connection_info']) as dynamic)
+                ?.remoteAddress
+                .address;
+          },
+        ),
       ),
     )
     .addHandler(
