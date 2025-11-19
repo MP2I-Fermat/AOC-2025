@@ -39,8 +39,6 @@ class CodeEditorState extends State<CodeEditor> {
     final state = context.watch(stateProvider);
 
     var lineCount = '\n'.allMatches(content).length + 1;
-    // contenteditable adds newlines.
-    if (content.endsWith('\n')) lineCount--;
 
     return div(
       key: codeInputKey,
@@ -48,6 +46,7 @@ class CodeEditorState extends State<CodeEditor> {
         position: .relative(),
         width: .percent(100),
         height: .percent(100),
+        fontSize: .pixels(13),
         // WebKit doesn't work if we set font-family: "monospace", so set it
         // unquoted.
         raw: {'font-family': 'monospace'},
@@ -90,6 +89,7 @@ class CodeEditorState extends State<CodeEditor> {
                 overflow: .auto,
                 flex: Flex(grow: 1, basis: .zero),
                 whiteSpace: .pre,
+                raw: {'overscroll-behavior': 'none'},
               ),
               events: {
                 'scroll': (e) {
@@ -110,7 +110,7 @@ class CodeEditorState extends State<CodeEditor> {
                   ),
                   [
                     if (state case Writing())
-                      div(
+                      textarea(
                         id: 'code-input',
                         styles: Styles(
                           display: .inline,
@@ -121,28 +121,25 @@ class CodeEditorState extends State<CodeEditor> {
                             right: .zero,
                           ),
                           zIndex: ZIndex(1),
+                          padding: .unset,
+                          margin: .unset,
+                          border: .none,
                           outline: Outline(style: .none),
                           // Opacity 0 hides the cursor, just render the text as
                           // transparent instead.
                           color: .rgba(0, 0, 0, 0),
+                          fontSize: .pixels(13),
                           whiteSpace: .pre,
-                          raw: {'caret-color': 'var(--primary-color)'},
-                        ),
-                        attributes: {
-                          'contenteditable': 'plaintext-only',
-                          'spellcheck': 'false',
-                        },
-                        events: {
-                          'input': (e) {
-                            final input =
-                                document.querySelector('#code-input')
-                                    as HTMLElement;
-
-                            context
-                                .read(codeProvider.notifier)
-                                .setStoredCode(input.innerText);
+                          backgroundColor: .rgba(0, 0, 0, 0),
+                          raw: {
+                            'caret-color': 'var(--primary-color)',
+                            'resize': 'none',
                           },
-                        },
+                        ),
+                        attributes: {'spellcheck': 'false'},
+                        onInput: context
+                            .read(codeProvider.notifier)
+                            .setStoredCode,
                         [text(initialContent)],
                       )
                     else
@@ -180,6 +177,8 @@ class CodeEditorState extends State<CodeEditor> {
 }
 
 class HighlightedCode extends StatelessComponent {
+  final terminatorKey = UniqueKey();
+
   @override
   Component build(BuildContext context) {
     final code = context.watch(codeProvider);
@@ -189,8 +188,8 @@ class HighlightedCode extends StatelessComponent {
 
     final tokens = tokenize(huitrRules, code);
 
-    return fragment(
-      tokens.indexed.map((r) {
+    return fragment([
+      ...tokens.indexed.map((r) {
         final (index, (type, value)) = r;
 
         if (type == HuitrToken.singleCommentStart) {
@@ -236,8 +235,12 @@ class HighlightedCode extends StatelessComponent {
         return div(styles: Styles(display: .inline, color: color), [
           text(value),
         ]);
-      }).toList(),
-    );
+      }),
+      // Needed to force the browser to size the inner scroll area correctly.
+      // If this is absent the textarea may sometimes begin scrolling within
+      // itself.
+      div(key: terminatorKey, [raw('&ZeroWidthSpace;')]),
+    ]);
   }
 }
 
