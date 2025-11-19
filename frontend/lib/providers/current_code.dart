@@ -30,7 +30,7 @@ class CodeProvider extends Notifier<String> {
   > (n, 100 > std::comp::eq, [()], [n, 1 > std::math::add > fizzbuzz] > std::tests::if)
 ] > fizzbuzz
 
-0 > fizzbuzz
+1 > fizzbuzz
 ''';
   }
 

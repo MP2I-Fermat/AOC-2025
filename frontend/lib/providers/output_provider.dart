@@ -8,8 +8,8 @@ class RunningNotifier extends Notifier<bool> {
   @override
   bool build() {
     ref.listen(connectionMessagesProvider, (_, message) {
-      if (message case AsyncData(value: OutputUpdate(:final output))) {
-        state = output != null;
+      if (message case AsyncData(value: OutputUpdate(:final isRunning))) {
+        state = isRunning;
       }
     });
 
@@ -29,7 +29,7 @@ class OutputNotifier extends Notifier<List<OutputLine>> {
   @override
   List<OutputLine> build() {
     ref.listen(connectionMessagesProvider, (_, message) {
-      if (message case AsyncData(value: OutputUpdate(:final output?))) {
+      if (message case AsyncData(value: OutputUpdate(:final output))) {
         state = output;
       }
     });

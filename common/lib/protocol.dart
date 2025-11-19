@@ -17,8 +17,10 @@ sealed class Message with _$Message {
       StartEvaluation;
   const factory Message.stopEvaluation() = StopEvaluation;
   const factory Message.inputLine({required String line}) = InputLine;
-  const factory Message.outputUpdate({required List<OutputLine>? output}) =
-      OutputUpdate;
+  const factory Message.outputUpdate({
+    required List<OutputLine> output,
+    required bool isRunning,
+  }) = OutputUpdate;
 
   factory Message.fromJson(Map<String, Object?> json) =>
       _$MessageFromJson(json);

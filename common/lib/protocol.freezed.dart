@@ -187,7 +187,7 @@ return outputUpdate(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String nick)?  startWritingCode,TResult Function( int id)?  watch,TResult Function( Map<int, String> users,  int yourId)?  usersUpdate,TResult Function( String code)?  codeUpdate,TResult Function( String code)?  startEvaluation,TResult Function()?  stopEvaluation,TResult Function( String line)?  inputLine,TResult Function( List<OutputLine>? output)?  outputUpdate,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String nick)?  startWritingCode,TResult Function( int id)?  watch,TResult Function( Map<int, String> users,  int yourId)?  usersUpdate,TResult Function( String code)?  codeUpdate,TResult Function( String code)?  startEvaluation,TResult Function()?  stopEvaluation,TResult Function( String line)?  inputLine,TResult Function( List<OutputLine> output,  bool isRunning)?  outputUpdate,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case StartWritingCode() when startWritingCode != null:
 return startWritingCode(_that.nick);case Watch() when watch != null:
@@ -197,7 +197,7 @@ return codeUpdate(_that.code);case StartEvaluation() when startEvaluation != nul
 return startEvaluation(_that.code);case StopEvaluation() when stopEvaluation != null:
 return stopEvaluation();case InputLine() when inputLine != null:
 return inputLine(_that.line);case OutputUpdate() when outputUpdate != null:
-return outputUpdate(_that.output);case _:
+return outputUpdate(_that.output,_that.isRunning);case _:
   return orElse();
 
 }
@@ -215,7 +215,7 @@ return outputUpdate(_that.output);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String nick)  startWritingCode,required TResult Function( int id)  watch,required TResult Function( Map<int, String> users,  int yourId)  usersUpdate,required TResult Function( String code)  codeUpdate,required TResult Function( String code)  startEvaluation,required TResult Function()  stopEvaluation,required TResult Function( String line)  inputLine,required TResult Function( List<OutputLine>? output)  outputUpdate,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String nick)  startWritingCode,required TResult Function( int id)  watch,required TResult Function( Map<int, String> users,  int yourId)  usersUpdate,required TResult Function( String code)  codeUpdate,required TResult Function( String code)  startEvaluation,required TResult Function()  stopEvaluation,required TResult Function( String line)  inputLine,required TResult Function( List<OutputLine> output,  bool isRunning)  outputUpdate,}) {final _that = this;
 switch (_that) {
 case StartWritingCode():
 return startWritingCode(_that.nick);case Watch():
@@ -225,7 +225,7 @@ return codeUpdate(_that.code);case StartEvaluation():
 return startEvaluation(_that.code);case StopEvaluation():
 return stopEvaluation();case InputLine():
 return inputLine(_that.line);case OutputUpdate():
-return outputUpdate(_that.output);}
+return outputUpdate(_that.output,_that.isRunning);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -239,7 +239,7 @@ return outputUpdate(_that.output);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String nick)?  startWritingCode,TResult? Function( int id)?  watch,TResult? Function( Map<int, String> users,  int yourId)?  usersUpdate,TResult? Function( String code)?  codeUpdate,TResult? Function( String code)?  startEvaluation,TResult? Function()?  stopEvaluation,TResult? Function( String line)?  inputLine,TResult? Function( List<OutputLine>? output)?  outputUpdate,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String nick)?  startWritingCode,TResult? Function( int id)?  watch,TResult? Function( Map<int, String> users,  int yourId)?  usersUpdate,TResult? Function( String code)?  codeUpdate,TResult? Function( String code)?  startEvaluation,TResult? Function()?  stopEvaluation,TResult? Function( String line)?  inputLine,TResult? Function( List<OutputLine> output,  bool isRunning)?  outputUpdate,}) {final _that = this;
 switch (_that) {
 case StartWritingCode() when startWritingCode != null:
 return startWritingCode(_that.nick);case Watch() when watch != null:
@@ -249,7 +249,7 @@ return codeUpdate(_that.code);case StartEvaluation() when startEvaluation != nul
 return startEvaluation(_that.code);case StopEvaluation() when stopEvaluation != null:
 return stopEvaluation();case InputLine() when inputLine != null:
 return inputLine(_that.line);case OutputUpdate() when outputUpdate != null:
-return outputUpdate(_that.output);case _:
+return outputUpdate(_that.output,_that.isRunning);case _:
   return null;
 
 }
@@ -746,18 +746,17 @@ as String,
 @JsonSerializable()
 
 class OutputUpdate implements Message {
-  const OutputUpdate({required final  List<OutputLine>? output, final  String? $type}): _output = output,$type = $type ?? 'outputUpdate';
+  const OutputUpdate({required final  List<OutputLine> output, required this.isRunning, final  String? $type}): _output = output,$type = $type ?? 'outputUpdate';
   factory OutputUpdate.fromJson(Map<String, dynamic> json) => _$OutputUpdateFromJson(json);
 
- final  List<OutputLine>? _output;
- List<OutputLine>? get output {
-  final value = _output;
-  if (value == null) return null;
+ final  List<OutputLine> _output;
+ List<OutputLine> get output {
   if (_output is EqualUnmodifiableListView) return _output;
   // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(value);
+  return EqualUnmodifiableListView(_output);
 }
 
+ final  bool isRunning;
 
 @JsonKey(name: 'runtimeType')
 final String $type;
@@ -776,16 +775,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OutputUpdate&&const DeepCollectionEquality().equals(other._output, _output));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is OutputUpdate&&const DeepCollectionEquality().equals(other._output, _output)&&(identical(other.isRunning, isRunning) || other.isRunning == isRunning));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_output));
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_output),isRunning);
 
 @override
 String toString() {
-  return 'Message.outputUpdate(output: $output)';
+  return 'Message.outputUpdate(output: $output, isRunning: $isRunning)';
 }
 
 
@@ -796,7 +795,7 @@ abstract mixin class $OutputUpdateCopyWith<$Res> implements $MessageCopyWith<$Re
   factory $OutputUpdateCopyWith(OutputUpdate value, $Res Function(OutputUpdate) _then) = _$OutputUpdateCopyWithImpl;
 @useResult
 $Res call({
- List<OutputLine>? output
+ List<OutputLine> output, bool isRunning
 });
 
 
@@ -813,10 +812,11 @@ class _$OutputUpdateCopyWithImpl<$Res>
 
 /// Create a copy of Message
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? output = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? output = null,Object? isRunning = null,}) {
   return _then(OutputUpdate(
-output: freezed == output ? _self._output : output // ignore: cast_nullable_to_non_nullable
-as List<OutputLine>?,
+output: null == output ? _self._output : output // ignore: cast_nullable_to_non_nullable
+as List<OutputLine>,isRunning: null == isRunning ? _self.isRunning : isRunning // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 

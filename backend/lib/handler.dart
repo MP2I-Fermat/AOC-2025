@@ -97,7 +97,7 @@ class ConnectionHandler {
               code: currentCode,
             );
 
-            state.send(OutputUpdate(output: null));
+            state.send(OutputUpdate(output: [], isRunning: false));
 
             final users = {
               for (final MapEntry(:key, :value) in connections.entries)
@@ -122,7 +122,12 @@ class ConnectionHandler {
             state
               ..clientState = WatchingState(target: id)
               ..send(CodeUpdate(code: targetState.code))
-              ..send(OutputUpdate(output: targetState.currentLines));
+              ..send(
+                OutputUpdate(
+                  output: targetState.currentLines,
+                  isRunning: targetState.activeEvaluation != null,
+                ),
+              );
 
             final users = {
               for (final MapEntry(:key, :value) in connections.entries)
@@ -205,54 +210,60 @@ final class EditingState extends ClientState {
   String code;
 
   Evaluation? activeEvaluation;
-  List<OutputLine>? currentLines;
+  final List<OutputLine> currentLines = [];
 
   Future<Evaluation> startEvaluation() async {
     final evaluation = await Evaluation.start(code);
     activeEvaluation = evaluation;
 
-    final lines = <OutputLine>[];
-    currentLines = lines;
+    currentLines.clear();
 
-    connectionState.send(OutputUpdate(output: lines));
+    connectionState.send(OutputUpdate(output: currentLines, isRunning: true));
     for (final connection in handler.connections.values) {
       if (connection.clientState case WatchingState st) {
         if (st.target == connectionState.id) {
-          connection.send(OutputUpdate(output: lines));
+          connection.send(OutputUpdate(output: currentLines, isRunning: true));
         }
       }
     }
 
     evaluation.lines.listen(
       (line) {
-        if (lines.length > 1000) {
+        if (currentLines.length > 1000) {
           evaluation.cancel();
           return;
         }
 
-        lines.add(line);
+        currentLines.add(line);
 
-        connectionState.send(OutputUpdate(output: lines));
+        connectionState.send(
+          OutputUpdate(output: currentLines, isRunning: true),
+        );
         for (final connection in handler.connections.values) {
           if (connection.clientState case WatchingState st) {
             if (st.target == connectionState.id) {
-              connection.send(OutputUpdate(output: lines));
+              connection.send(
+                OutputUpdate(output: currentLines, isRunning: true),
+              );
             }
           }
         }
       },
       onDone: () {
-        connectionState.send(OutputUpdate(output: null));
+        connectionState.send(
+          OutputUpdate(output: currentLines, isRunning: false),
+        );
         for (final connection in handler.connections.values) {
           if (connection.clientState case WatchingState st) {
             if (st.target == connectionState.id) {
-              connection.send(OutputUpdate(output: null));
+              connection.send(
+                OutputUpdate(output: currentLines, isRunning: false),
+              );
             }
           }
         }
 
         activeEvaluation = null;
-        currentLines = null;
       },
     );
 

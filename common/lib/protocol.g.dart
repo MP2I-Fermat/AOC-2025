@@ -74,14 +74,19 @@ Map<String, dynamic> _$InputLineToJson(InputLine instance) => <String, dynamic>{
 };
 
 OutputUpdate _$OutputUpdateFromJson(Map<String, dynamic> json) => OutputUpdate(
-  output: (json['output'] as List<dynamic>?)
-      ?.map((e) => OutputLine.fromJson(e as Map<String, dynamic>))
+  output: (json['output'] as List<dynamic>)
+      .map((e) => OutputLine.fromJson(e as Map<String, dynamic>))
       .toList(),
+  isRunning: json['isRunning'] as bool,
   $type: json['runtimeType'] as String?,
 );
 
 Map<String, dynamic> _$OutputUpdateToJson(OutputUpdate instance) =>
-    <String, dynamic>{'output': instance.output, 'runtimeType': instance.$type};
+    <String, dynamic>{
+      'output': instance.output,
+      'isRunning': instance.isRunning,
+      'runtimeType': instance.$type,
+    };
 
 _OutputLine _$OutputLineFromJson(Map<String, dynamic> json) => _OutputLine(
   stream: $enumDecode(_$OutputStreamEnumMap, json['stream']),
