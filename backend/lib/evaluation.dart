@@ -27,8 +27,7 @@ class Evaluation {
     final tmpDir = await Directory.systemTemp.createTemp('huitr-eval-');
 
     try {
-      final codeFile = File.fromUri(tmpDir.uri.resolve('code.8r'));
-      await codeFile.create();
+      final codeFile = File.fromUri(tmpDir.uri.resolve('code.8tr'));
       await codeFile.writeAsString(code);
 
       final process = useNsJail
@@ -49,14 +48,14 @@ class Evaluation {
               '--use_cgroupv2',
               '--',
               '/opt/huitr/huitr',
-              'code.8r',
+              'code.8tr',
             ])
           : await Process.start(
               workingDirectory: tmpDir.path,
               Directory(
                 absoluteHuitrLocation,
               ).uri.resolve('huitr').toFilePath(),
-              ['code.8r'],
+              ['code.8tr'],
             );
 
       return Evaluation(process, tmpDir);
