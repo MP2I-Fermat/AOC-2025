@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
@@ -218,14 +219,37 @@ final class EditingState extends ClientState {
 
     currentLines.clear();
 
-    connectionState.send(OutputUpdate(output: currentLines, isRunning: true));
-    for (final connection in handler.connections.values) {
-      if (connection.clientState case WatchingState st) {
-        if (st.target == connectionState.id) {
-          connection.send(OutputUpdate(output: currentLines, isRunning: true));
+    Timer? updateTimer;
+    void scheduleUpdate({required bool isRunning}) {
+      void sendUpdate() {
+        connectionState.send(
+          OutputUpdate(output: currentLines, isRunning: isRunning),
+        );
+        for (final connection in handler.connections.values) {
+          if (connection.clientState case WatchingState st) {
+            if (st.target == connectionState.id) {
+              connection.send(
+                OutputUpdate(output: currentLines, isRunning: isRunning),
+              );
+            }
+          }
         }
       }
+
+      if (isRunning) {
+        updateTimer ??= Timer(Duration(milliseconds: 100), () {
+          sendUpdate();
+          updateTimer = null;
+        });
+      } else {
+        updateTimer?.cancel();
+        updateTimer = null;
+
+        sendUpdate();
+      }
     }
+
+    scheduleUpdate(isRunning: true);
 
     evaluation.lines.listen(
       (line) {
@@ -236,32 +260,10 @@ final class EditingState extends ClientState {
 
         currentLines.add(line);
 
-        connectionState.send(
-          OutputUpdate(output: currentLines, isRunning: true),
-        );
-        for (final connection in handler.connections.values) {
-          if (connection.clientState case WatchingState st) {
-            if (st.target == connectionState.id) {
-              connection.send(
-                OutputUpdate(output: currentLines, isRunning: true),
-              );
-            }
-          }
-        }
+        scheduleUpdate(isRunning: true);
       },
       onDone: () {
-        connectionState.send(
-          OutputUpdate(output: currentLines, isRunning: false),
-        );
-        for (final connection in handler.connections.values) {
-          if (connection.clientState case WatchingState st) {
-            if (st.target == connectionState.id) {
-              connection.send(
-                OutputUpdate(output: currentLines, isRunning: false),
-              );
-            }
-          }
-        }
+        scheduleUpdate(isRunning: false);
 
         activeEvaluation = null;
       },
