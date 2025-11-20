@@ -23,6 +23,8 @@ COPY frontend/pubspec.yaml frontend/pubspec.lock .
 RUN dart pub get --enforce-lockfile
 
 COPY frontend/ .
+# This is a symlink in the source tree, so it is not copied.
+COPY huitr/src/doc.md web/doc.md
 
 RUN dart pub get --offline --enforce-lockfile
 
