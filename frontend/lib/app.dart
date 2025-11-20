@@ -17,6 +17,10 @@ class App extends StatefulComponent {
 }
 
 class AppState extends State<App> {
+  final Key resizePaneKey = UniqueKey();
+  final Key resizeBarsKey = UniqueKey();
+  final Key contentsKey = UniqueKey();
+
   double? verticalPosition;
   double? horizontalPosition;
   bool resizingWidth = false;
@@ -52,6 +56,7 @@ class AppState extends State<App> {
         div(styles: Styles(position: .relative(), flex: Flex(grow: 1)), [
           if (resizingHeight || resizingWidth)
             div(
+              key: resizePaneKey,
               styles: Styles(
                 position: zeroPosition,
                 zIndex: ZIndex(2),
@@ -92,6 +97,7 @@ class AppState extends State<App> {
               [],
             ),
           div(
+            key: resizeBarsKey,
             styles: Styles(
               position: zeroPosition,
               zIndex: ZIndex(1),
@@ -146,19 +152,23 @@ class AppState extends State<App> {
               ),
             ],
           ),
-          div(styles: Styles(position: zeroPosition, flexDirection: .row), [
-            div(styles: Styles(flexDirection: .column, flex: leftBlockFlex), [
-              div(styles: Styles(flex: upperBlockFlex), [CodeEditor()]),
-              HorizontalBar(),
-              div(styles: Styles(flex: Flex(grow: 1, basis: .zero)), [
-                OutputView(),
+          div(
+            key: contentsKey,
+            styles: Styles(position: zeroPosition, flexDirection: .row),
+            [
+              div(styles: Styles(flexDirection: .column, flex: leftBlockFlex), [
+                div(styles: Styles(flex: upperBlockFlex), [CodeEditor()]),
+                HorizontalBar(),
+                div(styles: Styles(flex: Flex(grow: 1, basis: .zero)), [
+                  OutputView(),
+                ]),
               ]),
-            ]),
-            VerticalBar(),
-            div(styles: Styles(flex: Flex(grow: 1, basis: .zero)), [
-              InfoPane(),
-            ]),
-          ]),
+              VerticalBar(),
+              div(styles: Styles(flex: Flex(grow: 1, basis: .zero)), [
+                InfoPane(),
+              ]),
+            ],
+          ),
         ]),
         HorizontalBar(),
         div(styles: Styles(display: .block, height: .pixels(20)), [Footer()]),
