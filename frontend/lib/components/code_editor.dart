@@ -134,6 +134,7 @@ class CodeEditorState extends State<CodeEditor> {
                           raw: {
                             'caret-color': 'var(--primary-color)',
                             'resize': 'none',
+                            'font-family': 'monospace',
                           },
                         ),
                         attributes: {'spellcheck': 'false'},
