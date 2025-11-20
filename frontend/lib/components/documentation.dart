@@ -42,6 +42,7 @@ class DocumentationState extends State<Documentation> {
                   markdownToHtml(
                     doc,
                     extensionSet: ExtensionSet.gitHubFlavored,
+                    blockSyntaxes: [HeaderWithIdSyntax()],
                   ),
                 ),
               ],
