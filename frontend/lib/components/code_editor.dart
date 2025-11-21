@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:frontend/providers/current_code.dart';
 import 'package:frontend/providers/state.dart';
 import 'package:jaspr/jaspr.dart';
@@ -189,6 +191,13 @@ class HighlightedCode extends StatelessComponent {
 
     final tokens = tokenize(huitrRules, code);
 
+    final parenQueue = DoubleLinkedQueue<HuitrToken>();
+    final parenColors = [
+      Color('fuchsia'),
+      Color('yellow'),
+      Color('cornflowerblue'),
+    ];
+
     return fragment([
       ...tokens.indexed.map((r) {
         final (index, (type, value)) = r;
@@ -221,10 +230,28 @@ class HighlightedCode extends StatelessComponent {
             HuitrToken.whitespace => Color('white'),
             HuitrToken.newline => Color('white'),
             HuitrToken.comma => Color('white'),
-            HuitrToken.lParen => Color('fuchsia'),
-            HuitrToken.rParen => Color('fuchsia'),
-            HuitrToken.lSquare => Color('fuchsia'),
-            HuitrToken.rSquare => Color('fuchsia'),
+            HuitrToken.lParen || HuitrToken.lSquare => () {
+              parenQueue.addLast(type);
+              return parenColors[parenQueue.length % parenColors.length];
+            }(),
+            HuitrToken.rParen => () {
+              if (parenQueue.lastOrNull != HuitrToken.lParen) {
+                return Color('red');
+              }
+
+              final color = parenColors[parenQueue.length % parenColors.length];
+              parenQueue.removeLast();
+              return color;
+            }(),
+            HuitrToken.rSquare => () {
+              if (parenQueue.lastOrNull != HuitrToken.lSquare) {
+                return Color('red');
+              }
+
+              final color = parenColors[parenQueue.length % parenColors.length];
+              parenQueue.removeLast();
+              return color;
+            }(),
             HuitrToken.chainOp => Color('white'),
             HuitrToken.nameSp => Color('purple'),
             HuitrToken.singleCommentStart => Color('green'),
