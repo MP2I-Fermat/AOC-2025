@@ -20,6 +20,13 @@ a {
   color: var(--primary-color);
 }
 
+code {
+  background-color: var(--tertiary-color);
+  padding-left: 2px;
+  padding-right: 2px;
+  border-radius: 1.5px;
+}
+
 .main {
   height: 100vh;
   display: flex;
