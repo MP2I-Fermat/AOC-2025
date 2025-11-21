@@ -140,6 +140,88 @@ class CodeEditorState extends State<CodeEditor> {
                           },
                         ),
                         attributes: {'spellcheck': 'false'},
+                        events: {
+                          'keydown': (e) {
+                            final editor =
+                                document.querySelector('#code-input')
+                                    as HTMLTextAreaElement;
+                            e as KeyboardEvent;
+                            final code = context.read(codeProvider);
+
+                            if (e.key == 'Tab') {
+                              e.preventDefault();
+
+                              if (!e.shiftKey) {
+                                // Plain tab
+                                if (editor.selectionStart ==
+                                    editor.selectionEnd) {
+                                  document.execCommand(
+                                    'insertText',
+                                    false,
+                                    '  ',
+                                  );
+                                } else {
+                                  var lineStart = editor.selectionStart;
+                                  while (lineStart > 0 &&
+                                      code[lineStart - 1] != '\n') {
+                                    lineStart--;
+                                  }
+
+                                  final selection = code.substring(
+                                    lineStart,
+                                    editor.selectionEnd,
+                                  );
+
+                                  final indented =
+                                      '  ${selection.replaceAll('\n', '\n  ')}';
+
+                                  final initialStart = editor.selectionStart;
+
+                                  editor.selectionStart = lineStart;
+                                  document.execCommand(
+                                    'insertText',
+                                    false,
+                                    indented,
+                                  );
+
+                                  editor.selectionStart = initialStart + 2;
+                                }
+                              } else {
+                                var lineStart = editor.selectionStart;
+                                while (lineStart > 0 &&
+                                    code[lineStart - 1] != '\n') {
+                                  lineStart--;
+                                }
+
+                                final selection = code.substring(
+                                  lineStart,
+                                  editor.selectionEnd,
+                                );
+
+                                final outdentStart = selection.startsWith('  ');
+
+                                final indented = outdentStart
+                                    ? selection
+                                          .replaceAll('\n  ', '\n')
+                                          .substring(2)
+                                    : selection.replaceAll('\n  ', '\n');
+
+                                final initialStart = editor.selectionStart;
+
+                                editor.selectionStart = lineStart;
+                                document.execCommand(
+                                  'insertText',
+                                  false,
+                                  indented,
+                                );
+
+                                editor.selectionStart = outdentStart
+                                    ? initialStart - 2
+                                    : initialStart;
+                              }
+                            }
+                          },
+                        },
                         onInput: context
                             .read(codeProvider.notifier)
                             .setStoredCode,
