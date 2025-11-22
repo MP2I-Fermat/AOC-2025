@@ -8,7 +8,7 @@ part of 'protocol.dart';
 
 StartWritingCode _$StartWritingCodeFromJson(Map<String, dynamic> json) =>
     StartWritingCode(
-      nick: json['nick'] as String,
+      nick: json['nick'] as String?,
       $type: json['runtimeType'] as String?,
     );
 

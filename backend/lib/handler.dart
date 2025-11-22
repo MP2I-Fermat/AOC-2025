@@ -19,12 +19,16 @@ class ConnectionHandler {
   }
 
   Future<void> handle(WebSocketChannel channel) async {
-    final state = ConnectionState(channel: channel, id: nextId());
+    final state = ConnectionState(
+      channel: channel,
+      id: nextId(),
+      handler: this,
+    );
     connections[state.id] = state;
 
     final users = {
       for (final MapEntry(:key, :value) in connections.entries)
-        if (value.clientState case EditingState state) key: state.nick,
+        if (value.clientState case EditingState(:final nick?)) key: nick,
     };
     state.send(UsersUpdate(users: users, yourId: state.id));
 
@@ -81,28 +85,25 @@ class ConnectionHandler {
           case OutputUpdate():
             throw Exception('Clients cannot send OutputUpdate');
           case StartWritingCode(:final nick):
-            if (nick.isEmpty || nick.length >= 200) {
+            if (nick != null && (nick.isEmpty || nick.length >= 200)) {
               throw Exception('Invalid nickname');
             }
 
-            String currentCode = '';
             if (state.clientState case EditingState previousState) {
-              previousState.activeEvaluation?.cancel();
-              currentCode = previousState.code;
+              previousState.nick = nick;
+            } else {
+              state.clientState = EditingState(
+                handler: this,
+                connectionState: state,
+                nick: nick,
+              );
+              state.send(OutputUpdate(output: [], isRunning: false));
             }
-
-            state.clientState = EditingState(
-              handler: this,
-              connectionState: state,
-              nick: nick,
-              code: currentCode,
-            );
-
-            state.send(OutputUpdate(output: [], isRunning: false));
 
             final users = {
               for (final MapEntry(:key, :value) in connections.entries)
-                if (value.clientState case EditingState state) key: state.nick,
+                if (value.clientState case EditingState(:final nick?))
+                  key: nick,
             };
             for (final connection in connections.values) {
               connection.send(UsersUpdate(users: users, yourId: connection.id));
@@ -132,7 +133,8 @@ class ConnectionHandler {
 
             final users = {
               for (final MapEntry(:key, :value) in connections.entries)
-                if (value.clientState case EditingState state) key: state.nick,
+                if (value.clientState case EditingState(:final nick?))
+                  key: nick,
             };
             for (final connection in connections.values) {
               connection.send(UsersUpdate(users: users, yourId: connection.id));
@@ -162,7 +164,7 @@ class ConnectionHandler {
 
       final users = {
         for (final MapEntry(:key, :value) in connections.entries)
-          if (value.clientState case EditingState state) key: state.nick,
+          if (value.clientState case EditingState(:final nick?)) key: nick,
       };
       for (final connection in connections.values) {
         connection.send(UsersUpdate(users: users, yourId: connection.id));
@@ -174,11 +176,19 @@ class ConnectionHandler {
 class ConnectionState {
   final int id;
 
+  final ConnectionHandler handler;
   final WebSocketChannel channel;
 
-  late ClientState clientState = WaitingState();
+  late ClientState clientState = EditingState(
+    connectionState: this,
+    handler: handler,
+  );
 
-  ConnectionState({required this.channel, required this.id});
+  ConnectionState({
+    required this.channel,
+    required this.handler,
+    required this.id,
+  });
 
   void send(Message m) {
     channel.sink.add(jsonEncode(m.toJson()));
@@ -199,19 +209,20 @@ final class EditingState extends ClientState {
   final ConnectionHandler handler;
 
   final ConnectionState connectionState;
-  final String nick;
+  String? nick;
 
   EditingState({
     required this.handler,
     required this.connectionState,
-    required this.nick,
+    this.nick,
     this.code = '',
-  });
+    List<OutputLine>? currentLines,
+  }) : currentLines = currentLines ?? [];
 
   String code;
 
   Evaluation? activeEvaluation;
-  final List<OutputLine> currentLines = [];
+  final List<OutputLine> currentLines;
 
   Future<Evaluation> startEvaluation() async {
     final evaluation = await Evaluation.start(code);

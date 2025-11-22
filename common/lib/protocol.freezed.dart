@@ -187,7 +187,7 @@ return outputUpdate(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String nick)?  startWritingCode,TResult Function( int id)?  watch,TResult Function( Map<int, String> users,  int yourId)?  usersUpdate,TResult Function( String code)?  codeUpdate,TResult Function( String code)?  startEvaluation,TResult Function()?  stopEvaluation,TResult Function( String line)?  inputLine,TResult Function( List<OutputLine> output,  bool isRunning)?  outputUpdate,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? nick)?  startWritingCode,TResult Function( int id)?  watch,TResult Function( Map<int, String> users,  int yourId)?  usersUpdate,TResult Function( String code)?  codeUpdate,TResult Function( String code)?  startEvaluation,TResult Function()?  stopEvaluation,TResult Function( String line)?  inputLine,TResult Function( List<OutputLine> output,  bool isRunning)?  outputUpdate,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case StartWritingCode() when startWritingCode != null:
 return startWritingCode(_that.nick);case Watch() when watch != null:
@@ -215,7 +215,7 @@ return outputUpdate(_that.output,_that.isRunning);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String nick)  startWritingCode,required TResult Function( int id)  watch,required TResult Function( Map<int, String> users,  int yourId)  usersUpdate,required TResult Function( String code)  codeUpdate,required TResult Function( String code)  startEvaluation,required TResult Function()  stopEvaluation,required TResult Function( String line)  inputLine,required TResult Function( List<OutputLine> output,  bool isRunning)  outputUpdate,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? nick)  startWritingCode,required TResult Function( int id)  watch,required TResult Function( Map<int, String> users,  int yourId)  usersUpdate,required TResult Function( String code)  codeUpdate,required TResult Function( String code)  startEvaluation,required TResult Function()  stopEvaluation,required TResult Function( String line)  inputLine,required TResult Function( List<OutputLine> output,  bool isRunning)  outputUpdate,}) {final _that = this;
 switch (_that) {
 case StartWritingCode():
 return startWritingCode(_that.nick);case Watch():
@@ -239,7 +239,7 @@ return outputUpdate(_that.output,_that.isRunning);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String nick)?  startWritingCode,TResult? Function( int id)?  watch,TResult? Function( Map<int, String> users,  int yourId)?  usersUpdate,TResult? Function( String code)?  codeUpdate,TResult? Function( String code)?  startEvaluation,TResult? Function()?  stopEvaluation,TResult? Function( String line)?  inputLine,TResult? Function( List<OutputLine> output,  bool isRunning)?  outputUpdate,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? nick)?  startWritingCode,TResult? Function( int id)?  watch,TResult? Function( Map<int, String> users,  int yourId)?  usersUpdate,TResult? Function( String code)?  codeUpdate,TResult? Function( String code)?  startEvaluation,TResult? Function()?  stopEvaluation,TResult? Function( String line)?  inputLine,TResult? Function( List<OutputLine> output,  bool isRunning)?  outputUpdate,}) {final _that = this;
 switch (_that) {
 case StartWritingCode() when startWritingCode != null:
 return startWritingCode(_that.nick);case Watch() when watch != null:
@@ -264,7 +264,7 @@ class StartWritingCode implements Message {
   const StartWritingCode({required this.nick, final  String? $type}): $type = $type ?? 'startWritingCode';
   factory StartWritingCode.fromJson(Map<String, dynamic> json) => _$StartWritingCodeFromJson(json);
 
- final  String nick;
+ final  String? nick;
 
 @JsonKey(name: 'runtimeType')
 final String $type;
@@ -303,7 +303,7 @@ abstract mixin class $StartWritingCodeCopyWith<$Res> implements $MessageCopyWith
   factory $StartWritingCodeCopyWith(StartWritingCode value, $Res Function(StartWritingCode) _then) = _$StartWritingCodeCopyWithImpl;
 @useResult
 $Res call({
- String nick
+ String? nick
 });
 
 
@@ -320,10 +320,10 @@ class _$StartWritingCodeCopyWithImpl<$Res>
 
 /// Create a copy of Message
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? nick = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? nick = freezed,}) {
   return _then(StartWritingCode(
-nick: null == nick ? _self.nick : nick // ignore: cast_nullable_to_non_nullable
-as String,
+nick: freezed == nick ? _self.nick : nick // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 

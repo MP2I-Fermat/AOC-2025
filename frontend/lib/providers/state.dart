@@ -9,13 +9,13 @@ import 'package:riverpod/riverpod.dart';
 sealed class ClientState {}
 
 final class Waiting extends ClientState {
-  final String? wantsToWatch;
+  final String wantsToWatch;
 
-  Waiting({this.wantsToWatch});
+  Waiting({required this.wantsToWatch});
 }
 
 final class Writing extends ClientState {
-  final String nick;
+  final String? nick;
 
   Writing({required this.nick});
 }
@@ -74,7 +74,7 @@ class StateNotifier extends Notifier<ClientState> {
         } else if (currentNick != nick) {
           watch(id);
         }
-      } else if (state case Waiting(:final wantsToWatch?)) {
+      } else if (state case Waiting(:final wantsToWatch)) {
         final matching = users.entries
             .where((e) => e.value == wantsToWatch)
             .singleOrNull;
@@ -85,7 +85,7 @@ class StateNotifier extends Notifier<ClientState> {
       }
     });
 
-    return Waiting();
+    return Writing(nick: null);
   }
 
   void setupReceivingCodeUpdates() {
@@ -126,7 +126,7 @@ class StateNotifier extends Notifier<ClientState> {
     });
   }
 
-  void write(String nick) {
+  void write(String? nick) {
     ref.read(codeProvider.notifier).restoreStoredCode();
 
     cancelCodeUpdates();

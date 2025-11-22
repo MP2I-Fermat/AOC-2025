@@ -14,14 +14,13 @@ class OutputView extends StatelessComponent {
   @override
   Component build(BuildContext context) {
     final stateInfo = switch (context.watch(stateProvider)) {
-      Writing(:final nick) => text("Pseudo: $nick"),
-
+      Writing(:final nick?) => text("Pseudo: $nick"),
+      Writing(nick: null) => null,
       Watching(:final nick) => text('En train de regarder $nick'),
-      Waiting(:final wantsToWatch?) => div(
+      Waiting(:final wantsToWatch) => div(
         styles: Styles(color: Color('darkorange')),
         [text("$wantsToWatch n'est pas en train d'écrire du code...")],
       ),
-      _ => null,
     };
 
     return div(

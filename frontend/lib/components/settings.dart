@@ -22,26 +22,26 @@ class Settings extends StatelessComponent {
       ),
       [
         switch (state) {
-          Writing(:final nick) => div(styles: Styles(display: .inline), [
+          Writing(:final nick?) => div(styles: Styles(display: .inline), [
             text("Vous êtes en train d'écrire du code avec le pseudo "),
             b([text(nick)]),
             text('.'),
           ]),
+          Writing(nick: null) => text(
+            "Vous êtes en train d'écrire du code anonymement.",
+          ),
           Watching(:final nick) => div(styles: Styles(display: .inline), [
             text("Vous êtes en train de regarder "),
             b([text(nick)]),
             text('.'),
           ]),
-          Waiting(:final wantsToWatch?) => div(
+          Waiting(:final wantsToWatch) => div(
             styles: Styles(display: .inline),
             [
               text("Vous êtes en train de regarder "),
               b([text(wantsToWatch)]),
-              text(", mais il n'est pas en train d'écrire du code."),
+              text(", mais il/elle n'est pas en train d'écrire du code."),
             ],
-          ),
-          Waiting() => text(
-            'Sélectionnez un utilisateur à regarder ou entrez un pseudo pour écrire du code vous-meme.',
           ),
         },
         PersonalSettings(),
@@ -62,13 +62,6 @@ class PersonalSettingsState extends State<PersonalSettings> {
   static const nickKey = 'aoc_nick';
 
   String? nick = window.localStorage.getItem(nickKey);
-
-  bool get hasValidNick {
-    final nick = this.nick?.trim();
-    if (nick == null) return false;
-
-    return nick.isNotEmpty && nick.length < 200;
-  }
 
   @override
   Component build(BuildContext context) {
@@ -106,26 +99,49 @@ class PersonalSettingsState extends State<PersonalSettings> {
           attributes: {'spellcheck': 'false'},
           onInput: (value) {
             setState(() {
-              nick = value.toString();
+              if (value.toString().trim().isEmpty) {
+                nick = null;
+              } else {
+                nick = value.toString();
+              }
             });
           },
         ),
         div(
           styles: Styles(
             padding: .all(.pixels(8)),
-            cursor: hasValidNick && nick != currentNick
+            cursor: nick != null || currentNick != null
                 ? .pointer
                 : .notAllowed,
             userSelect: .none,
           ),
           events: {
             'click': (e) {
-              if (!hasValidNick || currentNick == nick?.trim()) return;
-              context.read(stateProvider.notifier).write(nick!.trim());
-              window.localStorage.setItem(nickKey, nick!.trim());
+              if (currentNick?.trim() == nick?.trim()) {
+                if (nick != null) {
+                  context.read(stateProvider.notifier).write(null);
+                  window.localStorage.removeItem(nickKey);
+                }
+
+                return;
+              }
+              context.read(stateProvider.notifier).write(nick?.trim());
+              if (nick != null) {
+                window.localStorage.setItem(nickKey, nick!.trim());
+              } else {
+                window.localStorage.removeItem(nickKey);
+              }
             },
           },
-          [text('Passer en mode édition')],
+          [
+            switch ((currentNick?.trim(), nick?.trim())) {
+              (null, null) => div([text('Entrez un pseudo pour être visible')]),
+              (null, String _) => text('Passer en mode visible'),
+              (String a, String b) when a != b => text('Changer de pseudo'),
+              (String _, null) => text('Passer en mode anonyme'),
+              (String _, String _) => text('Passer en mode anonyme'),
+            },
+          ],
         ),
       ]),
     ]);
