@@ -219,6 +219,56 @@ class CodeEditorState extends State<CodeEditor> {
                                     ? initialStart - 2
                                     : initialStart;
                               }
+                            } else if (e.key == '/' && e.ctrlKey) {
+                              e.preventDefault();
+
+                              var lineStart = editor.selectionStart;
+                              while (lineStart > 0 &&
+                                  code[lineStart - 1] != '\n') {
+                                lineStart--;
+                              }
+
+                              final selection = code.substring(
+                                lineStart,
+                                editor.selectionEnd,
+                              );
+
+                              final lines = selection.split('\n');
+                              final isUncomment = lines.every(
+                                (line) =>
+                                    line.trim().isEmpty || line.startsWith('.'),
+                              );
+
+                              final newLines = isUncomment
+                                  ? lines.map((line) {
+                                      if (line.startsWith('. ')) {
+                                        return line.substring(2);
+                                      } else if (line.startsWith('.')) {
+                                        return line.substring(1);
+                                      } else {
+                                        return line;
+                                      }
+                                    })
+                                  : lines.map((line) {
+                                      if (line.trim().isEmpty) {
+                                        return line;
+                                      }
+
+                                      return '. $line';
+                                    });
+
+                              final newSelection = newLines.join('\n');
+
+                              final initialStart = editor.selectionStart;
+                              editor.selectionStart = lineStart;
+
+                              document.execCommand(
+                                'insertText',
+                                false,
+                                newSelection,
+                              );
+
+                              editor.selectionStart = initialStart;
                             }
                           },
                         },
