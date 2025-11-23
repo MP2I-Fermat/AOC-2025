@@ -27,6 +27,17 @@ code {
   border-radius: 1.5px;
 }
 
+pre:has(code) {
+  background-color: var(--tertiary-color);
+  padding: 8px;
+  border-radius: 1.5px;
+}
+
+pre > code {
+  padding: 0px;
+  border-radius: 0px;
+}
+
 .main {
   height: 100vh;
   display: flex;
