@@ -16,6 +16,7 @@ class CodeEditor extends StatefulComponent {
 
 class CodeEditorState extends State<CodeEditor> {
   var verticalScrollOffset = 0.0;
+  var justInsertedMatchingBraces = false;
   late String initialContent;
 
   final Key codeInputKey = UniqueKey();
@@ -296,12 +297,117 @@ class CodeEditorState extends State<CodeEditor> {
                               );
 
                               editor.selectionStart = initialStart;
+                            } else if (e.key == 'Enter') {
+                              e.preventDefault();
+
+                              var lineStart = editor.selectionStart;
+                              while (lineStart > 0 &&
+                                  code[lineStart - 1] != '\n') {
+                                lineStart--;
+                              }
+
+                              final line = code.substring(
+                                lineStart,
+                                code.indexOf('\n', lineStart),
+                              );
+
+                              var currentIndentation = 0;
+                              while (currentIndentation < line.length &&
+                                  line[currentIndentation] == ' ') {
+                                currentIndentation++;
+                              }
+
+                              if (editor.selectionStart > 0 &&
+                                  editor.selectionEnd < code.length &&
+                                  code[editor.selectionStart - 1] == '[' &&
+                                  code[editor.selectionEnd] == ']') {
+                                document.execCommand(
+                                  'insertText',
+                                  false,
+                                  '\n${' ' * currentIndentation}  \n${' ' * currentIndentation}',
+                                );
+                                editor.selectionStart -= 1;
+                                editor.selectionEnd = editor.selectionStart;
+                              } else {
+                                document.execCommand(
+                                  'insertText',
+                                  false,
+                                  '\n${' ' * currentIndentation}',
+                                );
+                              }
+                            } else if (e.key == '[') {
+                              e.preventDefault();
+                              document.execCommand('insertText', false, '[]');
+                              editor.selectionStart -= 1;
+                              editor.selectionEnd = editor.selectionStart;
+
+                              setState(() {
+                                justInsertedMatchingBraces = true;
+                              });
+                            } else if (e.key == '(') {
+                              e.preventDefault();
+                              document.execCommand('insertText', false, '()');
+                              editor.selectionStart -= 1;
+                              editor.selectionEnd = editor.selectionStart;
+
+                              setState(() {
+                                justInsertedMatchingBraces = true;
+                              });
+                            } else if (e.key == 'Backspace') {
+                              if (justInsertedMatchingBraces) {
+                                e.preventDefault();
+
+                                editor.selectionStart -= 1;
+                                editor.selectionEnd = editor.selectionStart + 2;
+                                document.execCommand('insertText', false, '');
+                              }
+                            }
+                          },
+                          'selectionchange': (e) {
+                            final code = context.read(codeProvider);
+
+                            final editor =
+                                document.querySelector('#code-input')
+                                    as HTMLTextAreaElement;
+
+                            if (editor.selectionStart == editor.selectionEnd &&
+                                editor.selectionStart > 0 &&
+                                editor.selectionStart < code.length &&
+                                ((code[editor.selectionStart - 1] == '[' &&
+                                        code[editor.selectionStart] == ']') ||
+                                    (code[editor.selectionStart - 1] == '(' &&
+                                        code[editor.selectionStart] == ')'))) {
+                              // Don't reset matching braces state.
+                            } else {
+                              setState(() {
+                                justInsertedMatchingBraces = false;
+                              });
                             }
                           },
                         },
-                        onInput: context
-                            .read(codeProvider.notifier)
-                            .setStoredCode,
+                        onInput: (code) {
+                          final editor =
+                              document.querySelector('#code-input')
+                                  as HTMLTextAreaElement;
+
+                          if (editor.selectionStart == editor.selectionEnd &&
+                              editor.selectionStart > 0 &&
+                              editor.selectionStart < code.length &&
+                              ((code[editor.selectionStart - 1] == '[' &&
+                                      code[editor.selectionStart] == ']') ||
+                                  (code[editor.selectionStart - 1] == '(' &&
+                                      code[editor.selectionStart] == ')'))) {
+                            // Don't reset matching braces state.
+                          } else {
+                            setState(() {
+                              justInsertedMatchingBraces = false;
+                            });
+                          }
+
+                          context
+                              .read(codeProvider.notifier)
+                              .setStoredCode(code);
+                        },
                         [text(initialContent)],
                       )
                     else
