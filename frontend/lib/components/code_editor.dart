@@ -128,7 +128,7 @@ class CodeEditorState extends State<CodeEditor> {
                           outline: Outline(style: .none),
                           // Opacity 0 hides the cursor, just render the text as
                           // transparent instead.
-                          // color: .rgba(0, 0, 0, 0),
+                          color: .rgba(0, 0, 0, 0),
                           fontSize: .pixels(13),
                           whiteSpace: .pre,
                           backgroundColor: .rgba(0, 0, 0, 0),
