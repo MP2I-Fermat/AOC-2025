@@ -44,7 +44,7 @@ class Evaluation {
               '--bindmount_ro=$absoluteHuitrLocation:/opt/huitr',
               '--cgroup_mem_max=128000000',
               '--cgroup_pids_max=4',
-              '--cgroup_cpu_ms_per_sec=100',
+              // '--cgroup_cpu_ms_per_sec=100',
               '--use_cgroupv2',
               '--',
               '/opt/huitr/huitr',
