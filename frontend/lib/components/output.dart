@@ -142,7 +142,7 @@ class _OutputLinesState extends State<OutputLines> {
             padding: .all(.pixels(8)),
             boxSizing: .borderBox,
             flexDirection: .column,
-            whiteSpace: .pre,
+            whiteSpace: .preWrap,
             raw: {'font-family': 'monospace'},
           ),
           [
