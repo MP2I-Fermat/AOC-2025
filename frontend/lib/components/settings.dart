@@ -1,3 +1,4 @@
+import 'package:common/protocol.dart';
 import 'package:frontend/providers/state.dart';
 import 'package:frontend/providers/users.dart';
 import 'package:jaspr/jaspr.dart';
@@ -167,19 +168,29 @@ class WatchingSettings extends StatelessComponent {
         text("Aucun utilisateur n'est en train d'écrire du code.")
       else ...[
         text('Cliquez sur un utilisateur pour les suivre.'),
+        if (context.read(usersProvider)[currentlyWatching] case UserInfo(
+          :final nick,
+        ))
+          div(styles: Styles(display: .inline), [
+            text('Cliquez encore une fois sur '),
+            b([text(nick)]),
+            text(' pour repasser en édition anonyme.'),
+          ]),
         ul(styles: Styles(userSelect: .none), [
           for (final MapEntry(:key, :value) in users)
             li(
               styles: Styles(
-                cursor: key == currentlyWatching || key == id
-                    ? .notAllowed
-                    : .pointer,
+                cursor: key == id ? .notAllowed : .pointer,
                 fontWeight: key == currentlyWatching ? .bold : .normal,
               ),
               events: {
                 'click': (e) {
-                  if (key == currentlyWatching || key == id) return;
-                  context.read(stateProvider.notifier).watch(key);
+                  if (key == id) return;
+                  if (key == currentlyWatching) {
+                    context.read(stateProvider.notifier).write(null);
+                  } else {
+                    context.read(stateProvider.notifier).watch(key);
+                  }
                 },
               },
               [
