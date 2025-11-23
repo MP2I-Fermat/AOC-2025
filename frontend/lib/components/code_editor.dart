@@ -128,7 +128,7 @@ class CodeEditorState extends State<CodeEditor> {
                           outline: Outline(style: .none),
                           // Opacity 0 hides the cursor, just render the text as
                           // transparent instead.
-                          color: .rgba(0, 0, 0, 0),
+                          // color: .rgba(0, 0, 0, 0),
                           fontSize: .pixels(13),
                           whiteSpace: .pre,
                           backgroundColor: .rgba(0, 0, 0, 0),
@@ -291,7 +291,7 @@ class CodeEditorState extends State<CodeEditor> {
                         ),
                         [],
                       ),
-                    div(styles: Styles(zIndex: ZIndex(0)), [
+                    div(styles: Styles(zIndex: ZIndex(0), flexDirection: .column), [
                       HighlightedCode(code: context.watch(codeProvider)),
                       // Needed to force the browser to size the inner scroll area correctly.
                       // If this is absent the textarea may sometimes begin scrolling within
