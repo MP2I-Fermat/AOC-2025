@@ -18,8 +18,9 @@ class Settings extends StatelessComponent {
         height: .percent(100),
         padding: .all(.pixels(8)),
         boxSizing: .borderBox,
-        overflow: .only(y: Overflow.auto),
+        overflow: .only(y: Overflow.auto, x: Overflow.hidden),
         flexDirection: .column,
+        raw: {'overflow-wrap': 'anywhere'},
       ),
       [
         switch (state) {
