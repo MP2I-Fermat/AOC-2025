@@ -361,6 +361,18 @@ class CodeEditorState extends State<CodeEditor> {
                                 editor.selectionEnd = editor.selectionStart + 2;
                                 document.execCommand('insertText', false, '');
                               }
+                            } else if (e.key == ')') {
+                              if (justInsertedMatchingBraces &&
+                                  code[editor.selectionStart] == ')') {
+                                e.preventDefault();
+                                editor.selectionStart++;
+                              }
+                            } else if (e.key == ']') {
+                              if (justInsertedMatchingBraces &&
+                                  code[editor.selectionStart] == ']') {
+                                e.preventDefault();
+                                editor.selectionStart++;
+                              }
                             }
                           },
                           'selectionchange': (e) {
