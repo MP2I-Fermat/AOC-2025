@@ -59,11 +59,11 @@ class StateNotifier extends Notifier<ClientState> {
 
     ref.listen(usersProvider, (_, users) {
       if (state case Watching(:final id, :final nick)) {
-        final currentNick = users[id];
+        final currentNick = users[id]?.nick;
 
         if (currentNick == null) {
           final matching = users.entries
-              .where((e) => e.value == nick)
+              .where((e) => e.value.nick == nick)
               .singleOrNull;
 
           if (matching != null) {
@@ -76,7 +76,7 @@ class StateNotifier extends Notifier<ClientState> {
         }
       } else if (state case Waiting(:final wantsToWatch)) {
         final matching = users.entries
-            .where((e) => e.value == wantsToWatch)
+            .where((e) => e.value.nick == wantsToWatch)
             .singleOrNull;
 
         if (matching != null) {
