@@ -135,7 +135,9 @@ class StateNotifier extends Notifier<ClientState> {
     if (ref.read(connectionProvider).unwrapPrevious().value
         case final connection?) {
       connection.send(Message.startWritingCode(nick: nick));
-      setupSendingCodeUpdates(connection);
+      if (nick != null) {
+        setupSendingCodeUpdates(connection);
+      }
     }
   }
 }
