@@ -27,7 +27,8 @@ Map<String, dynamic> _$WatchToJson(Watch instance) => <String, dynamic>{
 
 UsersUpdate _$UsersUpdateFromJson(Map<String, dynamic> json) => UsersUpdate(
   users: (json['users'] as Map<String, dynamic>).map(
-    (k, e) => MapEntry(int.parse(k), e as String),
+    (k, e) =>
+        MapEntry(int.parse(k), UserInfo.fromJson(e as Map<String, dynamic>)),
   ),
   yourId: (json['yourId'] as num).toInt(),
   $type: json['runtimeType'] as String?,
@@ -87,6 +88,16 @@ Map<String, dynamic> _$OutputUpdateToJson(OutputUpdate instance) =>
       'isRunning': instance.isRunning,
       'runtimeType': instance.$type,
     };
+
+_UserInfo _$UserInfoFromJson(Map<String, dynamic> json) => _UserInfo(
+  nick: json['nick'] as String,
+  numViewers: (json['numViewers'] as num).toInt(),
+);
+
+Map<String, dynamic> _$UserInfoToJson(_UserInfo instance) => <String, dynamic>{
+  'nick': instance.nick,
+  'numViewers': instance.numViewers,
+};
 
 _OutputLine _$OutputLineFromJson(Map<String, dynamic> json) => _OutputLine(
   stream: $enumDecode(_$OutputStreamEnumMap, json['stream']),

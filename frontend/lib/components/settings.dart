@@ -154,7 +154,7 @@ class WatchingSettings extends StatelessComponent {
   @override
   Component build(BuildContext context) {
     final users = context.watch(usersProvider).entries.toList()
-      ..sort((a, b) => a.value.compareTo(b.value));
+      ..sort((a, b) => a.value.nick.compareTo(b.value.nick));
     final id = context.watch(idProvider);
     final currentlyWatching = switch (context.watch(stateProvider)) {
       Watching(:final id) => id,
@@ -182,7 +182,14 @@ class WatchingSettings extends StatelessComponent {
                   context.read(stateProvider.notifier).watch(key);
                 },
               },
-              [text(value), if (key == id) text(' (Vous)')],
+              [
+                text(value.nick),
+                if (key == id) text(' (Vous)'),
+                if (value.numViewers != 0)
+                  text(
+                    ' (${value.numViewers} spectateur${value.numViewers == 1 ? '' : 's'})',
+                  ),
+              ],
             ),
         ]),
       ],

@@ -18,6 +18,25 @@ class ConnectionHandler {
     return res;
   }
 
+  void sendUsersUpdate(ConnectionState state) {
+    final users = {
+      for (final MapEntry(:key, :value) in connections.entries)
+        if (value.clientState case EditingState(:final nick?))
+          key: UserInfo(
+            nick: nick,
+            numViewers: connections.values.where((st) {
+              if (st.clientState case WatchingState(:final target)) {
+                return target == key;
+              }
+              return false;
+            }).length,
+          ),
+    };
+    state.send(UsersUpdate(users: users, yourId: state.id));
+  }
+
+  void broadcastUsersUpdate() => connections.values.forEach(sendUsersUpdate);
+
   Future<void> handle(WebSocketChannel channel) async {
     final state = ConnectionState(
       channel: channel,
@@ -26,11 +45,7 @@ class ConnectionHandler {
     );
     connections[state.id] = state;
 
-    final users = {
-      for (final MapEntry(:key, :value) in connections.entries)
-        if (value.clientState case EditingState(:final nick?)) key: nick,
-    };
-    state.send(UsersUpdate(users: users, yourId: state.id));
+    sendUsersUpdate(state);
 
     EditingState requireEditing() {
       if (state.clientState case EditingState state) {
@@ -100,14 +115,7 @@ class ConnectionHandler {
               state.send(OutputUpdate(output: [], isRunning: false));
             }
 
-            final users = {
-              for (final MapEntry(:key, :value) in connections.entries)
-                if (value.clientState case EditingState(:final nick?))
-                  key: nick,
-            };
-            for (final connection in connections.values) {
-              connection.send(UsersUpdate(users: users, yourId: connection.id));
-            }
+            broadcastUsersUpdate();
           case Watch(:final id):
             if (state.clientState case EditingState st) {
               await st.activeEvaluation?.cancel();
@@ -131,14 +139,7 @@ class ConnectionHandler {
                 ),
               );
 
-            final users = {
-              for (final MapEntry(:key, :value) in connections.entries)
-                if (value.clientState case EditingState(:final nick?))
-                  key: nick,
-            };
-            for (final connection in connections.values) {
-              connection.send(UsersUpdate(users: users, yourId: connection.id));
-            }
+            broadcastUsersUpdate();
 
             for (final connection in connections.values) {
               if (connection.clientState case WatchingState st) {
@@ -162,13 +163,7 @@ class ConnectionHandler {
 
       connections.remove(state.id);
 
-      final users = {
-        for (final MapEntry(:key, :value) in connections.entries)
-          if (value.clientState case EditingState(:final nick?)) key: nick,
-      };
-      for (final connection in connections.values) {
-        connection.send(UsersUpdate(users: users, yourId: connection.id));
-      }
+      broadcastUsersUpdate();
     }
   }
 }

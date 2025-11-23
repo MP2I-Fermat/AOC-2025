@@ -14,7 +14,7 @@ final userUpdateMessageProvider = StreamProvider((ref) {
   return controller.stream;
 });
 
-final usersProvider = Provider<Map<int, String>>((ref) {
+final usersProvider = Provider<Map<int, UserInfo>>((ref) {
   final lastMessage = ref.watch(userUpdateMessageProvider);
   if (lastMessage.value case final msg?) {
     return msg.users;

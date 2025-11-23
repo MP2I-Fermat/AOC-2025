@@ -100,13 +100,13 @@ class StateNotifier extends Notifier<ClientState> {
   }
 
   void watch(int id) {
-    final nick = ref.read(usersProvider)[id];
-    if (nick == null) return;
+    final info = ref.read(usersProvider)[id];
+    if (info == null) return;
 
     cancelCodeUpdates();
     setupReceivingCodeUpdates();
 
-    state = Watching(id: id, nick: nick);
+    state = Watching(id: id, nick: info.nick);
     if (ref.read(connectionProvider).unwrapPrevious().value
         case final connection?) {
       connection.send(Message.watch(id: id));

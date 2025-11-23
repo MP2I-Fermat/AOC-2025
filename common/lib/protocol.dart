@@ -9,7 +9,7 @@ sealed class Message with _$Message {
       StartWritingCode;
   const factory Message.watch({required int id}) = Watch;
   const factory Message.usersUpdate({
-    required Map<int, String> users,
+    required Map<int, UserInfo> users,
     required int yourId,
   }) = UsersUpdate;
   const factory Message.codeUpdate({required String code}) = CodeUpdate;
@@ -24,6 +24,15 @@ sealed class Message with _$Message {
 
   factory Message.fromJson(Map<String, Object?> json) =>
       _$MessageFromJson(json);
+}
+
+@freezed
+sealed class UserInfo with _$UserInfo {
+  const factory UserInfo({required String nick, required int numViewers}) =
+      _UserInfo;
+
+  factory UserInfo.fromJson(Map<String, Object?> json) =>
+      _$UserInfoFromJson(json);
 }
 
 enum OutputStream { stdout, stdin, stderr }

@@ -187,7 +187,7 @@ return outputUpdate(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? nick)?  startWritingCode,TResult Function( int id)?  watch,TResult Function( Map<int, String> users,  int yourId)?  usersUpdate,TResult Function( String code)?  codeUpdate,TResult Function( String code)?  startEvaluation,TResult Function()?  stopEvaluation,TResult Function( String line)?  inputLine,TResult Function( List<OutputLine> output,  bool isRunning)?  outputUpdate,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? nick)?  startWritingCode,TResult Function( int id)?  watch,TResult Function( Map<int, UserInfo> users,  int yourId)?  usersUpdate,TResult Function( String code)?  codeUpdate,TResult Function( String code)?  startEvaluation,TResult Function()?  stopEvaluation,TResult Function( String line)?  inputLine,TResult Function( List<OutputLine> output,  bool isRunning)?  outputUpdate,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case StartWritingCode() when startWritingCode != null:
 return startWritingCode(_that.nick);case Watch() when watch != null:
@@ -215,7 +215,7 @@ return outputUpdate(_that.output,_that.isRunning);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? nick)  startWritingCode,required TResult Function( int id)  watch,required TResult Function( Map<int, String> users,  int yourId)  usersUpdate,required TResult Function( String code)  codeUpdate,required TResult Function( String code)  startEvaluation,required TResult Function()  stopEvaluation,required TResult Function( String line)  inputLine,required TResult Function( List<OutputLine> output,  bool isRunning)  outputUpdate,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? nick)  startWritingCode,required TResult Function( int id)  watch,required TResult Function( Map<int, UserInfo> users,  int yourId)  usersUpdate,required TResult Function( String code)  codeUpdate,required TResult Function( String code)  startEvaluation,required TResult Function()  stopEvaluation,required TResult Function( String line)  inputLine,required TResult Function( List<OutputLine> output,  bool isRunning)  outputUpdate,}) {final _that = this;
 switch (_that) {
 case StartWritingCode():
 return startWritingCode(_that.nick);case Watch():
@@ -239,7 +239,7 @@ return outputUpdate(_that.output,_that.isRunning);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? nick)?  startWritingCode,TResult? Function( int id)?  watch,TResult? Function( Map<int, String> users,  int yourId)?  usersUpdate,TResult? Function( String code)?  codeUpdate,TResult? Function( String code)?  startEvaluation,TResult? Function()?  stopEvaluation,TResult? Function( String line)?  inputLine,TResult? Function( List<OutputLine> output,  bool isRunning)?  outputUpdate,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? nick)?  startWritingCode,TResult? Function( int id)?  watch,TResult? Function( Map<int, UserInfo> users,  int yourId)?  usersUpdate,TResult? Function( String code)?  codeUpdate,TResult? Function( String code)?  startEvaluation,TResult? Function()?  stopEvaluation,TResult? Function( String line)?  inputLine,TResult? Function( List<OutputLine> output,  bool isRunning)?  outputUpdate,}) {final _that = this;
 switch (_that) {
 case StartWritingCode() when startWritingCode != null:
 return startWritingCode(_that.nick);case Watch() when watch != null:
@@ -407,11 +407,11 @@ as int,
 @JsonSerializable()
 
 class UsersUpdate implements Message {
-  const UsersUpdate({required final  Map<int, String> users, required this.yourId, final  String? $type}): _users = users,$type = $type ?? 'usersUpdate';
+  const UsersUpdate({required final  Map<int, UserInfo> users, required this.yourId, final  String? $type}): _users = users,$type = $type ?? 'usersUpdate';
   factory UsersUpdate.fromJson(Map<String, dynamic> json) => _$UsersUpdateFromJson(json);
 
- final  Map<int, String> _users;
- Map<int, String> get users {
+ final  Map<int, UserInfo> _users;
+ Map<int, UserInfo> get users {
   if (_users is EqualUnmodifiableMapView) return _users;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableMapView(_users);
@@ -456,7 +456,7 @@ abstract mixin class $UsersUpdateCopyWith<$Res> implements $MessageCopyWith<$Res
   factory $UsersUpdateCopyWith(UsersUpdate value, $Res Function(UsersUpdate) _then) = _$UsersUpdateCopyWithImpl;
 @useResult
 $Res call({
- Map<int, String> users, int yourId
+ Map<int, UserInfo> users, int yourId
 });
 
 
@@ -476,7 +476,7 @@ class _$UsersUpdateCopyWithImpl<$Res>
 @pragma('vm:prefer-inline') $Res call({Object? users = null,Object? yourId = null,}) {
   return _then(UsersUpdate(
 users: null == users ? _self._users : users // ignore: cast_nullable_to_non_nullable
-as Map<int, String>,yourId: null == yourId ? _self.yourId : yourId // ignore: cast_nullable_to_non_nullable
+as Map<int, UserInfo>,yourId: null == yourId ? _self.yourId : yourId // ignore: cast_nullable_to_non_nullable
 as int,
   ));
 }
@@ -817,6 +817,266 @@ class _$OutputUpdateCopyWithImpl<$Res>
 output: null == output ? _self._output : output // ignore: cast_nullable_to_non_nullable
 as List<OutputLine>,isRunning: null == isRunning ? _self.isRunning : isRunning // ignore: cast_nullable_to_non_nullable
 as bool,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
+mixin _$UserInfo {
+
+ String get nick; int get numViewers;
+/// Create a copy of UserInfo
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$UserInfoCopyWith<UserInfo> get copyWith => _$UserInfoCopyWithImpl<UserInfo>(this as UserInfo, _$identity);
+
+  /// Serializes this UserInfo to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserInfo&&(identical(other.nick, nick) || other.nick == nick)&&(identical(other.numViewers, numViewers) || other.numViewers == numViewers));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,nick,numViewers);
+
+@override
+String toString() {
+  return 'UserInfo(nick: $nick, numViewers: $numViewers)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $UserInfoCopyWith<$Res>  {
+  factory $UserInfoCopyWith(UserInfo value, $Res Function(UserInfo) _then) = _$UserInfoCopyWithImpl;
+@useResult
+$Res call({
+ String nick, int numViewers
+});
+
+
+
+
+}
+/// @nodoc
+class _$UserInfoCopyWithImpl<$Res>
+    implements $UserInfoCopyWith<$Res> {
+  _$UserInfoCopyWithImpl(this._self, this._then);
+
+  final UserInfo _self;
+  final $Res Function(UserInfo) _then;
+
+/// Create a copy of UserInfo
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? nick = null,Object? numViewers = null,}) {
+  return _then(_self.copyWith(
+nick: null == nick ? _self.nick : nick // ignore: cast_nullable_to_non_nullable
+as String,numViewers: null == numViewers ? _self.numViewers : numViewers // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [UserInfo].
+extension UserInfoPatterns on UserInfo {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _UserInfo value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _UserInfo() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _UserInfo value)  $default,){
+final _that = this;
+switch (_that) {
+case _UserInfo():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _UserInfo value)?  $default,){
+final _that = this;
+switch (_that) {
+case _UserInfo() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String nick,  int numViewers)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _UserInfo() when $default != null:
+return $default(_that.nick,_that.numViewers);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String nick,  int numViewers)  $default,) {final _that = this;
+switch (_that) {
+case _UserInfo():
+return $default(_that.nick,_that.numViewers);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String nick,  int numViewers)?  $default,) {final _that = this;
+switch (_that) {
+case _UserInfo() when $default != null:
+return $default(_that.nick,_that.numViewers);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _UserInfo implements UserInfo {
+  const _UserInfo({required this.nick, required this.numViewers});
+  factory _UserInfo.fromJson(Map<String, dynamic> json) => _$UserInfoFromJson(json);
+
+@override final  String nick;
+@override final  int numViewers;
+
+/// Create a copy of UserInfo
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$UserInfoCopyWith<_UserInfo> get copyWith => __$UserInfoCopyWithImpl<_UserInfo>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$UserInfoToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserInfo&&(identical(other.nick, nick) || other.nick == nick)&&(identical(other.numViewers, numViewers) || other.numViewers == numViewers));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,nick,numViewers);
+
+@override
+String toString() {
+  return 'UserInfo(nick: $nick, numViewers: $numViewers)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$UserInfoCopyWith<$Res> implements $UserInfoCopyWith<$Res> {
+  factory _$UserInfoCopyWith(_UserInfo value, $Res Function(_UserInfo) _then) = __$UserInfoCopyWithImpl;
+@override @useResult
+$Res call({
+ String nick, int numViewers
+});
+
+
+
+
+}
+/// @nodoc
+class __$UserInfoCopyWithImpl<$Res>
+    implements _$UserInfoCopyWith<$Res> {
+  __$UserInfoCopyWithImpl(this._self, this._then);
+
+  final _UserInfo _self;
+  final $Res Function(_UserInfo) _then;
+
+/// Create a copy of UserInfo
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? nick = null,Object? numViewers = null,}) {
+  return _then(_UserInfo(
+nick: null == nick ? _self.nick : nick // ignore: cast_nullable_to_non_nullable
+as String,numViewers: null == numViewers ? _self.numViewers : numViewers // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 
