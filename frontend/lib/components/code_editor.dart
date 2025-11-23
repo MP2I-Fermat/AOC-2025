@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:frontend/components/highlighted_code.dart';
 import 'package:frontend/providers/current_code.dart';
 import 'package:frontend/providers/state.dart';
@@ -69,6 +71,32 @@ class CodeEditorState extends State<CodeEditor> {
                 padding: .symmetric(horizontal: .pixels(8)),
                 overflow: .only(y: Overflow.hidden),
               ),
+              events: {
+                'wheel': (e) {
+                  // TODO: It would be smoother if the line numbers were
+                  // themselves scrollable, but we run into issues ensuring that
+                  // their scroll height is the same scroll height as the
+                  // editor.
+                  e as WheelEvent;
+                  setState(() {
+                    final editorScroll =
+                        document.querySelector('#code-editor-scroll')
+                            as HTMLElement;
+
+                    final targetScrollOffset = verticalScrollOffset + e.deltaY;
+
+                    verticalScrollOffset = max(
+                      0,
+                      min(
+                        targetScrollOffset,
+                        (editorScroll.scrollHeight - editorScroll.clientHeight)
+                            .toDouble(),
+                      ),
+                    );
+                    editorScroll.scrollTop = verticalScrollOffset;
+                  });
+                },
+              },
               [
                 div(
                   styles: Styles(
