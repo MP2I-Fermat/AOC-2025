@@ -217,7 +217,7 @@ final class EditingState extends ClientState {
   String code;
 
   Evaluation? activeEvaluation;
-  final List<OutputLine> currentLines;
+  List<OutputLine> currentLines;
 
   Future<Evaluation> startEvaluation() async {
     final evaluation = await Evaluation.start(code);
@@ -257,14 +257,14 @@ final class EditingState extends ClientState {
 
     scheduleUpdate(isRunning: true);
 
-    evaluation.lines.listen(
-      (line) {
+    evaluation.onOutputChange.listen(
+      (lines) {
+        currentLines = lines;
+
         if (currentLines.length > 1000) {
           evaluation.cancel();
           return;
         }
-
-        currentLines.add(line);
 
         scheduleUpdate(isRunning: true);
       },

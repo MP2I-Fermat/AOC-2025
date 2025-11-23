@@ -20,8 +20,13 @@ class Evaluation {
   final Process process;
   final Directory tmpDir;
 
-  final StreamController<OutputLine> _linesController = StreamController();
-  Stream<OutputLine> get lines => _linesController.stream;
+  final outputLines = <OutputLine>[];
+  int? currentStderrLine;
+  int? currentStdoutLine;
+
+  final StreamController<List<OutputLine>> _linesController =
+      StreamController();
+  Stream<List<OutputLine>> get onOutputChange => _linesController.stream;
 
   static Future<Evaluation> start(String code) async {
     final tmpDir = await Directory.systemTemp.createTemp('huitr-eval-');
@@ -68,30 +73,63 @@ class Evaluation {
   Evaluation(this.process, this.tmpDir) {
     final stderrSubscription = process.stderr
         .transform(const Utf8Decoder())
-        .transform(const LineSplitter())
-        .listen(
-          (line) => _linesController.add(
-            OutputLine(stream: OutputStream.stderr, line: line),
-          ),
-        );
+        .listen((chars) {
+          if (currentStderrLine == null) {
+            currentStderrLine = outputLines.length;
+            outputLines.add(OutputLine(stream: OutputStream.stderr, line: ''));
+          }
+
+          final splitLines = chars.split('\n');
+
+          outputLines[currentStderrLine!] = OutputLine(
+            stream: OutputStream.stderr,
+            line: outputLines[currentStderrLine!].line + splitLines[0],
+          );
+
+          for (int i = 1; i < splitLines.length; i++) {
+            currentStderrLine = outputLines.length;
+            outputLines.add(
+              OutputLine(stream: OutputStream.stderr, line: splitLines[i]),
+            );
+          }
+
+          _linesController.add(outputLines);
+        });
 
     final stdoutSubscription = process.stdout
         .transform(const Utf8Decoder())
-        .transform(const LineSplitter())
-        .listen(
-          (line) => _linesController.add(
-            OutputLine(stream: OutputStream.stdout, line: line),
-          ),
-        );
+        .listen((chars) {
+          if (currentStdoutLine == null) {
+            currentStdoutLine = outputLines.length;
+            outputLines.add(OutputLine(stream: OutputStream.stdout, line: ''));
+          }
+
+          final splitLines = chars.split('\n');
+
+          outputLines[currentStdoutLine!] = OutputLine(
+            stream: OutputStream.stdout,
+            line: outputLines[currentStdoutLine!].line + splitLines[0],
+          );
+
+          for (int i = 1; i < splitLines.length; i++) {
+            currentStdoutLine = outputLines.length;
+            outputLines.add(
+              OutputLine(stream: OutputStream.stdout, line: splitLines[i]),
+            );
+          }
+
+          _linesController.add(outputLines);
+        });
 
     final exitCode = process.exitCode.then((exitCode) {
       if (exitCode != 0) {
-        _linesController.add(
+        outputLines.add(
           OutputLine(
             stream: OutputStream.stderr,
             line: 'Process exited with code $exitCode',
           ),
         );
+        _linesController.add(outputLines);
       }
     });
 
@@ -106,7 +144,11 @@ class Evaluation {
   void input(String line) {
     if (!_linesController.isClosed) {
       process.stdin.writeln(line);
-      _linesController.add(OutputLine(stream: OutputStream.stdin, line: line));
+      outputLines.add(OutputLine(stream: OutputStream.stdin, line: line));
+      _linesController.add(outputLines);
+
+      currentStderrLine = null;
+      currentStdoutLine = null;
     }
   }
 
