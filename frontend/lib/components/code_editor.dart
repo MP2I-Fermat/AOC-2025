@@ -305,11 +305,11 @@ class CodeEditorState extends State<CodeEditor> {
                                   code[lineStart - 1] != '\n') {
                                 lineStart--;
                               }
-
-                              final line = code.substring(
-                                lineStart,
-                                code.indexOf('\n', lineStart),
-                              );
+                              var lineEnd = code.indexOf('\n', lineStart);
+                              if (lineEnd == -1) {
+                                lineEnd = code.length;
+                              }
+                              final line = code.substring(lineStart, lineEnd);
 
                               var currentIndentation = 0;
                               while (currentIndentation < line.length &&
