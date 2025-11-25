@@ -124,11 +124,13 @@ enum HuitrToken {
 final huitrRules = [
   (RegExp(r'[A-Za-z][A-Za-z0-9_]*'), HuitrToken.ident),
   (
-    RegExp(r'-?([0-9]+|(0[xX][0-9A-Fa-f]+)|(0[oO][0-7]+)|(0[bB][0-1]+))'),
+    // The [0-9]+ case must be last, or else it matches the leading 0 in 0x, 0o
+    // or 0b, and returns early.
+    RegExp(r'-?((0[xX][0-9A-Fa-f]+)|(0[oO][0-7]+)|(0[bB][0-1]+)|[0-9]+)'),
     HuitrToken.integerLiteral,
   ),
   (RegExp(r'-?[0-9]+(\.[0-9]*)?([eE][\+-]?[0-9]+)?'), HuitrToken.floatLiteral),
-  (RegExp(r'"([ !$-~]|(\\"))*"'), HuitrToken.stringLiteral),
+  (RegExp(r'"([ !$-\[\]-~]|(\\"))*"'), HuitrToken.stringLiteral),
   (RegExp(r'( |\t)+'), HuitrToken.whitespace),
   (RegExp(r';|\n'), HuitrToken.newline),
   (RegExp(r','), HuitrToken.comma),
