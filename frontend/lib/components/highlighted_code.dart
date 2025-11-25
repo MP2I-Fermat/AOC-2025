@@ -31,15 +31,15 @@ class HighlightedCode extends StatelessComponent {
         ...tokens.indexed.map((r) {
           final (index, (type, value)) = r;
 
-          if (type == HuitrToken.singleCommentStart) {
+          if (type == HuitrToken.singleCommentStart && !inMultiComment) {
             inSingleComment = true;
           }
 
-          if (value == '\n') {
+          if (type == HuitrToken.newline) {
             inSingleComment = false;
           }
 
-          if (type == HuitrToken.multiCommentStart) {
+          if (type == HuitrToken.multiCommentStart && !inSingleComment) {
             inMultiComment = !inMultiComment;
           }
 
@@ -59,6 +59,7 @@ class HighlightedCode extends StatelessComponent {
               HuitrToken.whitespace => Color.variable('--default-color'),
               HuitrToken.newline => Color.variable('--default-color'),
               HuitrToken.comma => Color.variable('--default-color'),
+              HuitrToken.semicolon => Color.variable('--default-color'),
               HuitrToken.lParen || HuitrToken.lSquare => () {
                 parenQueue.addLast(type);
                 return parenColors[parenQueue.length % parenColors.length];
@@ -118,21 +119,30 @@ enum HuitrToken {
   nameSp,
   singleCommentStart,
   multiCommentStart,
+  semicolon,
   unrecognizable,
 }
 
 final huitrRules = [
-  (RegExp(r'[A-Za-z][A-Za-z0-9_]*'), HuitrToken.ident),
+  (RegExp(r'[A-Za-z_][A-Za-z0-9_]*'), HuitrToken.ident),
+
+  // The [0-9]+ case must be last, or else it matches the leading 0 in 0x, 0o
+  // or 0b, and returns early.
   (
-    // The [0-9]+ case must be last, or else it matches the leading 0 in 0x, 0o
-    // or 0b, and returns early.
     RegExp(r'-?((0[xX][0-9A-Fa-f]+)|(0[oO][0-7]+)|(0[bB][0-1]+)|[0-9]+)'),
     HuitrToken.integerLiteral,
   ),
   (RegExp(r'-?[0-9]+(\.[0-9]*)?([eE][\+-]?[0-9]+)?'), HuitrToken.floatLiteral),
-  (RegExp(r'"([ !$-\[\]-~]|(\\"))*"'), HuitrToken.stringLiteral),
+
+  (RegExp(r'"([ !$-\[\]-~]|(\\[\\"ntbr]))*"'), HuitrToken.stringLiteral),
+
   (RegExp(r'( |\t)+'), HuitrToken.whitespace),
-  (RegExp(r';|\n'), HuitrToken.newline),
+
+  (RegExp(r'\.'), HuitrToken.singleCommentStart),
+  (RegExp(r'\.\.'), HuitrToken.multiCommentStart),
+
+  (RegExp(r'\n'), HuitrToken.newline),
+  (RegExp(r';'), HuitrToken.semicolon),
   (RegExp(r','), HuitrToken.comma),
   (RegExp(r'\('), HuitrToken.lParen),
   (RegExp(r'\)'), HuitrToken.rParen),
@@ -140,8 +150,6 @@ final huitrRules = [
   (RegExp(r'\]'), HuitrToken.rSquare),
   (RegExp(r'>'), HuitrToken.chainOp),
   (RegExp(r'::'), HuitrToken.nameSp),
-  (RegExp(r'\.'), HuitrToken.singleCommentStart),
-  (RegExp(r'\.\.'), HuitrToken.multiCommentStart),
   (RegExp(r'.'), HuitrToken.unrecognizable),
 ];
 
