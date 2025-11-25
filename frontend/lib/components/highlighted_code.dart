@@ -16,9 +16,9 @@ class HighlightedCode extends StatelessComponent {
 
     final parenQueue = DoubleLinkedQueue<HuitrToken>();
     final parenColors = [
-      Color('fuchsia'),
-      Color('yellow'),
-      Color('cornflowerblue'),
+      Color.variable('--paren-color-1'),
+      Color.variable('--paren-color-2'),
+      Color.variable('--paren-color-3'),
     ];
 
     return div(
@@ -43,29 +43,29 @@ class HighlightedCode extends StatelessComponent {
             inMultiComment = !inMultiComment;
           }
 
-          var color = Color('white');
+          final Color color;
           if (inSingleComment || inMultiComment) {
-            color = Color('green');
+            color = Color.variable('--comment-color');
           } else {
             color = switch (type) {
               HuitrToken.ident =>
                 index < tokens.length - 1 &&
                         tokens[index + 1].$1 == HuitrToken.nameSp
-                    ? Color('purple')
-                    : Color('aqua'),
-              HuitrToken.integerLiteral => Color('yellow'),
-              HuitrToken.floatLiteral => Color('yellow'),
-              HuitrToken.stringLiteral => Color('orange'),
-              HuitrToken.whitespace => Color('white'),
-              HuitrToken.newline => Color('white'),
-              HuitrToken.comma => Color('white'),
+                    ? Color.variable('--namespace-color')
+                    : Color.variable('--ident-color'),
+              HuitrToken.integerLiteral => Color.variable('--number-literal'),
+              HuitrToken.floatLiteral => Color.variable('--number-literal'),
+              HuitrToken.stringLiteral => Color.variable('--string-color'),
+              HuitrToken.whitespace => Color.variable('--default-color'),
+              HuitrToken.newline => Color.variable('--default-color'),
+              HuitrToken.comma => Color.variable('--default-color'),
               HuitrToken.lParen || HuitrToken.lSquare => () {
                 parenQueue.addLast(type);
                 return parenColors[parenQueue.length % parenColors.length];
               }(),
               HuitrToken.rParen => () {
                 if (parenQueue.lastOrNull != HuitrToken.lParen) {
-                  return Color('red');
+                  return Color.variable('--error-color');
                 }
 
                 final color =
@@ -75,7 +75,7 @@ class HighlightedCode extends StatelessComponent {
               }(),
               HuitrToken.rSquare => () {
                 if (parenQueue.lastOrNull != HuitrToken.lSquare) {
-                  return Color('red');
+                  return Color.variable('--error-color');
                 }
 
                 final color =
@@ -83,11 +83,13 @@ class HighlightedCode extends StatelessComponent {
                 parenQueue.removeLast();
                 return color;
               }(),
-              HuitrToken.chainOp => Color('white'),
-              HuitrToken.nameSp => Color('purple'),
-              HuitrToken.singleCommentStart => Color('green'),
-              HuitrToken.multiCommentStart => Color('green'),
-              HuitrToken.unrecognizable => Color('red'),
+              HuitrToken.chainOp => Color.variable('--default-color'),
+              HuitrToken.nameSp => Color.variable('--namespace-color'),
+              HuitrToken.singleCommentStart => Color.variable(
+                '--comment-color',
+              ),
+              HuitrToken.multiCommentStart => Color.variable('--comment-color'),
+              HuitrToken.unrecognizable => Color.variable('--error-color'),
             };
           }
 
