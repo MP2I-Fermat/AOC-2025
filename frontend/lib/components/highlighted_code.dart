@@ -21,9 +21,8 @@ class HighlightedCode extends StatelessComponent {
       Color.variable('--paren-color-3'),
     ];
 
-    return div(
+    return span(
       styles: Styles(
-        display: .inline,
         whiteSpace: .pre,
         raw: {'font-family': 'monospace'},
       ),

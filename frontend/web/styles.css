@@ -12,16 +12,15 @@ html, body {
   --tertiary-color: rgb(50, 50, 50);
 
   --default-color: white;
-  --paren-color-1: fuchsia;
-  --paren-color-2: yellow;
-  --paren-color-3: cornflowerblue;
+  --paren-color-1: rgb(218, 112, 214);
+  --paren-color-2: rgb(255, 215, 1);
+  --paren-color-3: rgb(104 149 232);
   --comment-color: green;
   --error-color: red;
-  --namespace-color: purple;
-  --ident-color: aqua;
-  --number-literal: yellow;
-  --string-color: orange;
-
+  --namespace-color: rgb(147, 107, 255);
+  --ident-color: rgb(32 223 223);
+  --number-literal: rgb(180, 213, 165);
+  --string-color: rgb(244, 128, 82);
 
   background-color: rgb(34, 34, 34);
   color: var(--primary-color);
