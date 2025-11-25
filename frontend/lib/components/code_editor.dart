@@ -326,7 +326,7 @@ class CodeEditorState extends State<CodeEditor> {
                                   false,
                                   '\n${' ' * currentIndentation}  \n${' ' * currentIndentation}',
                                 );
-                                editor.selectionStart -= 1;
+                                editor.selectionStart -= currentIndentation + 1;
                                 editor.selectionEnd = editor.selectionStart;
                               } else {
                                 document.execCommand(
