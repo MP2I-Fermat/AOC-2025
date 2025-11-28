@@ -337,38 +337,62 @@ class CodeEditorState extends State<CodeEditor> {
                               }
                             } else if (e.key == '[') {
                               if (editor.selectionStart < code.length &&
+                                  editor.selectionStart ==
+                                      editor.selectionEnd &&
                                   code[editor.selectionStart].contains(
                                     RegExp(r'[^\[\]()\s]'),
                                   )) {
                                 return;
                               }
 
+                              final selectedCode = code.substring(
+                                editor.selectionStart,
+                                editor.selectionEnd,
+                              );
+
                               e.preventDefault();
-                              document.execCommand('insertText', false, '[]');
-                              editor.selectionStart -= 1;
-                              editor.selectionEnd = editor.selectionStart;
+                              document.execCommand(
+                                'insertText',
+                                false,
+                                '[$selectedCode]',
+                              );
+                              editor.selectionStart -= 1 + selectedCode.length;
+                              editor.selectionEnd -= 1;
 
                               setState(() {
                                 justInsertedMatchingBraces = true;
                               });
                             } else if (e.key == '(') {
                               if (editor.selectionStart < code.length &&
+                                  editor.selectionStart ==
+                                      editor.selectionEnd &&
                                   code[editor.selectionStart].contains(
                                     RegExp(r'[^\[\]()\s]'),
                                   )) {
                                 return;
                               }
 
+                              final selectedCode = code.substring(
+                                editor.selectionStart,
+                                editor.selectionEnd,
+                              );
+
                               e.preventDefault();
-                              document.execCommand('insertText', false, '()');
-                              editor.selectionStart -= 1;
-                              editor.selectionEnd = editor.selectionStart;
+                              document.execCommand(
+                                'insertText',
+                                false,
+                                '($selectedCode)',
+                              );
+                              editor.selectionStart -= 1 + selectedCode.length;
+                              editor.selectionEnd -= 1;
 
                               setState(() {
                                 justInsertedMatchingBraces = true;
                               });
                             } else if (e.key == 'Backspace') {
-                              if (justInsertedMatchingBraces) {
+                              if (justInsertedMatchingBraces &&
+                                  editor.selectionStart ==
+                                      editor.selectionEnd) {
                                 e.preventDefault();
 
                                 editor.selectionStart -= 1;
