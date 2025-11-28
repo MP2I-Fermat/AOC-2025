@@ -89,6 +89,7 @@ class RunButtonState extends State<RunButton> {
     final state = context.watch(stateProvider);
 
     return div(
+      id: 'run-button',
       styles: Styles(
         width: .pixels(100),
         cursor: connection == null || pendingState != null || state is! Writing

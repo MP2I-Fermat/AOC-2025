@@ -300,6 +300,16 @@ class CodeEditorState extends State<CodeEditor> {
                             } else if (e.key == 'Enter') {
                               e.preventDefault();
 
+                              if (e.ctrlKey) {
+                                // This is ugly and should probably be moved to
+                                // a provider but clicking the button is just
+                                // sooooooooooooooooooooooo convenient.
+                                (document.getElementById('run-button')
+                                        as HTMLElement)
+                                    .click();
+                                return;
+                              }
+
                               var lineStart = editor.selectionStart;
                               while (lineStart > 0 &&
                                   code[lineStart - 1] != '\n') {
