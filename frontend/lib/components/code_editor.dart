@@ -336,6 +336,13 @@ class CodeEditorState extends State<CodeEditor> {
                                 );
                               }
                             } else if (e.key == '[') {
+                              if (editor.selectionStart < code.length &&
+                                  code[editor.selectionStart].contains(
+                                    RegExp(r'[^\[\]()\s]'),
+                                  )) {
+                                return;
+                              }
+
                               e.preventDefault();
                               document.execCommand('insertText', false, '[]');
                               editor.selectionStart -= 1;
@@ -345,6 +352,13 @@ class CodeEditorState extends State<CodeEditor> {
                                 justInsertedMatchingBraces = true;
                               });
                             } else if (e.key == '(') {
+                              if (editor.selectionStart < code.length &&
+                                  code[editor.selectionStart].contains(
+                                    RegExp(r'[^\[\]()\s]'),
+                                  )) {
+                                return;
+                              }
+
                               e.preventDefault();
                               document.execCommand('insertText', false, '()');
                               editor.selectionStart -= 1;

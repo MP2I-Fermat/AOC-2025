@@ -103,10 +103,15 @@ class RunButtonState extends State<RunButton> {
             return;
           }
 
+          final code = context.read(codeProvider);
+
+          if (code.trim().toLowerCase() == 'cocs') {
+            window.open('https://yann-me.com/Finale-AOC', '_blank');
+            return;
+          }
+
           if (!isRunning) {
-            connection.send(
-              Message.startEvaluation(code: context.read(codeProvider)),
-            );
+            connection.send(Message.startEvaluation(code: code));
           } else {
             connection.send(Message.stopEvaluation());
           }
