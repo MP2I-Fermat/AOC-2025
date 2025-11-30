@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:frontend/components/highlighted_code.dart';
 import 'package:frontend/providers/current_code.dart';
+import 'package:frontend/providers/saved_code.dart';
 import 'package:frontend/providers/state.dart';
 import 'package:jaspr/jaspr.dart';
 import 'package:jaspr_riverpod/jaspr_riverpod.dart';
@@ -18,9 +20,11 @@ class CodeEditorState extends State<CodeEditor> {
   var verticalScrollOffset = 0.0;
   var justInsertedMatchingBraces = false;
   late String initialContent;
+  (int, int)? pendingCursorPosition;
 
-  final Key codeInputKey = UniqueKey();
+  final Key editorKey = UniqueKey();
   final Key blockInputKey = UniqueKey();
+  Key inputKey = UniqueKey();
 
   @override
   void initState() {
@@ -39,13 +43,36 @@ class CodeEditorState extends State<CodeEditor> {
       }
     });
 
+    context.listen(currentSlotProvider, (_, slot) {
+      if (slot != null) {
+        setState(() {
+          initialContent = slot.code;
+          // Force textarea to discard old content.
+          inputKey = UniqueKey();
+        });
+      }
+    });
+
+    if (pendingCursorPosition case (final start, final end)?) {
+      scheduleMicrotask(() {
+        final editor =
+            document.querySelector('#code-input') as HTMLTextAreaElement;
+
+        editor.focus();
+        editor.selectionStart = start;
+        editor.selectionEnd = end;
+
+        pendingCursorPosition = null;
+      });
+    }
+
     final content = context.watch(codeProvider);
     final state = context.watch(stateProvider);
 
     var lineCount = '\n'.allMatches(content).length + 1;
 
     return div(
-      key: codeInputKey,
+      key: editorKey,
       styles: Styles(
         position: .relative(),
         width: .percent(100),
@@ -142,6 +169,7 @@ class CodeEditorState extends State<CodeEditor> {
                     if (state case Writing())
                       textarea(
                         id: 'code-input',
+                        key: inputKey,
                         styles: Styles(
                           display: .inline,
                           position: .absolute(
@@ -421,6 +449,24 @@ class CodeEditorState extends State<CodeEditor> {
                                 e.preventDefault();
                                 editor.selectionStart++;
                               }
+                            } else if (e.key == 's' && e.ctrlKey) {
+                              e.preventDefault();
+
+                              print('Setting pending cursor');
+
+                              final newSlot = context
+                                  .read(slotProvider.notifier)
+                                  .createNewSlot(
+                                    'Sauvegarde @ ${DateTime.now()}',
+                                  );
+                              context
+                                  .read(currentSlotProvider.notifier)
+                                  .setSlot(newSlot);
+
+                              pendingCursorPosition = (
+                                editor.selectionStart,
+                                editor.selectionEnd,
+                              );
                             }
                           },
                           'selectionchange': (e) {

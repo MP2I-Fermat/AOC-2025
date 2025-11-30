@@ -1,4 +1,6 @@
 import 'package:common/protocol.dart';
+import 'package:frontend/providers/current_code.dart';
+import 'package:frontend/providers/saved_code.dart';
 import 'package:frontend/providers/state.dart';
 import 'package:frontend/providers/users.dart';
 import 'package:jaspr/jaspr.dart';
@@ -48,6 +50,7 @@ class Settings extends StatelessComponent {
         },
         PersonalSettings(),
         WatchingSettings(),
+        SlotSettings(),
       ],
     );
   }
@@ -205,6 +208,141 @@ class WatchingSettings extends StatelessComponent {
             ),
         ]),
       ],
+    ]);
+  }
+}
+
+class SlotSettings extends StatelessComponent {
+  @override
+  Component build(BuildContext context) {
+    final state = context.watch(stateProvider);
+
+    return div(styles: Styles(flexDirection: .column), [
+      h3([text('Sauvegarde')]),
+      if (state case Writing()) ...[
+        text('Sélectionnez une sauvegarde à restaurer où a mettre à jour.'),
+        br(),
+        text(
+          "Attention, la restauration d'une sauvegarde supprimera votre code actuel. Pensez à le sauvegarder si besoin.",
+        ),
+        SlotCreator(),
+        ul(styles: Styles(userSelect: .none), [
+          for (final slot in context.watch(slotProvider))
+            li(
+              styles: Styles(
+                fontWeight: slot == context.watch(currentSlotProvider)
+                    ? .bold
+                    : .normal,
+              ),
+              [
+                span([text(slot.name)]),
+                span(
+                  styles: Styles(
+                    cursor: slot == context.watch(currentSlotProvider)
+                        ? .notAllowed
+                        : .pointer,
+                  ),
+                  events: {
+                    'click': (_) => context
+                        .read(codeProvider.notifier)
+                        .restoreFromSlot(slot),
+                  },
+                  [text(' [Restaurer]')],
+                ),
+                switch (slot) {
+                  Preset() => span(styles: Styles(cursor: .notAllowed), [
+                    text(' (Lecture seule)'),
+                  ]),
+                  UserGenerated(:final id) => fragment([
+                    span(
+                      styles: Styles(cursor: .pointer),
+                      events: {
+                        'click': (_) {
+                          final newSlot = context
+                              .read(slotProvider.notifier)
+                              .updateCode(id, context.read(codeProvider));
+                          context
+                              .read(currentSlotProvider.notifier)
+                              .setSlot(newSlot);
+                        },
+                      },
+                      [text(' [Mettre à jour]')],
+                    ),
+                    span(
+                      styles: Styles(cursor: .pointer),
+                      events: {
+                        'click': (_) {
+                          context.read(slotProvider.notifier).delete(id);
+                        },
+                      },
+                      [text(' [Supprimer]')],
+                    ),
+                  ]),
+                },
+              ],
+            ),
+        ]),
+      ] else
+        text('Passez en mode édition pour voir vos sauvegardes.'),
+    ]);
+  }
+}
+
+class SlotCreator extends StatefulComponent {
+  const SlotCreator({super.key});
+
+  @override
+  State<SlotCreator> createState() => SlotCreatorState();
+}
+
+class SlotCreatorState extends State<SlotCreator> {
+  String name = '';
+
+  @override
+  Component build(BuildContext context) {
+    final nameIsValid = name.trim().isNotEmpty;
+
+    return div([
+      input(
+        type: .text,
+        styles: Styles(
+          height: .pixels(20),
+          padding: .all(.pixels(0)),
+          margin: .all(.pixels(8)),
+          border: Border.only(
+            left: .none(),
+            right: .none(),
+            top: .none(),
+            bottom: BorderSide.solid(width: .pixels(1), color: Color('white')),
+          ),
+          outline: .unset,
+          color: Color('var(--primary-color)'),
+          fontSize: .unset,
+          backgroundColor: .unset,
+        ),
+        attributes: {'spellcheck': 'false'},
+        value: name,
+        onInput: (n) => setState(() {
+          name = n;
+        }),
+      ),
+      div(
+        styles: Styles(
+          cursor: nameIsValid ? .pointer : .notAllowed,
+          userSelect: .none,
+        ),
+        events: {
+          'click': (_) {
+            if (!nameIsValid) return;
+
+            context.read(slotProvider.notifier).createNewSlot(name);
+            setState(() {
+              name = '';
+            });
+          },
+        },
+        [text('Créer une nouvelle sauvegarde')],
+      ),
     ]);
   }
 }
