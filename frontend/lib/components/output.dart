@@ -4,6 +4,7 @@ import 'package:frontend/providers/connection.dart';
 import 'package:frontend/providers/current_code.dart';
 import 'package:frontend/providers/output_provider.dart';
 import 'package:frontend/providers/state.dart';
+import 'package:jaspr/dom.dart';
 import 'package:jaspr/jaspr.dart';
 import 'package:jaspr_riverpod/jaspr_riverpod.dart';
 import 'package:web/web.dart';
@@ -14,12 +15,16 @@ class OutputView extends StatelessComponent {
   @override
   Component build(BuildContext context) {
     final stateInfo = switch (context.watch(stateProvider)) {
-      Writing(:final nick?) => text("Pseudo: $nick"),
+      Writing(:final nick?) => Component.text("Pseudo: $nick"),
       Writing(nick: null) => null,
-      Watching(:final nick) => text('En train de regarder $nick'),
+      Watching(:final nick) => Component.text('En train de regarder $nick'),
       Waiting(:final wantsToWatch) => div(
         styles: Styles(color: Color('darkorange')),
-        [text("$wantsToWatch n'est pas en train d'écrire du code...")],
+        [
+          Component.text(
+            "$wantsToWatch n'est pas en train d'écrire du code...",
+          ),
+        ],
       ),
     };
 
@@ -100,6 +105,16 @@ class RunButtonState extends State<RunButton> {
       ),
       events: {
         'click': (e) {
+          // TODO: Remove this
+          // Seems to be a nasty jaspr bug. My guess is event handlers don't get
+          // re-attached on rebuilds?
+          final connection = context
+              .read(connectionProvider)
+              .unwrapPrevious()
+              .value;
+          final isRunning = context.read(isRunningProvider);
+          final state = context.read(stateProvider);
+
           if (connection == null || pendingState != null || state is! Writing) {
             return;
           }
@@ -118,7 +133,7 @@ class RunButtonState extends State<RunButton> {
           }
         },
       },
-      [text(isRunning ? 'Arrêter' : 'Exécuter')],
+      [Component.text(isRunning ? 'Arrêter' : 'Exécuter')],
     );
   }
 }
@@ -164,7 +179,7 @@ class _OutputLinesState extends State<OutputLines> {
                       : Color('white'),
                   raw: {'overflow-wrap': 'anywhere'},
                 ),
-                [text(line.line)],
+                [Component.text(line.line)],
               ),
           ],
         ),
@@ -179,6 +194,7 @@ class Input extends StatelessComponent {
   @override
   Component build(BuildContext context) {
     final state = context.watch(stateProvider);
+    final isEnabled = context.watch(isInputEnabledProvider);
 
     return input(
       id: 'stdin-input',
@@ -187,7 +203,8 @@ class Input extends StatelessComponent {
         'placeholder': 'Envoyez du texte au programme...',
         'autocomplete': 'off',
       },
-      disabled: !context.watch(isRunningProvider) || state is! Writing,
+      disabled:
+          !isEnabled || !context.watch(isRunningProvider) || state is! Writing,
       styles: Styles(
         width: .percent(100),
         padding: .symmetric(vertical: .zero, horizontal: .pixels(8)),
@@ -195,7 +212,9 @@ class Input extends StatelessComponent {
         border: .unset,
         outline: .unset,
         appearance: .none,
-        cursor: context.watch(isRunningProvider) ? null : .notAllowed,
+        cursor: (context.watch(isRunningProvider) && isEnabled)
+            ? null
+            : .notAllowed,
         color: Color('white'),
         backgroundColor: .unset,
         raw: {'font-family': 'monospace'},

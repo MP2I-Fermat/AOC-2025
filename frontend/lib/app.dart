@@ -5,6 +5,7 @@ import 'package:frontend/components/code_editor.dart';
 import 'package:frontend/components/information_pane.dart';
 import 'package:frontend/components/output.dart';
 import 'package:frontend/providers/connection.dart';
+import 'package:jaspr/dom.dart';
 import 'package:jaspr/jaspr.dart';
 import 'package:jaspr_riverpod/jaspr_riverpod.dart';
 
@@ -204,22 +205,22 @@ class Footer extends StatelessComponent {
 
     final repoLinks = div([
       a(href: 'https://github.com/MP2I-Fermat/AOC-2025', target: .blank, [
-        text('MP2I-Fermat/AOC-2025'),
+        Component.text('MP2I-Fermat/AOC-2025'),
       ]),
       div(styles: Styles(padding: .symmetric(horizontal: .pixels(8))), [
-        raw('&bull;'),
+        RawText('&bull;'),
       ]),
       a(href: 'https://github.com/jd-develop/huitr', target: .blank, [
-        text('jd-develop/huitr'),
+        Component.text('jd-develop/huitr'),
       ]),
     ]);
 
     final connectionError = switch (connection) {
       AsyncError() => div(styles: Styles(color: Color('red')), [
-        text('Pas de connexion'),
+        Component.text('Pas de connexion'),
       ]),
       AsyncLoading() => div(styles: Styles(color: Color('darkorange')), [
-        text('Connexion en cours...'),
+        Component.text('Connexion en cours...'),
       ]),
       AsyncData() => null,
     };
@@ -237,24 +238,26 @@ class Footer extends StatelessComponent {
         connectionError ?? repoLinks,
         div(styles: Styles(flex: Flex(grow: 1)), []),
         a(href: 'https://github.com/abitofevrything', target: .blank, [
-          text('abitofevrything'),
+          Component.text('abitofevrything'),
         ]),
         div(styles: Styles(padding: .symmetric(horizontal: .pixels(8))), [
-          raw('&bull;'),
+          RawText('&bull;'),
         ]),
         a(href: 'https://github.com/jd-develop', target: .blank, [
-          text('jd-develop'),
+          Component.text('jd-develop'),
         ]),
         div(styles: Styles(padding: .symmetric(horizontal: .pixels(8))), [
-          raw('&bull;'),
+          RawText('&bull;'),
         ]),
         a(href: 'https://github.com/Hugo-Vangilluwen', target: .blank, [
-          text('Hugo-Vangilluwen'),
+          Component.text('Hugo-Vangilluwen'),
         ]),
         div(styles: Styles(padding: .symmetric(horizontal: .pixels(8))), [
-          raw('&bull;'),
+          RawText('&bull;'),
         ]),
-        a(href: 'https://github.com/3fxcf9', target: .blank, [text('3fxcf9')]),
+        a(href: 'https://github.com/3fxcf9', target: .blank, [
+          Component.text('3fxcf9'),
+        ]),
       ],
     );
   }

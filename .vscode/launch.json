@@ -16,7 +16,7 @@
             "request": "launch",
             "cwd": "backend",
             "program": "bin/server_dev.dart",
-            "vmAdditionalArgs": ["--define=HUITR_LOCATION=../huitr/_build/install/default/bin", "--define=USE_NSJAIL=false"],
+            "vmAdditionalArgs": ["--define=HUITR_LOCATION=../huitr/_build/install/default/bin", "--define=USE_NSJAIL=false", "--define=PROBLEMS_LOCATION=../problems"],
             "args": ["--port=8080"]
         }
     ],

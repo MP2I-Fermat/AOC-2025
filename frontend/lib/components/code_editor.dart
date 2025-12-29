@@ -5,6 +5,7 @@ import 'package:frontend/components/highlighted_code.dart';
 import 'package:frontend/providers/current_code.dart';
 import 'package:frontend/providers/saved_code.dart';
 import 'package:frontend/providers/state.dart';
+import 'package:jaspr/dom.dart';
 import 'package:jaspr/jaspr.dart';
 import 'package:jaspr_riverpod/jaspr_riverpod.dart';
 import 'package:web/web.dart';
@@ -134,7 +135,8 @@ class CodeEditorState extends State<CodeEditor> {
                     alignItems: .end,
                   ),
                   [
-                    for (int i = 1; i <= lineCount; i++) div([text("$i")]),
+                    for (int i = 1; i <= lineCount; i++)
+                      div([Component.text("$i")]),
                   ],
                 ),
               ],
@@ -452,8 +454,6 @@ class CodeEditorState extends State<CodeEditor> {
                             } else if (e.key == 's' && e.ctrlKey) {
                               e.preventDefault();
 
-                              print('Setting pending cursor');
-
                               final newSlot = context
                                   .read(slotProvider.notifier)
                                   .createNewSlot(
@@ -514,7 +514,7 @@ class CodeEditorState extends State<CodeEditor> {
                               .read(codeProvider.notifier)
                               .setStoredCode(code);
                         },
-                        [text(initialContent)],
+                        [Component.text(initialContent)],
                       )
                     else
                       div(
@@ -536,7 +536,7 @@ class CodeEditorState extends State<CodeEditor> {
                       // Needed to force the browser to size the inner scroll area correctly.
                       // If this is absent the textarea may sometimes begin scrolling within
                       // itself.
-                      div([raw('&ZeroWidthSpace;')]),
+                      div([RawText('&ZeroWidthSpace;')]),
                     ]),
                   ],
                 ),

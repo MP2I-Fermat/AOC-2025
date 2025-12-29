@@ -24,11 +24,19 @@ class Evaluation {
   int? currentStderrLine;
   int? currentStdoutLine;
 
+  final bool allowExternalInput;
+
   final StreamController<List<OutputLine>> _linesController =
       StreamController();
   Stream<List<OutputLine>> get onOutputChange => _linesController.stream;
 
-  static Future<Evaluation> start(String code) async {
+  final Completer<int> _exitCodeCompleter = Completer();
+  Future<int> get exitCode => _exitCodeCompleter.future;
+
+  static Future<Evaluation> start(
+    String code, {
+    required bool allowExternalInput,
+  }) async {
     final tmpDir = await Directory.systemTemp.createTemp('huitr-eval-');
 
     try {
@@ -63,14 +71,14 @@ class Evaluation {
               ['code.8tr'],
             );
 
-      return Evaluation(process, tmpDir);
+      return Evaluation(process, tmpDir, allowExternalInput);
     } catch (_) {
       await tmpDir.delete();
       rethrow;
     }
   }
 
-  Evaluation(this.process, this.tmpDir) {
+  Evaluation(this.process, this.tmpDir, this.allowExternalInput) {
     final stderrSubscription = process.stderr
         .transform(const Utf8Decoder())
         .listen((chars) {
@@ -131,9 +139,11 @@ class Evaluation {
         );
         _linesController.add(outputLines);
       }
+      _exitCodeCompleter.complete(exitCode);
+      return exitCode;
     });
 
-    exitCode.then((_) async {
+    exitCode.then((code) async {
       await tmpDir.delete(recursive: true);
       stdoutSubscription.cancel();
       stderrSubscription.cancel();

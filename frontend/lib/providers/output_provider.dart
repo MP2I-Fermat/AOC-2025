@@ -37,3 +37,17 @@ class OutputNotifier extends Notifier<List<OutputLine>> {
     return [];
   }
 }
+
+final isInputEnabledProvider = NotifierProvider(IsInputEnabledProvider.new);
+
+class IsInputEnabledProvider extends Notifier<bool> {
+  @override
+  bool build() {
+    ref.listen(connectionMessagesProvider, (_, message) {
+      if (message case AsyncData(value: OutputUpdate(:final isInputEnabled))) {
+        state = isInputEnabled;
+      }
+    });
+    return false;
+  }
+}

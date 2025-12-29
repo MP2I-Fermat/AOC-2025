@@ -3,6 +3,7 @@ import 'package:frontend/providers/current_code.dart';
 import 'package:frontend/providers/saved_code.dart';
 import 'package:frontend/providers/state.dart';
 import 'package:frontend/providers/users.dart';
+import 'package:jaspr/dom.dart';
 import 'package:jaspr/jaspr.dart';
 import 'package:jaspr_riverpod/jaspr_riverpod.dart';
 import 'package:web/web.dart';
@@ -27,24 +28,28 @@ class Settings extends StatelessComponent {
       [
         switch (state) {
           Writing(:final nick?) => div(styles: Styles(display: .inline), [
-            text("Vous êtes en train d'écrire du code avec le pseudo "),
-            b([text(nick)]),
-            text('.'),
+            Component.text(
+              "Vous êtes en train d'écrire du code avec le pseudo ",
+            ),
+            b([Component.text(nick)]),
+            Component.text('.'),
           ]),
-          Writing(nick: null) => text(
+          Writing(nick: null) => Component.text(
             "Vous êtes en train d'écrire du code anonymement.",
           ),
           Watching(:final nick) => div(styles: Styles(display: .inline), [
-            text("Vous êtes en train de regarder "),
-            b([text(nick)]),
-            text('.'),
+            Component.text("Vous êtes en train de regarder "),
+            b([Component.text(nick)]),
+            Component.text('.'),
           ]),
           Waiting(:final wantsToWatch) => div(
             styles: Styles(display: .inline),
             [
-              text("Vous êtes en train de regarder "),
-              b([text(wantsToWatch)]),
-              text(", mais il/elle n'est pas en train d'écrire du code."),
+              Component.text("Vous êtes en train de regarder "),
+              b([Component.text(wantsToWatch)]),
+              Component.text(
+                ", mais il/elle n'est pas en train d'écrire du code.",
+              ),
             ],
           ),
         },
@@ -77,7 +82,7 @@ class PersonalSettingsState extends State<PersonalSettings> {
     };
 
     return div(styles: Styles(flexDirection: .column), [
-      h3([text('Votre pseudo')]),
+      h3([Component.text('Votre pseudo')]),
       div([
         input(
           id: 'nick-input',
@@ -140,11 +145,15 @@ class PersonalSettingsState extends State<PersonalSettings> {
           },
           [
             switch ((currentNick?.trim(), nick?.trim())) {
-              (null, null) => div([text('Entrez un pseudo pour être visible')]),
-              (null, String _) => text('Passer en mode visible'),
-              (String a, String b) when a != b => text('Changer de pseudo'),
-              (String _, null) => text('Passer en mode anonyme'),
-              (String _, String _) => text('Passer en mode anonyme'),
+              (null, null) => div([
+                Component.text('Entrez un pseudo pour être visible'),
+              ]),
+              (null, String _) => Component.text('Passer en mode visible'),
+              (String a, String b) when a != b => Component.text(
+                'Changer de pseudo',
+              ),
+              (String _, null) => Component.text('Passer en mode anonyme'),
+              (String _, String _) => Component.text('Passer en mode anonyme'),
             },
           ],
         ),
@@ -167,18 +176,18 @@ class WatchingSettings extends StatelessComponent {
     };
 
     return div(styles: Styles(flexDirection: .column), [
-      h3([text('Autres utilisateurs')]),
+      h3([Component.text('Autres utilisateurs')]),
       if (users.isEmpty)
-        text("Aucun utilisateur n'est en train d'écrire du code.")
+        Component.text("Aucun utilisateur n'est en train d'écrire du code.")
       else ...[
-        text('Cliquez sur un utilisateur pour les suivre.'),
+        Component.text('Cliquez sur un utilisateur pour les suivre.'),
         if (context.read(usersProvider)[currentlyWatching] case UserInfo(
           :final nick,
         ))
           div(styles: Styles(display: .inline), [
-            text('Cliquez encore une fois sur '),
-            b([text(nick)]),
-            text(' pour repasser en édition anonyme.'),
+            Component.text('Cliquez encore une fois sur '),
+            b([Component.text(nick)]),
+            Component.text(' pour repasser en édition anonyme.'),
           ]),
         ul(styles: Styles(userSelect: .none), [
           for (final MapEntry(:key, :value) in users)
@@ -198,10 +207,10 @@ class WatchingSettings extends StatelessComponent {
                 },
               },
               [
-                text(value.nick),
-                if (key == id) text(' (Vous)'),
+                Component.text(value.nick),
+                if (key == id) Component.text(' (Vous)'),
                 if (value.numViewers != 0)
-                  text(
+                  Component.text(
                     ' (${value.numViewers} spectateur${value.numViewers == 1 ? '' : 's'})',
                   ),
               ],
@@ -218,11 +227,13 @@ class SlotSettings extends StatelessComponent {
     final state = context.watch(stateProvider);
 
     return div(styles: Styles(flexDirection: .column), [
-      h3([text('Sauvegarde')]),
+      h3([Component.text('Sauvegarde')]),
       if (state case Writing()) ...[
-        text('Sélectionnez une sauvegarde à restaurer où a mettre à jour.'),
+        Component.text(
+          'Sélectionnez une sauvegarde à restaurer où a mettre à jour.',
+        ),
         br(),
-        text(
+        Component.text(
           "Attention, la restauration d'une sauvegarde supprimera votre code actuel. Pensez à le sauvegarder si besoin.",
         ),
         SlotCreator(),
@@ -235,7 +246,7 @@ class SlotSettings extends StatelessComponent {
                     : .normal,
               ),
               [
-                span([text(slot.name)]),
+                span([Component.text(slot.name)]),
                 span(
                   styles: Styles(
                     cursor: slot == context.watch(currentSlotProvider)
@@ -247,13 +258,13 @@ class SlotSettings extends StatelessComponent {
                         .read(codeProvider.notifier)
                         .restoreFromSlot(slot),
                   },
-                  [text(' [Restaurer]')],
+                  [Component.text(' [Restaurer]')],
                 ),
                 switch (slot) {
                   Preset() => span(styles: Styles(cursor: .notAllowed), [
-                    text(' (Lecture seule)'),
+                    Component.text(' (Lecture seule)'),
                   ]),
-                  UserGenerated(:final id) => fragment([
+                  UserGenerated(:final id) => Component.fragment([
                     span(
                       styles: Styles(cursor: .pointer),
                       events: {
@@ -266,7 +277,7 @@ class SlotSettings extends StatelessComponent {
                               .setSlot(newSlot);
                         },
                       },
-                      [text(' [Mettre à jour]')],
+                      [Component.text(' [Mettre à jour]')],
                     ),
                     span(
                       styles: Styles(cursor: .pointer),
@@ -275,7 +286,7 @@ class SlotSettings extends StatelessComponent {
                           context.read(slotProvider.notifier).delete(id);
                         },
                       },
-                      [text(' [Supprimer]')],
+                      [Component.text(' [Supprimer]')],
                     ),
                   ]),
                 },
@@ -283,7 +294,7 @@ class SlotSettings extends StatelessComponent {
             ),
         ]),
       ] else
-        text('Passez en mode édition pour voir vos sauvegardes.'),
+        Component.text('Passez en mode édition pour voir vos sauvegardes.'),
     ]);
   }
 }
@@ -323,7 +334,7 @@ class SlotCreatorState extends State<SlotCreator> {
         attributes: {'spellcheck': 'false'},
         value: name,
         onInput: (n) => setState(() {
-          name = n;
+          name = n as String;
         }),
       ),
       div(
@@ -341,7 +352,7 @@ class SlotCreatorState extends State<SlotCreator> {
             });
           },
         },
-        [text('Créer une nouvelle sauvegarde')],
+        [Component.text('Créer une nouvelle sauvegarde')],
       ),
     ]);
   }

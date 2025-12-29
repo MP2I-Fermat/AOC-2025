@@ -1,11 +1,9 @@
 import 'dart:convert';
 
-import 'package:frontend/components/highlighted_code.dart';
+import 'package:frontend/components/huitr_markdown.dart';
 import 'package:http/http.dart' as http;
+import 'package:jaspr/dom.dart';
 import 'package:jaspr/jaspr.dart';
-import 'package:jaspr/jaspr.dart' as jaspr;
-import 'package:markdown/markdown.dart' as md;
-import 'package:markdown/markdown.dart';
 
 class Documentation extends StatefulComponent {
   const Documentation({super.key});
@@ -38,36 +36,7 @@ class DocumentationState extends State<Documentation> {
               return div([]);
             }
 
-            final parsedDoc = md.Document(
-              encodeHtml: false,
-              extensionSet: ExtensionSet.gitHubFlavored,
-              blockSyntaxes: [HeaderWithIdSyntax()],
-              inlineSyntaxes: [DecodeHtmlSyntax()],
-            ).parse(doc);
-
-            return div(
-              styles: Styles(padding: .all(.pixels(8)), flexDirection: .column),
-              [
-                for (final node in parsedDoc)
-                  if (node case md.Element(
-                    tag: 'pre',
-                    children: [
-                      md.Element(
-                        tag: 'code',
-                        attributes: {'class': 'language-huitr'},
-                        children: [md.Text(text: final code)],
-                      ),
-                    ],
-                  ))
-                    pre([
-                      jaspr.code([HighlightedCode(code: code)]),
-                    ])
-                  else
-                    div([
-                      raw(HtmlRenderer().render([node])),
-                    ]),
-              ],
-            );
+            return HuitrMarkdown(markdown: doc);
           },
         ),
       ],

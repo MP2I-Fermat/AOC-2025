@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:backend/evaluation.dart';
+import 'package:backend/problems.dart';
+import 'package:collection/collection.dart';
 import 'package:common/protocol.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
@@ -55,6 +57,21 @@ class ConnectionHandler {
       throw Exception('Client is not editing');
     }
 
+    requireEditing().problemsStatus = {
+      for (final (i, MapEntry(:key, :value))
+          in (await Problem.problems).entries
+              .sorted((a, b) => a.key.compareTo(b.key))
+              .indexed)
+        key: ProblemInfo(
+          unlocked: i == 0,
+          testCaseStatus: List.filled(
+            value.testCases.length,
+            TestStatus.pending,
+          ),
+        ),
+    };
+    state.send(ProblemsUpdate(problems: requireEditing().problemsStatus));
+
     try {
       await for (final payload in channel.stream) {
         if (payload is! String) {
@@ -94,9 +111,11 @@ class ConnectionHandler {
             final editingState = requireEditing();
             await editingState.activeEvaluation?.cancel();
           case InputLine(:final line):
-            final editingState = requireEditing();
-            // Allow InputLine when no evaluation is active.
-            editingState.activeEvaluation?.input(line);
+            final evaluation = requireEditing().activeEvaluation;
+            if (evaluation == null || !evaluation.allowExternalInput) {
+              return;
+            }
+            evaluation.input(line);
           case OutputUpdate():
             throw Exception('Clients cannot send OutputUpdate');
           case StartWritingCode(:final nick):
@@ -107,12 +126,37 @@ class ConnectionHandler {
             if (state.clientState case EditingState previousState) {
               previousState.nick = nick;
             } else {
-              state.clientState = EditingState(
+              final editingState = EditingState(
                 handler: this,
                 connectionState: state,
                 nick: nick,
               );
-              state.send(OutputUpdate(output: [], isRunning: false));
+
+              editingState.problemsStatus = {
+                for (final (i, MapEntry(:key, :value))
+                    in (await Problem.problems).entries
+                        .sorted((a, b) => a.key.compareTo(b.key))
+                        .indexed)
+                  key: ProblemInfo(
+                    unlocked: i == 0,
+                    testCaseStatus: List.filled(
+                      value.testCases.length,
+                      TestStatus.pending,
+                    ),
+                  ),
+              };
+
+              state.clientState = editingState;
+
+              state.send(
+                OutputUpdate(
+                  output: [],
+                  isRunning: false,
+                  isInputEnabled:
+                      editingState.activeEvaluation?.allowExternalInput == true,
+                ),
+              );
+              state.send(ProblemsUpdate(problems: editingState.problemsStatus));
             }
 
             broadcastUsersUpdate();
@@ -136,8 +180,11 @@ class ConnectionHandler {
                 OutputUpdate(
                   output: targetState.currentLines,
                   isRunning: targetState.activeEvaluation != null,
+                  isInputEnabled:
+                      targetState.activeEvaluation?.allowExternalInput == true,
                 ),
-              );
+              )
+              ..send(ProblemsUpdate(problems: targetState.problemsStatus));
 
             broadcastUsersUpdate();
 
@@ -148,8 +195,189 @@ class ConnectionHandler {
                 }
               }
             }
+          case SubmitSolution(problem: final problemName, :final code):
+            final problem = (await Problem.problems)[problemName];
+            if (problem == null) {
+              throw Exception('Unknown problem');
+            }
+
+            await requireEditing().activeEvaluation?.cancel();
+
+            final editingState = requireEditing().problemsStatus[problemName];
+            if (editingState == null) {
+              throw Exception('Invalid internal state: missing problem status');
+            }
+
+            final results = List.filled(
+              problem.testCases.length,
+              TestStatus.pending,
+            );
+            var isRunning = true;
+            final output = <OutputLine>[];
+
+            void broadcastUpdate() {
+              final newState = editingState.copyWith(testCaseStatus: results);
+
+              final problems = requireEditing().problemsStatus;
+              problems[problemName] = newState;
+              state.send(ProblemsUpdate(problems: problems));
+
+              for (final connection in connections.values) {
+                if (connection.clientState case WatchingState st) {
+                  if (st.target == state.id) {
+                    connection.send(ProblemsUpdate(problems: problems));
+                  }
+                }
+              }
+
+              state.send(
+                OutputUpdate(
+                  output: output,
+                  isRunning: isRunning,
+                  isInputEnabled: false,
+                ),
+              );
+              for (final connection in connections.values) {
+                if (connection.clientState case WatchingState st) {
+                  if (st.target == state.id) {
+                    connection.send(
+                      OutputUpdate(
+                        output: output,
+                        isRunning: isRunning,
+                        isInputEnabled: false,
+                      ),
+                    );
+                  }
+                }
+              }
+            }
+
+            broadcastUpdate();
+
+            Future<void> test() async {
+              var skipRemaining = false;
+
+              try {
+                for (final (i, testCase) in problem.testCases.indexed) {
+                  if (skipRemaining) {
+                    results[i] = TestStatus.pending;
+                    continue;
+                  }
+
+                  output.add(
+                    OutputLine(
+                      stream: OutputStream.stdout,
+                      line: 'Lancement du test #${i + 1}...',
+                    ),
+                  );
+
+                  final evaluation = await Evaluation.start(
+                    code,
+                    allowExternalInput: false,
+                  );
+                  evaluation.onOutputChange.drain();
+
+                  requireEditing().activeEvaluation = evaluation;
+
+                  results[i] = TestStatus.running;
+                  broadcastUpdate();
+
+                  const LineSplitter()
+                      .convert(testCase.input.trim())
+                      .forEach(evaluation.input);
+                  evaluation.input('');
+
+                  final exitCode = await evaluation.exitCode;
+                  requireEditing().activeEvaluation = null;
+
+                  String? failureReason;
+
+                  if (exitCode != 0) {
+                    failureReason = 'Le programme a terminé avec une erreur';
+                  }
+
+                  if (failureReason == null) {
+                    final output = evaluation.outputLines
+                        .where((l) => l.stream == OutputStream.stdout)
+                        .map((l) => l.line)
+                        .join('\n')
+                        .trim();
+
+                    if (output != testCase.output.trim()) {
+                      failureReason = 'Résultat incorrect';
+                    }
+                  }
+
+                  if (failureReason != null) {
+                    results[i] = TestStatus.failed;
+                    skipRemaining = true;
+
+                    output.add(
+                      OutputLine(
+                        stream: OutputStream.stderr,
+                        line: 'Test #${i + 1} échoué: $failureReason',
+                      ),
+                    );
+
+                    if (evaluation.outputLines.isNotEmpty) {
+                      output.add(
+                        OutputLine(
+                          stream: OutputStream.stdout,
+                          line: 'Sortie du programme:',
+                        ),
+                      );
+
+                      for (final line in evaluation.outputLines.take(1000)) {
+                        output.add(
+                          OutputLine(
+                            stream: line.stream,
+                            line: line.stream == OutputStream.stdin
+                                ? '*' * line.line.length
+                                : line.line,
+                          ),
+                        );
+                      }
+                    }
+                  } else {
+                    results[i] = TestStatus.success;
+
+                    output.add(
+                      OutputLine(
+                        stream: OutputStream.stdout,
+                        line: 'Test #${i + 1} passé',
+                      ),
+                    );
+                  }
+                }
+              } finally {
+                isRunning = false;
+
+                if (results.every((status) => status == TestStatus.success)) {
+                  // Unlock next problem
+                  final problems = (await Problem.problems).keys.sorted();
+                  final index = problems.indexOf(problemName);
+                  if (index != problems.length - 1 && index != -1) {
+                    final nextProblem = problems[index + 1];
+                    requireEditing().problemsStatus[nextProblem] = ProblemInfo(
+                      unlocked: true,
+                      testCaseStatus: List.filled(
+                        (await Problem.problems)[nextProblem]!.testCases.length,
+                        TestStatus.pending,
+                      ),
+                    );
+                  }
+                }
+
+                broadcastUpdate();
+              }
+            }
+
+            // Don't block processing more messages.
+            test();
           case UsersUpdate():
             throw Exception('Clients cannot send UsersUpdate');
+          case ProblemsUpdate():
+            throw Exception('Clients cannot send ProblemsUpdate');
         }
       }
     } finally {
@@ -206,6 +434,8 @@ final class EditingState extends ClientState {
   final ConnectionState connectionState;
   String? nick;
 
+  Map<String, ProblemInfo> problemsStatus = {};
+
   EditingState({
     required this.handler,
     required this.connectionState,
@@ -220,7 +450,7 @@ final class EditingState extends ClientState {
   List<OutputLine> currentLines;
 
   Future<Evaluation> startEvaluation() async {
-    final evaluation = await Evaluation.start(code);
+    final evaluation = await Evaluation.start(code, allowExternalInput: true);
     activeEvaluation = evaluation;
 
     currentLines.clear();
@@ -229,13 +459,21 @@ final class EditingState extends ClientState {
     void scheduleUpdate({required bool isRunning}) {
       void sendUpdate() {
         connectionState.send(
-          OutputUpdate(output: currentLines, isRunning: isRunning),
+          OutputUpdate(
+            output: currentLines,
+            isRunning: isRunning,
+            isInputEnabled: true,
+          ),
         );
         for (final connection in handler.connections.values) {
           if (connection.clientState case WatchingState st) {
             if (st.target == connectionState.id) {
               connection.send(
-                OutputUpdate(output: currentLines, isRunning: isRunning),
+                OutputUpdate(
+                  output: currentLines,
+                  isRunning: isRunning,
+                  isInputEnabled: true,
+                ),
               );
             }
           }

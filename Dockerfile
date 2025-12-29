@@ -89,6 +89,7 @@ COPY --from=build_huitr /huitr/_build/default/cli/main.exe /opt/huitr/huitr
 COPY --from=build_frontend /frontend/build/jaspr /opt/frontend
 COPY --from=build_backend /backend/bin/server_prod /opt/backend/backend
 COPY --from=build_nsjail /nsjail/nsjail /opt/nsjail/nsjail
+COPY problems /opt/backend/problems
 
 ENV PATH=$PATH:/opt/nsjail
 

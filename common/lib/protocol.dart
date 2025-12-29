@@ -20,10 +20,31 @@ sealed class Message with _$Message {
   const factory Message.outputUpdate({
     required List<OutputLine> output,
     required bool isRunning,
+    required bool isInputEnabled,
   }) = OutputUpdate;
+  const factory Message.problemsUpdate({
+    required Map<String, ProblemInfo> problems,
+  }) = ProblemsUpdate;
+  const factory Message.submitSolution({
+    required String problem,
+    required String code,
+  }) = SubmitSolution;
 
   factory Message.fromJson(Map<String, Object?> json) =>
       _$MessageFromJson(json);
+}
+
+enum TestStatus { pending, running, success, failed }
+
+@freezed
+sealed class ProblemInfo with _$ProblemInfo {
+  const factory ProblemInfo({
+    required bool unlocked,
+    required List<TestStatus> testCaseStatus,
+  }) = _ProblemInfo;
+
+  factory ProblemInfo.fromJson(Map<String, Object?> json) =>
+      _$ProblemInfoFromJson(json);
 }
 
 @freezed

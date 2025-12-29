@@ -17,6 +17,8 @@ dependencies:
     path: ../common
   shelf_limiter: ^2.0.1
   web_socket_channel: ^3.0.3
+  shelf_cors_headers: ^0.1.5
+  collection: ^1.19.1
 
 dev_dependencies:
   http: ^1.2.2

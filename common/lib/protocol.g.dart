@@ -79,6 +79,7 @@ OutputUpdate _$OutputUpdateFromJson(Map<String, dynamic> json) => OutputUpdate(
       .map((e) => OutputLine.fromJson(e as Map<String, dynamic>))
       .toList(),
   isRunning: json['isRunning'] as bool,
+  isInputEnabled: json['isInputEnabled'] as bool,
   $type: json['runtimeType'] as String?,
 );
 
@@ -86,8 +87,59 @@ Map<String, dynamic> _$OutputUpdateToJson(OutputUpdate instance) =>
     <String, dynamic>{
       'output': instance.output,
       'isRunning': instance.isRunning,
+      'isInputEnabled': instance.isInputEnabled,
       'runtimeType': instance.$type,
     };
+
+ProblemsUpdate _$ProblemsUpdateFromJson(Map<String, dynamic> json) =>
+    ProblemsUpdate(
+      problems: (json['problems'] as Map<String, dynamic>).map(
+        (k, e) => MapEntry(k, ProblemInfo.fromJson(e as Map<String, dynamic>)),
+      ),
+      $type: json['runtimeType'] as String?,
+    );
+
+Map<String, dynamic> _$ProblemsUpdateToJson(ProblemsUpdate instance) =>
+    <String, dynamic>{
+      'problems': instance.problems,
+      'runtimeType': instance.$type,
+    };
+
+SubmitSolution _$SubmitSolutionFromJson(Map<String, dynamic> json) =>
+    SubmitSolution(
+      problem: json['problem'] as String,
+      code: json['code'] as String,
+      $type: json['runtimeType'] as String?,
+    );
+
+Map<String, dynamic> _$SubmitSolutionToJson(SubmitSolution instance) =>
+    <String, dynamic>{
+      'problem': instance.problem,
+      'code': instance.code,
+      'runtimeType': instance.$type,
+    };
+
+_ProblemInfo _$ProblemInfoFromJson(Map<String, dynamic> json) => _ProblemInfo(
+  unlocked: json['unlocked'] as bool,
+  testCaseStatus: (json['testCaseStatus'] as List<dynamic>)
+      .map((e) => $enumDecode(_$TestStatusEnumMap, e))
+      .toList(),
+);
+
+Map<String, dynamic> _$ProblemInfoToJson(_ProblemInfo instance) =>
+    <String, dynamic>{
+      'unlocked': instance.unlocked,
+      'testCaseStatus': instance.testCaseStatus
+          .map((e) => _$TestStatusEnumMap[e]!)
+          .toList(),
+    };
+
+const _$TestStatusEnumMap = {
+  TestStatus.pending: 'pending',
+  TestStatus.running: 'running',
+  TestStatus.success: 'success',
+  TestStatus.failed: 'failed',
+};
 
 _UserInfo _$UserInfoFromJson(Map<String, dynamic> json) => _UserInfo(
   nick: json['nick'] as String,

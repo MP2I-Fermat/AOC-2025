@@ -47,6 +47,14 @@ Message _$MessageFromJson(
           return OutputUpdate.fromJson(
             json
           );
+                case 'problemsUpdate':
+          return ProblemsUpdate.fromJson(
+            json
+          );
+                case 'submitSolution':
+          return SubmitSolution.fromJson(
+            json
+          );
         
           default:
             throw CheckedFromJsonException(
@@ -105,7 +113,7 @@ extension MessagePatterns on Message {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( StartWritingCode value)?  startWritingCode,TResult Function( Watch value)?  watch,TResult Function( UsersUpdate value)?  usersUpdate,TResult Function( CodeUpdate value)?  codeUpdate,TResult Function( StartEvaluation value)?  startEvaluation,TResult Function( StopEvaluation value)?  stopEvaluation,TResult Function( InputLine value)?  inputLine,TResult Function( OutputUpdate value)?  outputUpdate,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( StartWritingCode value)?  startWritingCode,TResult Function( Watch value)?  watch,TResult Function( UsersUpdate value)?  usersUpdate,TResult Function( CodeUpdate value)?  codeUpdate,TResult Function( StartEvaluation value)?  startEvaluation,TResult Function( StopEvaluation value)?  stopEvaluation,TResult Function( InputLine value)?  inputLine,TResult Function( OutputUpdate value)?  outputUpdate,TResult Function( ProblemsUpdate value)?  problemsUpdate,TResult Function( SubmitSolution value)?  submitSolution,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case StartWritingCode() when startWritingCode != null:
@@ -116,7 +124,9 @@ return codeUpdate(_that);case StartEvaluation() when startEvaluation != null:
 return startEvaluation(_that);case StopEvaluation() when stopEvaluation != null:
 return stopEvaluation(_that);case InputLine() when inputLine != null:
 return inputLine(_that);case OutputUpdate() when outputUpdate != null:
-return outputUpdate(_that);case _:
+return outputUpdate(_that);case ProblemsUpdate() when problemsUpdate != null:
+return problemsUpdate(_that);case SubmitSolution() when submitSolution != null:
+return submitSolution(_that);case _:
   return orElse();
 
 }
@@ -134,7 +144,7 @@ return outputUpdate(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( StartWritingCode value)  startWritingCode,required TResult Function( Watch value)  watch,required TResult Function( UsersUpdate value)  usersUpdate,required TResult Function( CodeUpdate value)  codeUpdate,required TResult Function( StartEvaluation value)  startEvaluation,required TResult Function( StopEvaluation value)  stopEvaluation,required TResult Function( InputLine value)  inputLine,required TResult Function( OutputUpdate value)  outputUpdate,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( StartWritingCode value)  startWritingCode,required TResult Function( Watch value)  watch,required TResult Function( UsersUpdate value)  usersUpdate,required TResult Function( CodeUpdate value)  codeUpdate,required TResult Function( StartEvaluation value)  startEvaluation,required TResult Function( StopEvaluation value)  stopEvaluation,required TResult Function( InputLine value)  inputLine,required TResult Function( OutputUpdate value)  outputUpdate,required TResult Function( ProblemsUpdate value)  problemsUpdate,required TResult Function( SubmitSolution value)  submitSolution,}){
 final _that = this;
 switch (_that) {
 case StartWritingCode():
@@ -145,7 +155,9 @@ return codeUpdate(_that);case StartEvaluation():
 return startEvaluation(_that);case StopEvaluation():
 return stopEvaluation(_that);case InputLine():
 return inputLine(_that);case OutputUpdate():
-return outputUpdate(_that);}
+return outputUpdate(_that);case ProblemsUpdate():
+return problemsUpdate(_that);case SubmitSolution():
+return submitSolution(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -159,7 +171,7 @@ return outputUpdate(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( StartWritingCode value)?  startWritingCode,TResult? Function( Watch value)?  watch,TResult? Function( UsersUpdate value)?  usersUpdate,TResult? Function( CodeUpdate value)?  codeUpdate,TResult? Function( StartEvaluation value)?  startEvaluation,TResult? Function( StopEvaluation value)?  stopEvaluation,TResult? Function( InputLine value)?  inputLine,TResult? Function( OutputUpdate value)?  outputUpdate,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( StartWritingCode value)?  startWritingCode,TResult? Function( Watch value)?  watch,TResult? Function( UsersUpdate value)?  usersUpdate,TResult? Function( CodeUpdate value)?  codeUpdate,TResult? Function( StartEvaluation value)?  startEvaluation,TResult? Function( StopEvaluation value)?  stopEvaluation,TResult? Function( InputLine value)?  inputLine,TResult? Function( OutputUpdate value)?  outputUpdate,TResult? Function( ProblemsUpdate value)?  problemsUpdate,TResult? Function( SubmitSolution value)?  submitSolution,}){
 final _that = this;
 switch (_that) {
 case StartWritingCode() when startWritingCode != null:
@@ -170,7 +182,9 @@ return codeUpdate(_that);case StartEvaluation() when startEvaluation != null:
 return startEvaluation(_that);case StopEvaluation() when stopEvaluation != null:
 return stopEvaluation(_that);case InputLine() when inputLine != null:
 return inputLine(_that);case OutputUpdate() when outputUpdate != null:
-return outputUpdate(_that);case _:
+return outputUpdate(_that);case ProblemsUpdate() when problemsUpdate != null:
+return problemsUpdate(_that);case SubmitSolution() when submitSolution != null:
+return submitSolution(_that);case _:
   return null;
 
 }
@@ -187,7 +201,7 @@ return outputUpdate(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? nick)?  startWritingCode,TResult Function( int id)?  watch,TResult Function( Map<int, UserInfo> users,  int yourId)?  usersUpdate,TResult Function( String code)?  codeUpdate,TResult Function( String code)?  startEvaluation,TResult Function()?  stopEvaluation,TResult Function( String line)?  inputLine,TResult Function( List<OutputLine> output,  bool isRunning)?  outputUpdate,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? nick)?  startWritingCode,TResult Function( int id)?  watch,TResult Function( Map<int, UserInfo> users,  int yourId)?  usersUpdate,TResult Function( String code)?  codeUpdate,TResult Function( String code)?  startEvaluation,TResult Function()?  stopEvaluation,TResult Function( String line)?  inputLine,TResult Function( List<OutputLine> output,  bool isRunning,  bool isInputEnabled)?  outputUpdate,TResult Function( Map<String, ProblemInfo> problems)?  problemsUpdate,TResult Function( String problem,  String code)?  submitSolution,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case StartWritingCode() when startWritingCode != null:
 return startWritingCode(_that.nick);case Watch() when watch != null:
@@ -197,7 +211,9 @@ return codeUpdate(_that.code);case StartEvaluation() when startEvaluation != nul
 return startEvaluation(_that.code);case StopEvaluation() when stopEvaluation != null:
 return stopEvaluation();case InputLine() when inputLine != null:
 return inputLine(_that.line);case OutputUpdate() when outputUpdate != null:
-return outputUpdate(_that.output,_that.isRunning);case _:
+return outputUpdate(_that.output,_that.isRunning,_that.isInputEnabled);case ProblemsUpdate() when problemsUpdate != null:
+return problemsUpdate(_that.problems);case SubmitSolution() when submitSolution != null:
+return submitSolution(_that.problem,_that.code);case _:
   return orElse();
 
 }
@@ -215,7 +231,7 @@ return outputUpdate(_that.output,_that.isRunning);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? nick)  startWritingCode,required TResult Function( int id)  watch,required TResult Function( Map<int, UserInfo> users,  int yourId)  usersUpdate,required TResult Function( String code)  codeUpdate,required TResult Function( String code)  startEvaluation,required TResult Function()  stopEvaluation,required TResult Function( String line)  inputLine,required TResult Function( List<OutputLine> output,  bool isRunning)  outputUpdate,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? nick)  startWritingCode,required TResult Function( int id)  watch,required TResult Function( Map<int, UserInfo> users,  int yourId)  usersUpdate,required TResult Function( String code)  codeUpdate,required TResult Function( String code)  startEvaluation,required TResult Function()  stopEvaluation,required TResult Function( String line)  inputLine,required TResult Function( List<OutputLine> output,  bool isRunning,  bool isInputEnabled)  outputUpdate,required TResult Function( Map<String, ProblemInfo> problems)  problemsUpdate,required TResult Function( String problem,  String code)  submitSolution,}) {final _that = this;
 switch (_that) {
 case StartWritingCode():
 return startWritingCode(_that.nick);case Watch():
@@ -225,7 +241,9 @@ return codeUpdate(_that.code);case StartEvaluation():
 return startEvaluation(_that.code);case StopEvaluation():
 return stopEvaluation();case InputLine():
 return inputLine(_that.line);case OutputUpdate():
-return outputUpdate(_that.output,_that.isRunning);}
+return outputUpdate(_that.output,_that.isRunning,_that.isInputEnabled);case ProblemsUpdate():
+return problemsUpdate(_that.problems);case SubmitSolution():
+return submitSolution(_that.problem,_that.code);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -239,7 +257,7 @@ return outputUpdate(_that.output,_that.isRunning);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? nick)?  startWritingCode,TResult? Function( int id)?  watch,TResult? Function( Map<int, UserInfo> users,  int yourId)?  usersUpdate,TResult? Function( String code)?  codeUpdate,TResult? Function( String code)?  startEvaluation,TResult? Function()?  stopEvaluation,TResult? Function( String line)?  inputLine,TResult? Function( List<OutputLine> output,  bool isRunning)?  outputUpdate,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? nick)?  startWritingCode,TResult? Function( int id)?  watch,TResult? Function( Map<int, UserInfo> users,  int yourId)?  usersUpdate,TResult? Function( String code)?  codeUpdate,TResult? Function( String code)?  startEvaluation,TResult? Function()?  stopEvaluation,TResult? Function( String line)?  inputLine,TResult? Function( List<OutputLine> output,  bool isRunning,  bool isInputEnabled)?  outputUpdate,TResult? Function( Map<String, ProblemInfo> problems)?  problemsUpdate,TResult? Function( String problem,  String code)?  submitSolution,}) {final _that = this;
 switch (_that) {
 case StartWritingCode() when startWritingCode != null:
 return startWritingCode(_that.nick);case Watch() when watch != null:
@@ -249,7 +267,9 @@ return codeUpdate(_that.code);case StartEvaluation() when startEvaluation != nul
 return startEvaluation(_that.code);case StopEvaluation() when stopEvaluation != null:
 return stopEvaluation();case InputLine() when inputLine != null:
 return inputLine(_that.line);case OutputUpdate() when outputUpdate != null:
-return outputUpdate(_that.output,_that.isRunning);case _:
+return outputUpdate(_that.output,_that.isRunning,_that.isInputEnabled);case ProblemsUpdate() when problemsUpdate != null:
+return problemsUpdate(_that.problems);case SubmitSolution() when submitSolution != null:
+return submitSolution(_that.problem,_that.code);case _:
   return null;
 
 }
@@ -746,7 +766,7 @@ as String,
 @JsonSerializable()
 
 class OutputUpdate implements Message {
-  const OutputUpdate({required final  List<OutputLine> output, required this.isRunning, final  String? $type}): _output = output,$type = $type ?? 'outputUpdate';
+  const OutputUpdate({required final  List<OutputLine> output, required this.isRunning, required this.isInputEnabled, final  String? $type}): _output = output,$type = $type ?? 'outputUpdate';
   factory OutputUpdate.fromJson(Map<String, dynamic> json) => _$OutputUpdateFromJson(json);
 
  final  List<OutputLine> _output;
@@ -757,6 +777,7 @@ class OutputUpdate implements Message {
 }
 
  final  bool isRunning;
+ final  bool isInputEnabled;
 
 @JsonKey(name: 'runtimeType')
 final String $type;
@@ -775,16 +796,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OutputUpdate&&const DeepCollectionEquality().equals(other._output, _output)&&(identical(other.isRunning, isRunning) || other.isRunning == isRunning));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is OutputUpdate&&const DeepCollectionEquality().equals(other._output, _output)&&(identical(other.isRunning, isRunning) || other.isRunning == isRunning)&&(identical(other.isInputEnabled, isInputEnabled) || other.isInputEnabled == isInputEnabled));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_output),isRunning);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_output),isRunning,isInputEnabled);
 
 @override
 String toString() {
-  return 'Message.outputUpdate(output: $output, isRunning: $isRunning)';
+  return 'Message.outputUpdate(output: $output, isRunning: $isRunning, isInputEnabled: $isInputEnabled)';
 }
 
 
@@ -795,7 +816,7 @@ abstract mixin class $OutputUpdateCopyWith<$Res> implements $MessageCopyWith<$Re
   factory $OutputUpdateCopyWith(OutputUpdate value, $Res Function(OutputUpdate) _then) = _$OutputUpdateCopyWithImpl;
 @useResult
 $Res call({
- List<OutputLine> output, bool isRunning
+ List<OutputLine> output, bool isRunning, bool isInputEnabled
 });
 
 
@@ -812,11 +833,432 @@ class _$OutputUpdateCopyWithImpl<$Res>
 
 /// Create a copy of Message
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? output = null,Object? isRunning = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? output = null,Object? isRunning = null,Object? isInputEnabled = null,}) {
   return _then(OutputUpdate(
 output: null == output ? _self._output : output // ignore: cast_nullable_to_non_nullable
 as List<OutputLine>,isRunning: null == isRunning ? _self.isRunning : isRunning // ignore: cast_nullable_to_non_nullable
+as bool,isInputEnabled: null == isInputEnabled ? _self.isInputEnabled : isInputEnabled // ignore: cast_nullable_to_non_nullable
 as bool,
+  ));
+}
+
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class ProblemsUpdate implements Message {
+  const ProblemsUpdate({required final  Map<String, ProblemInfo> problems, final  String? $type}): _problems = problems,$type = $type ?? 'problemsUpdate';
+  factory ProblemsUpdate.fromJson(Map<String, dynamic> json) => _$ProblemsUpdateFromJson(json);
+
+ final  Map<String, ProblemInfo> _problems;
+ Map<String, ProblemInfo> get problems {
+  if (_problems is EqualUnmodifiableMapView) return _problems;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(_problems);
+}
+
+
+@JsonKey(name: 'runtimeType')
+final String $type;
+
+
+/// Create a copy of Message
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$ProblemsUpdateCopyWith<ProblemsUpdate> get copyWith => _$ProblemsUpdateCopyWithImpl<ProblemsUpdate>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$ProblemsUpdateToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProblemsUpdate&&const DeepCollectionEquality().equals(other._problems, _problems));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_problems));
+
+@override
+String toString() {
+  return 'Message.problemsUpdate(problems: $problems)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $ProblemsUpdateCopyWith<$Res> implements $MessageCopyWith<$Res> {
+  factory $ProblemsUpdateCopyWith(ProblemsUpdate value, $Res Function(ProblemsUpdate) _then) = _$ProblemsUpdateCopyWithImpl;
+@useResult
+$Res call({
+ Map<String, ProblemInfo> problems
+});
+
+
+
+
+}
+/// @nodoc
+class _$ProblemsUpdateCopyWithImpl<$Res>
+    implements $ProblemsUpdateCopyWith<$Res> {
+  _$ProblemsUpdateCopyWithImpl(this._self, this._then);
+
+  final ProblemsUpdate _self;
+  final $Res Function(ProblemsUpdate) _then;
+
+/// Create a copy of Message
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? problems = null,}) {
+  return _then(ProblemsUpdate(
+problems: null == problems ? _self._problems : problems // ignore: cast_nullable_to_non_nullable
+as Map<String, ProblemInfo>,
+  ));
+}
+
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class SubmitSolution implements Message {
+  const SubmitSolution({required this.problem, required this.code, final  String? $type}): $type = $type ?? 'submitSolution';
+  factory SubmitSolution.fromJson(Map<String, dynamic> json) => _$SubmitSolutionFromJson(json);
+
+ final  String problem;
+ final  String code;
+
+@JsonKey(name: 'runtimeType')
+final String $type;
+
+
+/// Create a copy of Message
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SubmitSolutionCopyWith<SubmitSolution> get copyWith => _$SubmitSolutionCopyWithImpl<SubmitSolution>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$SubmitSolutionToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubmitSolution&&(identical(other.problem, problem) || other.problem == problem)&&(identical(other.code, code) || other.code == code));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,problem,code);
+
+@override
+String toString() {
+  return 'Message.submitSolution(problem: $problem, code: $code)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $SubmitSolutionCopyWith<$Res> implements $MessageCopyWith<$Res> {
+  factory $SubmitSolutionCopyWith(SubmitSolution value, $Res Function(SubmitSolution) _then) = _$SubmitSolutionCopyWithImpl;
+@useResult
+$Res call({
+ String problem, String code
+});
+
+
+
+
+}
+/// @nodoc
+class _$SubmitSolutionCopyWithImpl<$Res>
+    implements $SubmitSolutionCopyWith<$Res> {
+  _$SubmitSolutionCopyWithImpl(this._self, this._then);
+
+  final SubmitSolution _self;
+  final $Res Function(SubmitSolution) _then;
+
+/// Create a copy of Message
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? problem = null,Object? code = null,}) {
+  return _then(SubmitSolution(
+problem: null == problem ? _self.problem : problem // ignore: cast_nullable_to_non_nullable
+as String,code: null == code ? _self.code : code // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
+mixin _$ProblemInfo {
+
+ bool get unlocked; List<TestStatus> get testCaseStatus;
+/// Create a copy of ProblemInfo
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$ProblemInfoCopyWith<ProblemInfo> get copyWith => _$ProblemInfoCopyWithImpl<ProblemInfo>(this as ProblemInfo, _$identity);
+
+  /// Serializes this ProblemInfo to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProblemInfo&&(identical(other.unlocked, unlocked) || other.unlocked == unlocked)&&const DeepCollectionEquality().equals(other.testCaseStatus, testCaseStatus));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,unlocked,const DeepCollectionEquality().hash(testCaseStatus));
+
+@override
+String toString() {
+  return 'ProblemInfo(unlocked: $unlocked, testCaseStatus: $testCaseStatus)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $ProblemInfoCopyWith<$Res>  {
+  factory $ProblemInfoCopyWith(ProblemInfo value, $Res Function(ProblemInfo) _then) = _$ProblemInfoCopyWithImpl;
+@useResult
+$Res call({
+ bool unlocked, List<TestStatus> testCaseStatus
+});
+
+
+
+
+}
+/// @nodoc
+class _$ProblemInfoCopyWithImpl<$Res>
+    implements $ProblemInfoCopyWith<$Res> {
+  _$ProblemInfoCopyWithImpl(this._self, this._then);
+
+  final ProblemInfo _self;
+  final $Res Function(ProblemInfo) _then;
+
+/// Create a copy of ProblemInfo
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? unlocked = null,Object? testCaseStatus = null,}) {
+  return _then(_self.copyWith(
+unlocked: null == unlocked ? _self.unlocked : unlocked // ignore: cast_nullable_to_non_nullable
+as bool,testCaseStatus: null == testCaseStatus ? _self.testCaseStatus : testCaseStatus // ignore: cast_nullable_to_non_nullable
+as List<TestStatus>,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [ProblemInfo].
+extension ProblemInfoPatterns on ProblemInfo {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _ProblemInfo value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _ProblemInfo() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _ProblemInfo value)  $default,){
+final _that = this;
+switch (_that) {
+case _ProblemInfo():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _ProblemInfo value)?  $default,){
+final _that = this;
+switch (_that) {
+case _ProblemInfo() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool unlocked,  List<TestStatus> testCaseStatus)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _ProblemInfo() when $default != null:
+return $default(_that.unlocked,_that.testCaseStatus);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool unlocked,  List<TestStatus> testCaseStatus)  $default,) {final _that = this;
+switch (_that) {
+case _ProblemInfo():
+return $default(_that.unlocked,_that.testCaseStatus);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool unlocked,  List<TestStatus> testCaseStatus)?  $default,) {final _that = this;
+switch (_that) {
+case _ProblemInfo() when $default != null:
+return $default(_that.unlocked,_that.testCaseStatus);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _ProblemInfo implements ProblemInfo {
+  const _ProblemInfo({required this.unlocked, required final  List<TestStatus> testCaseStatus}): _testCaseStatus = testCaseStatus;
+  factory _ProblemInfo.fromJson(Map<String, dynamic> json) => _$ProblemInfoFromJson(json);
+
+@override final  bool unlocked;
+ final  List<TestStatus> _testCaseStatus;
+@override List<TestStatus> get testCaseStatus {
+  if (_testCaseStatus is EqualUnmodifiableListView) return _testCaseStatus;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_testCaseStatus);
+}
+
+
+/// Create a copy of ProblemInfo
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ProblemInfoCopyWith<_ProblemInfo> get copyWith => __$ProblemInfoCopyWithImpl<_ProblemInfo>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$ProblemInfoToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProblemInfo&&(identical(other.unlocked, unlocked) || other.unlocked == unlocked)&&const DeepCollectionEquality().equals(other._testCaseStatus, _testCaseStatus));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,unlocked,const DeepCollectionEquality().hash(_testCaseStatus));
+
+@override
+String toString() {
+  return 'ProblemInfo(unlocked: $unlocked, testCaseStatus: $testCaseStatus)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$ProblemInfoCopyWith<$Res> implements $ProblemInfoCopyWith<$Res> {
+  factory _$ProblemInfoCopyWith(_ProblemInfo value, $Res Function(_ProblemInfo) _then) = __$ProblemInfoCopyWithImpl;
+@override @useResult
+$Res call({
+ bool unlocked, List<TestStatus> testCaseStatus
+});
+
+
+
+
+}
+/// @nodoc
+class __$ProblemInfoCopyWithImpl<$Res>
+    implements _$ProblemInfoCopyWith<$Res> {
+  __$ProblemInfoCopyWithImpl(this._self, this._then);
+
+  final _ProblemInfo _self;
+  final $Res Function(_ProblemInfo) _then;
+
+/// Create a copy of ProblemInfo
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? unlocked = null,Object? testCaseStatus = null,}) {
+  return _then(_ProblemInfo(
+unlocked: null == unlocked ? _self.unlocked : unlocked // ignore: cast_nullable_to_non_nullable
+as bool,testCaseStatus: null == testCaseStatus ? _self._testCaseStatus : testCaseStatus // ignore: cast_nullable_to_non_nullable
+as List<TestStatus>,
   ));
 }
 

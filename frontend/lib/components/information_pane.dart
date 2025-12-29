@@ -1,6 +1,7 @@
 import 'package:frontend/components/documentation.dart';
 import 'package:frontend/components/problems.dart';
 import 'package:frontend/components/settings.dart';
+import 'package:jaspr/dom.dart';
 import 'package:jaspr/jaspr.dart';
 
 class InfoPane extends StatefulComponent {
@@ -53,7 +54,7 @@ class InfoPaneState extends State<InfoPane> {
                   setState(() => tab = .settings);
                 },
               },
-              [text('Paramètres')],
+              [Component.text('Paramètres')],
             ),
             div(
               styles: Styles(
@@ -69,7 +70,7 @@ class InfoPaneState extends State<InfoPane> {
                   setState(() => tab = .problems);
                 },
               },
-              [text('Problèmes')],
+              [Component.text('Problèmes')],
             ),
             div(
               styles: Styles(
@@ -87,7 +88,7 @@ class InfoPaneState extends State<InfoPane> {
                   setState(() => tab = .documentation);
                 },
               },
-              [text('Documentation')],
+              [Component.text('Documentation')],
             ),
           ],
         ),

@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:jaspr/dom.dart';
 import 'package:jaspr/jaspr.dart';
 
 class HighlightedCode extends StatelessComponent {
@@ -22,10 +23,7 @@ class HighlightedCode extends StatelessComponent {
     ];
 
     return span(
-      styles: Styles(
-        whiteSpace: .pre,
-        raw: {'font-family': 'monospace'},
-      ),
+      styles: Styles(whiteSpace: .pre, raw: {'font-family': 'monospace'}),
       [
         ...tokens.indexed.map((r) {
           final (index, (type, value)) = r;
@@ -94,7 +92,7 @@ class HighlightedCode extends StatelessComponent {
           }
 
           return div(styles: Styles(display: .inline, color: color), [
-            text(value),
+            Component.text(value),
           ]);
         }),
       ],
