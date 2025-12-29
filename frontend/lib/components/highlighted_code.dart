@@ -70,7 +70,8 @@ class _HighlightedCodeState extends State<HighlightedCode> {
                     : Color.variable('--ident-color'),
               HuitrToken.integerLiteral => Color.variable('--number-literal'),
               HuitrToken.floatLiteral => Color.variable('--number-literal'),
-              HuitrToken.stringLiteral => Color.variable('--string-color'),
+              HuitrToken.stringLiteral || HuitrToken.multilineStringLiteral =>
+                Color.variable('--string-color'),
               HuitrToken.whitespace => Color.variable('--default-color'),
               HuitrToken.newline => Color.variable('--default-color'),
               HuitrToken.comma => Color.variable('--default-color'),
@@ -123,6 +124,7 @@ enum HuitrToken {
   integerLiteral,
   floatLiteral,
   stringLiteral,
+  multilineStringLiteral,
   whitespace,
   newline,
   comma,
@@ -149,7 +151,19 @@ final huitrRules = [
   ),
   (RegExp(r'-?[0-9]+(\.[0-9]*)?([eE][\+-]?[0-9]+)?'), HuitrToken.floatLiteral),
 
-  (RegExp(r'"([ !$-\[\]-~]|(\\[\\"ntbr]))*"'), HuitrToken.stringLiteral),
+  (
+    RegExp(
+      r'"([ !$-\[\]-~\u00e0\u00e2\u00e7\u00e9\u00e8\u00ea\u00eb\u00ee\u00ef\u00f4\u00f6\u00f9\u00fb\u00fc\u00ff\u00e6\u0153\u00c0\u00c2\u00c7\u00c9\u00c8\u00ca\u00cb\u00ce\u00cf\u00d4\u00d6\u00d9\u00db\u00dc\u0178\u00c6\u0152\u2019\u00a0\u202f]|(\\[\\"ntbr])|(\\u[0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F]))*"',
+    ),
+    HuitrToken.stringLiteral,
+  ),
+
+  (
+    RegExp(
+      r'"""([ !$-\[\]-~\n\u00e0\u00e2\u00e7\u00e9\u00e8\u00ea\u00eb\u00ee\u00ef\u00f4\u00f6\u00f9\u00fb\u00fc\u00ff\u00e6\u0153\u00c0\u00c2\u00c7\u00c9\u00c8\u00ca\u00cb\u00ce\u00cf\u00d4\u00d6\u00d9\u00db\u00dc\u0178\u00c6\u0152\u2019\u00a0\u202f]|(\\[\\"ntbr])|(\\u[0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F]))*"""',
+    ),
+    HuitrToken.multilineStringLiteral,
+  ),
 
   (RegExp(r'( |\t)+'), HuitrToken.whitespace),
 
