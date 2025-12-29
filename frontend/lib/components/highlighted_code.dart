@@ -3,17 +3,35 @@ import 'dart:collection';
 import 'package:jaspr/dom.dart';
 import 'package:jaspr/jaspr.dart';
 
-class HighlightedCode extends StatelessComponent {
+class HighlightedCode extends StatefulComponent {
   final String code;
 
-  HighlightedCode({required this.code});
+  const HighlightedCode({required this.code, super.key});
+
+  @override
+  State<HighlightedCode> createState() => _HighlightedCodeState();
+}
+
+class _HighlightedCodeState extends State<HighlightedCode> {
+  late List<(HuitrToken, String)> tokens;
+
+  @override
+  void initState() {
+    super.initState();
+
+    tokens = tokenize(huitrRules, component.code);
+  }
+
+  @override
+  void didUpdateComponent(covariant HighlightedCode oldComponent) {
+    super.didUpdateComponent(oldComponent);
+    tokens = tokenize(huitrRules, component.code);
+  }
 
   @override
   Component build(BuildContext context) {
     var inSingleComment = false;
     var inMultiComment = false;
-
-    final tokens = tokenize(huitrRules, code);
 
     final parenQueue = DoubleLinkedQueue<HuitrToken>();
     final parenColors = [
