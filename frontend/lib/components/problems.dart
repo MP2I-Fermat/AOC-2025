@@ -153,14 +153,6 @@ class ProblemView extends StatelessComponent {
           ),
           events: {
             'click': (e) {
-              // TODO: Remove once Jaspr bug is fixed
-              final isRunning = context.read(isRunningProvider);
-              final isWriting = context.read(stateProvider) is Writing;
-              final connection = context
-                  .read(connectionProvider)
-                  .unwrapPrevious()
-                  .value;
-
               if (isRunning || !isWriting || connection == null) return;
 
               connection.send(

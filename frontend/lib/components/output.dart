@@ -105,16 +105,6 @@ class RunButtonState extends State<RunButton> {
       ),
       events: {
         'click': (e) {
-          // TODO: Remove this
-          // Seems to be a nasty jaspr bug. My guess is event handlers don't get
-          // re-attached on rebuilds?
-          final connection = context
-              .read(connectionProvider)
-              .unwrapPrevious()
-              .value;
-          final isRunning = context.read(isRunningProvider);
-          final state = context.read(stateProvider);
-
           if (connection == null || pendingState != null || state is! Writing) {
             return;
           }

@@ -332,18 +332,18 @@ packages:
     dependency: "direct main"
     description:
       name: jaspr
-      sha256: ae4e972882ef04fee368a70ae8381b266110805020d95ca19940f9aaa1a7febb
+      sha256: "2cb7e874cbc4293a90965b3f216c7b2a9dd9bf705466a026afee0013e5060b2d"
       url: "https://pub.dev"
     source: hosted
-    version: "0.22.0"
+    version: "0.22.1"
   jaspr_builder:
     dependency: "direct dev"
     description:
       name: jaspr_builder
-      sha256: "61f571eeb9a6f3bb9c64e3e77d55377d7a526d2159c7819e64df233ddc4109ba"
+      sha256: "5a152e7bf792d991e6de0e30cee957267ab248ef28c87f4055b293c524ea8492"
       url: "https://pub.dev"
     source: hosted
-    version: "0.22.0"
+    version: "0.22.1"
   jaspr_lints:
     dependency: "direct dev"
     description:
