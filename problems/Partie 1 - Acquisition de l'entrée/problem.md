@@ -15,8 +15,9 @@ et la machine est tombée en panne suite à une surcharge d'organisationites qui
 ont cramé le détecteur d'AOA (Aura d'Organisation Ambiante).
 
 Vos spés ont généreusement construit un nouveau détecteur d'AOA (DAOA), mais il
-ne l'ont pas testé. (Après tout, à quoi servent les tests?) Fred vous remet
-alors le nouveau DAOA et vous demande de vous assurer de son bon fonctionnement.
+ne l'ont pas testé. (Après tout, à quoi servent les tests&nbsp;?) Fred vous
+remet alors le nouveau DAOA et vous demande de vous assurer de son bon
+fonctionnement.
 
 Le DAOA est constitué d'une boite traversée par un faisceau d'organisationites.
 Au sein de la boite se trouve aussi un ensemble de diviseurs. Lorsque le
@@ -26,7 +27,7 @@ faisceaux de propagent **de haut en bas**, la position d'entrée du faisceau
 est marquée par un `S` sur le diagramme du DAOA, et les diviseurs sont repérés
 par un symbole `^`.
 
-Par exemple, pour le diagramme suivant:
+Par exemple, pour le diagramme suivant&nbsp;:
 ```
 .......S.......
 ...............
@@ -46,7 +47,8 @@ Par exemple, pour le diagramme suivant:
 ...............
 ```
 
-Le faisceau (indiqué par `|`) se propage jusqu'a atteindre le premier diviseur:
+Le faisceau (indiqué par `|`) se propage jusqu'a atteindre le premier
+diviseur&nbsp;:
 ```
 .......S.......
 .......|.......
@@ -66,7 +68,7 @@ Le faisceau (indiqué par `|`) se propage jusqu'a atteindre le premier diviseur:
 ...............
 ```
 
-Il se divise alors en deux nouveaux faisceaux:
+Il se divise alors en deux nouveaux faisceaux&nbsp;:
 ```
 .......S.......
 .......|.......
@@ -86,7 +88,7 @@ Il se divise alors en deux nouveaux faisceaux:
 ...............
 ```
 
-Et ces faisceaux continuent jusqu'a atteindre la sortie du DAOA:
+Et ces faisceaux continuent jusqu'a atteindre la sortie du DAOA&nbsp;:
 ```
 .......S.......
 .......|.......
@@ -106,13 +108,13 @@ Et ces faisceaux continuent jusqu'a atteindre la sortie du DAOA:
 |.|.|.|.|.|||.|
 ```
 
-On remarque que certains faisceaux se sont recombinés; ces faisceaux ne comptent
-que pour **un** faisceau.
+On remarque que certains faisceaux se sont recombinés&nbsp;; ces faisceaux ne
+comptent que pour **un** faisceau.
 
 Fred vous demande alors d'écrire un programme permettant de valider le bon
 fonctionnement du nouveau DAOA. Cependant, le grand Malaxar lui-même veut
-s'assurer de la correction du code; vous devez donc écrire le code dans son
-langage de prédilection : le **Huitr**.
+s'assurer de la correction du code&nbsp;; vous devez donc écrire le code dans
+son langage de prédilection&nbsp;: le **Huitr**.
 
 L'entrée du programme sera donnée ligne par ligne sur le canal `stdin` qui peut
 être lu à l'aide de la fonction `std::io::input`. Une ligne vide sera envoyée
@@ -121,7 +123,7 @@ pour indiquer la fin de l'entrée.
 Votre première tache est alors d'écrire un programme qui **répète son entrée ligne
 par ligne, suivi du texte `c'est fini` une fois toute l'entrée lue.**
 
-Par exemple, pour l'entrée suivante:
+Par exemple, pour l'entrée suivante&nbsp;:
 ```
 .......S.......
 ...............
@@ -141,7 +143,7 @@ Par exemple, pour l'entrée suivante:
 ...............
 ```
 
-Votre programme devra afficher:
+Votre programme devra afficher&nbsp;:
 ```
 .......S.......
 ...............
