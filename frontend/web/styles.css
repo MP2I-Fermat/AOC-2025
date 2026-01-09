@@ -1,6 +1,7 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto);
 
-html, body {
+html,
+body {
   font-family: 'Roboto', sans-serif;
   width: 100%;
   min-height: 100vh;
@@ -10,6 +11,7 @@ html, body {
   --primary-color: white;
   --secondary-color: rgb(100, 100, 100);
   --tertiary-color: rgb(50, 50, 50);
+  --background-color: rgb(34, 34, 34);
 
   --default-color: white;
   --paren-color-1: rgb(218, 112, 214);
@@ -22,7 +24,7 @@ html, body {
   --number-literal: rgb(180, 213, 165);
   --string-color: rgb(244, 128, 82);
 
-  background-color: rgb(34, 34, 34);
+  background-color: var(--background-color);
   color: var(--primary-color);
 }
 
@@ -43,7 +45,7 @@ pre:has(code) {
   border-radius: 1.5px;
 }
 
-pre > code {
+pre>code {
   padding: 0px;
   border-radius: 0px;
 }

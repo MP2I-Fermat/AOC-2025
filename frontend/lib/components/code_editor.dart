@@ -148,7 +148,11 @@ class CodeEditorState extends State<CodeEditor> {
                 overflow: .auto,
                 flex: Flex(grow: 1, basis: .zero),
                 whiteSpace: .pre,
-                raw: {'overscroll-behavior': 'none'},
+                raw: {
+                  'overscroll-behavior': 'none',
+                  'scrollbar-color':
+                      'var(--secondary-color) var(--background-color)',
+                },
               ),
               events: {
                 'scroll': (e) {
