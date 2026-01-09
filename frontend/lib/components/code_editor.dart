@@ -536,7 +536,9 @@ class CodeEditorState extends State<CodeEditor> {
                       // Needed to force the browser to size the inner scroll area correctly.
                       // If this is absent the textarea may sometimes begin scrolling within
                       // itself.
-                      div([RawText('&ZeroWidthSpace;')]),
+                      div(styles: Styles(height: .pixels(300)), [
+                        RawText('&ZeroWidthSpace;'),
+                      ]),
                     ]),
                   ],
                 ),
