@@ -3,7 +3,7 @@ Pour cette prochaine étape, votre programme devra lire l'entrée, puis afficher
 
 Par exemple, pour l'exemple précédent, l'entrée du DAOA est sur la **7ième**
 colonne (en comptant à partir de 0). Pour cette entrée, votre programme devra
-alors afficher:
+alors afficher&nbsp;:
 ```
 7
 ```
