@@ -1,0 +1,33 @@
+Votre programme doit maintenant simuler l'avancée du faisceau dans le DAOA et
+afficher **le nombre de fois que le faisceau est divisé**.
+
+On rappelle que le faisceau traverse l'exemple précédent de la façon suivante:
+```
+.......S.......
+.......|.......
+......|^|......
+......|.|......
+.....|^|^|.....
+.....|.|.|.....
+....|^|^|^|....
+....|.|.|.|....
+...|^|^|||^|...
+...|.|.|||.|...
+..|^|^|||^|^|..
+..|.|.|||.|.|..
+.|^|||^||.||^|.
+.|.|||.||.||.|.
+|^|^|^|^|^|||^|
+|.|.|.|.|.|||.|
+```
+
+Le faisceau est divisé 21 fois au total. Sur cette entrée, votre programme devra
+alors afficher:
+```
+21
+```
+
+**On ne demande pas d'afficher un tracé du rayon.**
+
+_Indice : il pourra être utile de définir des fonctions permettant d'insérer un
+élément dans une list seulement si l'élément n'y était pas déjà présent._
