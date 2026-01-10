@@ -26,6 +26,8 @@ body {
 
   background-color: var(--background-color);
   color: var(--primary-color);
+
+  scrollbar-color: var(--secondary-color) var(--background-color);
 }
 
 a {
