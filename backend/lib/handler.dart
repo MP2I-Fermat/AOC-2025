@@ -353,6 +353,15 @@ class ConnectionHandler {
                 isRunning = false;
 
                 if (results.every((status) => status == TestStatus.success)) {
+                  final display = switch (requireEditing().nick) {
+                    String nick => '$nick (${state.id})',
+                    null => state.id.toString(),
+                  };
+
+                  print(
+                    'User $display completed problem $problemName at ${DateTime.now()}',
+                  );
+
                   // Unlock next problem
                   final problems = (await Problem.problems).keys.sorted();
                   final index = problems.indexOf(problemName);
