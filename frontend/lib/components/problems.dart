@@ -75,6 +75,7 @@ class ProblemsState extends State<Problems> {
                           prompt: problems[problem]!,
                           info: problemStates[problem]!,
                         ),
+                      div(styles: Styles(height: .pixels(300)), []),
                     ],
                   );
                 },
