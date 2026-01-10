@@ -11,29 +11,24 @@ class ProblemStateNotifier extends Notifier<Map<String, ProblemInfo>> {
   Map<String, ProblemInfo> build() {
     ref.listen(connectionMessagesProvider, (_, message) {
       if (message.value case ProblemsUpdate(:final problems)) {
-        final previousProblems = state.entries
-            .where((p) => p.value.unlocked)
-            .map((p) => p.key)
-            .sorted();
+        final orderedProblems = problems.keys.sorted();
 
-        if (previousProblems.isNotEmpty) {
-          final orderedProblems = problems.entries
-              .where((p) => p.value.unlocked)
-              .map((p) => p.key)
-              .sorted();
-
-          final previousLastIndex = orderedProblems.indexOf(
-            previousProblems.last,
+        for (final MapEntry(key: name, value: problem) in problems.entries) {
+          final isSolved = problem.testCaseStatus.every(
+            (status) => status == TestStatus.success,
           );
+          if (!isSolved) continue;
 
-          if (previousLastIndex != -1 &&
-              previousLastIndex < orderedProblems.length - 1) {
-            final name =
-                'Sauvegarde automatique: Solution partie ${previousProblems.length}';
+          final previouslySolved = state[name]?.testCaseStatus.every(
+            (status) => status == TestStatus.success,
+          );
+          if (previouslySolved == true) continue;
 
-            if (!ref.read(slotProvider).any((slot) => slot.name == name)) {
-              ref.read(slotProvider.notifier).createNewSlot(name);
-            }
+          final slotName =
+              'Sauvegarde automatique: Solution partie ${orderedProblems.indexOf(name) + 1}';
+
+          if (!ref.read(slotProvider).any((slot) => slot.name == slotName)) {
+            ref.read(slotProvider.notifier).createNewSlot(slotName);
           }
         }
 
