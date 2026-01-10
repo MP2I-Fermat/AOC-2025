@@ -341,6 +341,7 @@ class SlotCreatorState extends State<SlotCreator> {
         styles: Styles(
           cursor: nameIsValid ? .pointer : .notAllowed,
           userSelect: .none,
+          alignItems: .center,
         ),
         events: {
           'click': (_) {
