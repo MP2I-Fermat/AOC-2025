@@ -31,5 +31,5 @@ alors afficher&nbsp;:
 **On ne demande pas d'afficher un tracé du rayon.**
 
 _Indice&nbsp;: il pourra être utile de définir des fonctions permettant
-d'insérer un élément dans une list seulement si l'élément n'y était pas déjà
+d'insérer un élément dans une liste seulement si l'élément n'y était pas déjà
 présent._
