@@ -359,8 +359,10 @@ class CodeEditorState extends State<CodeEditor> {
 
                               if (editor.selectionStart > 0 &&
                                   editor.selectionEnd < code.length &&
-                                  code[editor.selectionStart - 1] == '[' &&
-                                  code[editor.selectionEnd] == ']') {
+                                  ((code[editor.selectionStart - 1] == '[' &&
+                                          code[editor.selectionEnd] == ']') ||
+                                      (code[editor.selectionStart - 1] == '(' &&
+                                          code[editor.selectionEnd] == ')'))) {
                                 document.execCommand(
                                   'insertText',
                                   false,
