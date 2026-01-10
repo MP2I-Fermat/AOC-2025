@@ -39,20 +39,31 @@ class SavedSlotsNotifier extends Notifier<List<SaveSlot>> {
     code: '''. A simple fizzbuzz
 
 [
-  args, 0 > std::list::nth > n  . stores the current value into n
-
-  . trivial and self-explanatory /s
-  > (n, 15 > std::math::mod, 0 > std::comp::eq,
+  args, 0 > std::list::nth > n . stores the current value into n
+  
+  >( . trivial and self-explanatory /s
+    n, 15 > std::math::mod, 0 > std::comp::eq,
     ["fizzbuzz" > std::io::print],
-    [> (n, 5 > std::math::mod, 0 > std::comp::eq,
-      ["buzz" > std::io::print],
-      [> (n, 3 > std::math::mod, 0 > std::comp::eq,
-        ["fizz" > std::io::print],
-        [n > std::io::print] > std::test::if)
-      ] > std::test::if)
-    ] > std::test::if)
-
-  > (n, 100 > std::comp::eq, [()], [n, 1 > std::math::add > fizzbuzz] > std::test::if)
+    [
+      >(
+        n, 5 > std::math::mod, 0 > std::comp::eq,
+        ["buzz" > std::io::print],
+        [
+          >(
+            n, 3 > std::math::mod, 0 > std::comp::eq,
+            ["fizz" > std::io::print],
+            [n > std::io::print] > std::test::if
+          )
+        ] > std::test::if
+      )
+    ] > std::test::if
+  )
+  
+  >(
+    n, 100 > std::comp::eq,
+    [.. do nothing ..],
+    [n, 1 > std::math::add > fizzbuzz] > std::test::if
+  )
 ] > fizzbuzz
 
 0 > fizzbuzz
