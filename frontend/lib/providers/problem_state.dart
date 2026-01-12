@@ -25,14 +25,20 @@ class ProblemStateNotifier extends Notifier<Map<String, ProblemInfo>> {
           if (previouslySolved == true) continue;
 
           final slotName =
-              'Sauvegarde automatique: Solution partie ${orderedProblems.indexOf(name) + 1}';
+              'Sauvegarde automatique : Solution partie ${orderedProblems.indexOf(name) + 1}';
 
           if (!ref.read(slotProvider).any((slot) => slot.name == slotName)) {
             ref.read(slotProvider.notifier).createNewSlot(slotName);
           }
         }
 
-        state = problems;
+        state = {
+          ...problems,
+          for (final MapEntry(:key, :value) in state.entries)
+            // Prevent problems from being re-locked.
+            // Can happen when connection is resumed.
+            if (value.unlocked && problems[key]?.unlocked == false) key: value,
+        };
       }
     });
 
