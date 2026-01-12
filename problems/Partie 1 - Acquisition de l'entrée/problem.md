@@ -14,7 +14,7 @@ candidats. Malheureusement, cette année, la classe de MP2I a été trop organis
 et la machine est tombée en panne suite à une surcharge d'organisationites qui
 ont cramé le détecteur d'AOA (Aura d'Organisation Ambiante).
 
-Vos spés ont généreusement construit un nouveau détecteur d'AOA (DAOA), mais il
+Vos spés ont généreusement construit un nouveau Détecteur d'AOA (DAOA), mais il
 ne l'ont pas testé. (Après tout, à quoi servent les tests&nbsp;?) Fred vous
 remet alors le nouveau DAOA et vous demande de vous assurer de son bon
 fonctionnement.
