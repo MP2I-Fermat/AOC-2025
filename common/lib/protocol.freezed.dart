@@ -1269,7 +1269,7 @@ as List<TestStatus>,
 /// @nodoc
 mixin _$UserInfo {
 
- String get nick; int get numViewers;
+ String get nick; int get numViewers; int get problemNumber; TestStatus get displayStatus;
 /// Create a copy of UserInfo
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1282,16 +1282,16 @@ $UserInfoCopyWith<UserInfo> get copyWith => _$UserInfoCopyWithImpl<UserInfo>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserInfo&&(identical(other.nick, nick) || other.nick == nick)&&(identical(other.numViewers, numViewers) || other.numViewers == numViewers));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserInfo&&(identical(other.nick, nick) || other.nick == nick)&&(identical(other.numViewers, numViewers) || other.numViewers == numViewers)&&(identical(other.problemNumber, problemNumber) || other.problemNumber == problemNumber)&&(identical(other.displayStatus, displayStatus) || other.displayStatus == displayStatus));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,nick,numViewers);
+int get hashCode => Object.hash(runtimeType,nick,numViewers,problemNumber,displayStatus);
 
 @override
 String toString() {
-  return 'UserInfo(nick: $nick, numViewers: $numViewers)';
+  return 'UserInfo(nick: $nick, numViewers: $numViewers, problemNumber: $problemNumber, displayStatus: $displayStatus)';
 }
 
 
@@ -1302,7 +1302,7 @@ abstract mixin class $UserInfoCopyWith<$Res>  {
   factory $UserInfoCopyWith(UserInfo value, $Res Function(UserInfo) _then) = _$UserInfoCopyWithImpl;
 @useResult
 $Res call({
- String nick, int numViewers
+ String nick, int numViewers, int problemNumber, TestStatus displayStatus
 });
 
 
@@ -1319,11 +1319,13 @@ class _$UserInfoCopyWithImpl<$Res>
 
 /// Create a copy of UserInfo
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? nick = null,Object? numViewers = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? nick = null,Object? numViewers = null,Object? problemNumber = null,Object? displayStatus = null,}) {
   return _then(_self.copyWith(
 nick: null == nick ? _self.nick : nick // ignore: cast_nullable_to_non_nullable
 as String,numViewers: null == numViewers ? _self.numViewers : numViewers // ignore: cast_nullable_to_non_nullable
-as int,
+as int,problemNumber: null == problemNumber ? _self.problemNumber : problemNumber // ignore: cast_nullable_to_non_nullable
+as int,displayStatus: null == displayStatus ? _self.displayStatus : displayStatus // ignore: cast_nullable_to_non_nullable
+as TestStatus,
   ));
 }
 
@@ -1405,10 +1407,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String nick,  int numViewers)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String nick,  int numViewers,  int problemNumber,  TestStatus displayStatus)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _UserInfo() when $default != null:
-return $default(_that.nick,_that.numViewers);case _:
+return $default(_that.nick,_that.numViewers,_that.problemNumber,_that.displayStatus);case _:
   return orElse();
 
 }
@@ -1426,10 +1428,10 @@ return $default(_that.nick,_that.numViewers);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String nick,  int numViewers)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String nick,  int numViewers,  int problemNumber,  TestStatus displayStatus)  $default,) {final _that = this;
 switch (_that) {
 case _UserInfo():
-return $default(_that.nick,_that.numViewers);}
+return $default(_that.nick,_that.numViewers,_that.problemNumber,_that.displayStatus);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -1443,10 +1445,10 @@ return $default(_that.nick,_that.numViewers);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String nick,  int numViewers)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String nick,  int numViewers,  int problemNumber,  TestStatus displayStatus)?  $default,) {final _that = this;
 switch (_that) {
 case _UserInfo() when $default != null:
-return $default(_that.nick,_that.numViewers);case _:
+return $default(_that.nick,_that.numViewers,_that.problemNumber,_that.displayStatus);case _:
   return null;
 
 }
@@ -1458,11 +1460,13 @@ return $default(_that.nick,_that.numViewers);case _:
 @JsonSerializable()
 
 class _UserInfo implements UserInfo {
-  const _UserInfo({required this.nick, required this.numViewers});
+  const _UserInfo({required this.nick, required this.numViewers, required this.problemNumber, required this.displayStatus});
   factory _UserInfo.fromJson(Map<String, dynamic> json) => _$UserInfoFromJson(json);
 
 @override final  String nick;
 @override final  int numViewers;
+@override final  int problemNumber;
+@override final  TestStatus displayStatus;
 
 /// Create a copy of UserInfo
 /// with the given fields replaced by the non-null parameter values.
@@ -1477,16 +1481,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserInfo&&(identical(other.nick, nick) || other.nick == nick)&&(identical(other.numViewers, numViewers) || other.numViewers == numViewers));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserInfo&&(identical(other.nick, nick) || other.nick == nick)&&(identical(other.numViewers, numViewers) || other.numViewers == numViewers)&&(identical(other.problemNumber, problemNumber) || other.problemNumber == problemNumber)&&(identical(other.displayStatus, displayStatus) || other.displayStatus == displayStatus));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,nick,numViewers);
+int get hashCode => Object.hash(runtimeType,nick,numViewers,problemNumber,displayStatus);
 
 @override
 String toString() {
-  return 'UserInfo(nick: $nick, numViewers: $numViewers)';
+  return 'UserInfo(nick: $nick, numViewers: $numViewers, problemNumber: $problemNumber, displayStatus: $displayStatus)';
 }
 
 
@@ -1497,7 +1501,7 @@ abstract mixin class _$UserInfoCopyWith<$Res> implements $UserInfoCopyWith<$Res>
   factory _$UserInfoCopyWith(_UserInfo value, $Res Function(_UserInfo) _then) = __$UserInfoCopyWithImpl;
 @override @useResult
 $Res call({
- String nick, int numViewers
+ String nick, int numViewers, int problemNumber, TestStatus displayStatus
 });
 
 
@@ -1514,11 +1518,13 @@ class __$UserInfoCopyWithImpl<$Res>
 
 /// Create a copy of UserInfo
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? nick = null,Object? numViewers = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? nick = null,Object? numViewers = null,Object? problemNumber = null,Object? displayStatus = null,}) {
   return _then(_UserInfo(
 nick: null == nick ? _self.nick : nick // ignore: cast_nullable_to_non_nullable
 as String,numViewers: null == numViewers ? _self.numViewers : numViewers // ignore: cast_nullable_to_non_nullable
-as int,
+as int,problemNumber: null == problemNumber ? _self.problemNumber : problemNumber // ignore: cast_nullable_to_non_nullable
+as int,displayStatus: null == displayStatus ? _self.displayStatus : displayStatus // ignore: cast_nullable_to_non_nullable
+as TestStatus,
   ));
 }
 

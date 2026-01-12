@@ -1,4 +1,5 @@
 import 'package:common/protocol.dart';
+import 'package:frontend/components/problems.dart';
 import 'package:frontend/providers/current_code.dart';
 import 'package:frontend/providers/saved_code.dart';
 import 'package:frontend/providers/state.dart';
@@ -195,6 +196,7 @@ class WatchingSettings extends StatelessComponent {
               styles: Styles(
                 cursor: key == id ? .notAllowed : .pointer,
                 fontWeight: key == currentlyWatching ? .bold : .normal,
+                display: .inline,
               ),
               events: {
                 'click': (e) {
@@ -213,6 +215,8 @@ class WatchingSettings extends StatelessComponent {
                   Component.text(
                     ' (${value.numViewers} spectateur${value.numViewers == 1 ? '' : 's'})',
                   ),
+                Component.text(' - Partie ${value.problemNumber} -'),
+                TestStatusIcon(status: value.displayStatus),
               ],
             ),
         ]),

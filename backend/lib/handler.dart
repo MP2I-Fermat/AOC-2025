@@ -23,7 +23,10 @@ class ConnectionHandler {
   void sendUsersUpdate(ConnectionState state) {
     final users = {
       for (final MapEntry(:key, :value) in connections.entries)
-        if (value.clientState case EditingState(:final nick?))
+        if (value.clientState case EditingState(
+          :final nick?,
+          :final problemsStatus,
+        ))
           key: UserInfo(
             nick: nick,
             numViewers: connections.values.where((st) {
@@ -32,6 +35,32 @@ class ConnectionHandler {
               }
               return false;
             }).length,
+            problemNumber: problemsStatus.values
+                .where((info) => info.unlocked)
+                .length,
+            displayStatus:
+                problemsStatus.entries
+                    .sorted((a, b) => a.key.compareTo(b.key))
+                    .map((e) => e.value)
+                    .takeWhile((e) => e.unlocked)
+                    .lastOrNull
+                    ?.testCaseStatus
+                    .fold(TestStatus.pending, (acc, status) {
+                      // pending -> success -> running -> failed
+                      if (status == TestStatus.failed) {
+                        return TestStatus.failed;
+                      } else if (status == TestStatus.running &&
+                          acc != TestStatus.failed) {
+                        return TestStatus.running;
+                      } else if (status == TestStatus.success &&
+                          acc != TestStatus.running &&
+                          acc != TestStatus.failed) {
+                        return TestStatus.success;
+                      }
+
+                      return acc;
+                    }) ??
+                TestStatus.pending,
           ),
     };
     state.send(UsersUpdate(users: users, yourId: state.id));
@@ -216,6 +245,8 @@ class ConnectionHandler {
             final output = <OutputLine>[];
 
             void broadcastUpdate() {
+              broadcastUsersUpdate();
+
               final newState = editingState.copyWith(testCaseStatus: results);
 
               final problems = requireEditing().problemsStatus;

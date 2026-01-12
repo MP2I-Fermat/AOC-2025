@@ -49,8 +49,12 @@ sealed class ProblemInfo with _$ProblemInfo {
 
 @freezed
 sealed class UserInfo with _$UserInfo {
-  const factory UserInfo({required String nick, required int numViewers}) =
-      _UserInfo;
+  const factory UserInfo({
+    required String nick,
+    required int numViewers,
+    required int problemNumber,
+    required TestStatus displayStatus,
+  }) = _UserInfo;
 
   factory UserInfo.fromJson(Map<String, Object?> json) =>
       _$UserInfoFromJson(json);

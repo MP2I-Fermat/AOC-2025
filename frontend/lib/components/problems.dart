@@ -122,21 +122,7 @@ class ProblemView extends StatelessComponent {
           ),
           [
             for (final status in info.testCaseStatus)
-              div(
-                styles: Styles(
-                  width: .pixels(10),
-                  height: .pixels(10),
-                  margin: .symmetric(horizontal: .pixels(8)),
-                  radius: .all(.circular(.percent(50))),
-                  backgroundColor: switch (status) {
-                    TestStatus.pending => .new('var(--secondary-color)'),
-                    TestStatus.running => .new('yellow'),
-                    TestStatus.success => .new('green'),
-                    TestStatus.failed => .new('red'),
-                  },
-                ),
-                [],
-              ),
+              TestStatusIcon(status: status),
           ],
         ),
         div(
@@ -165,5 +151,31 @@ class ProblemView extends StatelessComponent {
         ),
       ]),
     ]);
+  }
+}
+
+class TestStatusIcon extends StatelessComponent {
+  final TestStatus status;
+
+  const TestStatusIcon({super.key, required this.status});
+
+  @override
+  Component build(BuildContext context) {
+    return div(
+      styles: Styles(
+        width: .pixels(10),
+        height: .pixels(10),
+        margin: .symmetric(horizontal: .pixels(8)),
+        radius: .all(.circular(.percent(50))),
+        display: .inlineBlock,
+        backgroundColor: switch (status) {
+          TestStatus.pending => .new('var(--secondary-color)'),
+          TestStatus.running => .new('yellow'),
+          TestStatus.success => .new('green'),
+          TestStatus.failed => .new('red'),
+        },
+      ),
+      [],
+    );
   }
 }

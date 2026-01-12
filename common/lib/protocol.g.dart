@@ -144,11 +144,15 @@ const _$TestStatusEnumMap = {
 _UserInfo _$UserInfoFromJson(Map<String, dynamic> json) => _UserInfo(
   nick: json['nick'] as String,
   numViewers: (json['numViewers'] as num).toInt(),
+  problemNumber: (json['problemNumber'] as num).toInt(),
+  displayStatus: $enumDecode(_$TestStatusEnumMap, json['displayStatus']),
 );
 
 Map<String, dynamic> _$UserInfoToJson(_UserInfo instance) => <String, dynamic>{
   'nick': instance.nick,
   'numViewers': instance.numViewers,
+  'problemNumber': instance.problemNumber,
+  'displayStatus': _$TestStatusEnumMap[instance.displayStatus]!,
 };
 
 _OutputLine _$OutputLineFromJson(Map<String, dynamic> json) => _OutputLine(
