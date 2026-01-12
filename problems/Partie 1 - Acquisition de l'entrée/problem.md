@@ -23,7 +23,7 @@ Le DAOA est constitué d'une boite traversée par un faisceau d'organisationites
 Au sein de la boite se trouve aussi un ensemble de diviseurs. Lorsque le
 faisceau heurte un diviseur, il se divise en deux nouveaux faisceaux de part et
 d'autre du diviseur, qui continuent alors à se propager dans la boite. Les
-faisceaux de propagent **de haut en bas**, la position d'entrée du faisceau
+faisceaux se propagent **de haut en bas**, la position d'entrée du faisceau
 est marquée par un `S` sur le diagramme du DAOA, et les diviseurs sont repérés
 par un symbole `^`.
 
