@@ -232,9 +232,23 @@ class ConnectionHandler {
 
             await requireEditing().activeEvaluation?.cancel();
 
-            final editingState = requireEditing().problemsStatus[problemName];
-            if (editingState == null) {
-              throw Exception('Invalid internal state: missing problem status');
+            final sortedProblemNames = (await Problem.problems).keys.sorted();
+
+            // Force unlock problem and all previous problems so they are
+            // displayed correctly in the event of a connection restart.
+            final currentProblemIdx = sortedProblemNames.indexOf(problemName);
+            for (int i = 0; i <= currentProblemIdx; i++) {
+              if (requireEditing().problemsStatus[sortedProblemNames[i]]
+                  case final state?) {
+                requireEditing().problemsStatus[sortedProblemNames[i]] = state
+                    .copyWith(unlocked: true);
+              }
+            }
+            final problemState = requireEditing().problemsStatus[problemName];
+            if (problemState == null) {
+              throw StateError(
+                'Invalid internal state: missing problem status',
+              );
             }
 
             final results = List.filled(
@@ -247,7 +261,7 @@ class ConnectionHandler {
             void broadcastUpdate() {
               broadcastUsersUpdate();
 
-              final newState = editingState.copyWith(testCaseStatus: results);
+              final newState = problemState.copyWith(testCaseStatus: results);
 
               final problems = requireEditing().problemsStatus;
               problems[problemName] = newState;
@@ -373,18 +387,20 @@ class ConnectionHandler {
                     'User $display completed problem $problemName at ${DateTime.now()}',
                   );
 
+                  final index = sortedProblemNames.indexOf(problemName);
+                  if (index == -1) throw StateError('invalid state');
+
                   // Unlock next problem
-                  final problems = (await Problem.problems).keys.sorted();
-                  final index = problems.indexOf(problemName);
-                  if (index != problems.length - 1 && index != -1) {
-                    final nextProblem = problems[index + 1];
-                    requireEditing().problemsStatus[nextProblem] = ProblemInfo(
-                      unlocked: true,
-                      testCaseStatus: List.filled(
-                        (await Problem.problems)[nextProblem]!.testCases.length,
-                        TestStatus.pending,
-                      ),
-                    );
+                  if (index != sortedProblemNames.length - 1) {
+                    final nextProblemName = sortedProblemNames[index + 1];
+
+                    if (requireEditing().problemsStatus[nextProblemName]
+                        case final nextProblem?) {
+                      if (!nextProblem.unlocked) {
+                        requireEditing().problemsStatus[nextProblemName] =
+                            nextProblem.copyWith(unlocked: true);
+                      }
+                    }
                   }
                 }
 
