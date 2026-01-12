@@ -318,26 +318,6 @@ class ConnectionHandler {
                         line: 'Test #${i + 1} échoué: $failureReason',
                       ),
                     );
-
-                    if (evaluation.outputLines.isNotEmpty) {
-                      output.add(
-                        OutputLine(
-                          stream: OutputStream.stdout,
-                          line: 'Sortie du programme:',
-                        ),
-                      );
-
-                      for (final line in evaluation.outputLines.take(1000)) {
-                        output.add(
-                          OutputLine(
-                            stream: line.stream,
-                            line: line.stream == OutputStream.stdin
-                                ? '*' * line.line.length
-                                : line.line,
-                          ),
-                        );
-                      }
-                    }
                   } else {
                     results[i] = TestStatus.success;
 
