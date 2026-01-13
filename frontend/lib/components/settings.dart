@@ -196,7 +196,6 @@ class WatchingSettings extends StatelessComponent {
               styles: Styles(
                 cursor: key == id ? .notAllowed : .pointer,
                 fontWeight: key == currentlyWatching ? .bold : .normal,
-                display: .inline,
               ),
               events: {
                 'click': (e) {
