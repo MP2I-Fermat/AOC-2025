@@ -7,3 +7,6 @@ alors afficher&nbsp;:
 ```
 7
 ```
+
+_Remarque : il n'est pas nécessaire pour cette partie de lire l'entrée en
+entier. Seule la première ligne indique une position d'entrée._
