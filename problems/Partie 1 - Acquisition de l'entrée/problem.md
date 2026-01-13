@@ -4,9 +4,9 @@ Après des vacances de Noël reposantes et une semaine de rentrée probablement
 chaotique, vous voici presque à la moitié de votre première année de MP2I.
 
 Le grand Malaxar a alors décidé que vous êtes prêts pour recevoir votre première
-mission en tant que véritables MP2I (pour le professeur, il s'agit d'une mission
-standard, vous la faites tous les ans). Vous rencontrez alors son émissaire Fred
-au coin d'une rue sombre qui vous explique la mission.
+mission en tant que véritables MP2I (pour, vous, professeur, il s'agit d'une
+mission standard, vous la faites tous les ans). Vous rencontrez alors son
+émissaire Fred au coin d'une rue sombre qui vous explique la mission.
 
 Fred vous explique qu'afin de sélectionner vos bizuths pour l'année prochaine,
 le grand Malaxar utilise une machine qui mesure la désorganisation des
