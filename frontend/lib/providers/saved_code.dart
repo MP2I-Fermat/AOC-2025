@@ -83,9 +83,6 @@ Raccourcis pour l'éditeur:
 - Ctrl+Enter: execute le programme
 - Ctrl+S: sauvegarde automatique
 
-Bug/requête huitr? -> DM Raphael
-Bug/requête site? -> DM Mylo
-
 We <3 Huitr & COCS
 ..
 
